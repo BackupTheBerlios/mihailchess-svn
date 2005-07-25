@@ -20,7 +20,7 @@ public class PositionTest extends TestCase {
 	 * Test method for 'com.mihail.chess.Position.Position()'
 	 */
 	public void testPosition() {
-
+		Posicion p = new Posicion();
 	}
 
 	/*
@@ -43,28 +43,64 @@ public class PositionTest extends TestCase {
 	 * Test method for 'com.mihail.chess.Position.setTurno()'
 	 */
 	public void testSetTurno() {
-
+		Posicion p = new Posicion();
+		int turno = p.getTurno();
+		p.setTurno();
+		p.setTurno();
+		assertEquals(turno, p.getTurno());
 	}
 
 	/*
 	 * Test method for 'com.mihail.chess.Position.setTurno(int)'
 	 */
 	public void testSetTurnoInt() {
-
+		Posicion p = new Posicion();
+		p.setTurno(Posicion.BLANCO);
+		assertEquals(Posicion.BLANCO, p.getTurno());
+		p.setTurno(Posicion.NEGRO);
+		assertEquals(Posicion.NEGRO, p.getTurno());
 	}
 
 	/*
 	 * Test method for 'com.mihail.chess.Position.setEnroqueCorto(int, boolean)'
 	 */
 	public void testSetEnroqueCorto() {
-
+		Posicion p = new Posicion();
+		p.setPieza(new Pieza(true, 'R'), 'e', '1');
+		p.setEnroqueCorto(Posicion.BLANCO, true);
+		assertEquals(false, p.getEnroqueCorto(Posicion.BLANCO));
+		p.setPieza(new Pieza(true, 'T'), 'h', '1');
+		p.setEnroqueCorto(Posicion.BLANCO, true);
+		assertEquals(true, p.getEnroqueCorto(Posicion.BLANCO));
+		
+		p.setPieza(new Pieza(false, 'R'), 'e', '8');
+		p.setEnroqueCorto(Posicion.NEGRO, true);
+		assertEquals(false, p.getEnroqueCorto(Posicion.NEGRO));
+		p.setPieza(new Pieza(false, 'T'), 'h', '8');
+		p.setEnroqueCorto(Posicion.NEGRO, true);
+		assertEquals(true, p.getEnroqueCorto(Posicion.NEGRO));
+		System.out.println(p.getFEN());
 	}
 
 	/*
 	 * Test method for 'com.mihail.chess.Position.setEnroqueLargo(int, boolean)'
 	 */
 	public void testSetEnroqueLargo() {
-
+		Posicion p = new Posicion();
+		p.setPieza(new Pieza(true, 'R'), 'e', '1');
+		p.setEnroqueLargo(Posicion.BLANCO, true);
+		assertEquals(false, p.getEnroqueLargo(Posicion.BLANCO));
+		p.setPieza(new Pieza(true, 'T'), 'a', '1');
+		p.setEnroqueLargo(Posicion.BLANCO, true);
+		assertEquals(true, p.getEnroqueLargo(Posicion.BLANCO));
+		
+		p.setPieza(new Pieza(false, 'R'), 'e', '8');
+		p.setEnroqueLargo(Posicion.NEGRO, true);
+		assertEquals(false, p.getEnroqueLargo(Posicion.NEGRO));
+		p.setPieza(new Pieza(false, 'T'), 'a', '8');
+		p.setEnroqueLargo(Posicion.NEGRO, true);
+		assertEquals(true, p.getEnroqueLargo(Posicion.NEGRO));
+		System.out.println(p.getFEN());
 	}
 	
 	/*
@@ -78,7 +114,14 @@ public class PositionTest extends TestCase {
 	 * Test method for 'com.mihail.chess.Position.borrarPieza(char, char)'
 	 */
 	public void testBorrarPieza() {
-
+		Posicion p = new Posicion("8/8/8/7p/8/8/8/8 w - h 0 1");
+		System.out.println(p.getFEN());
+		// Al borrar la pieza, alPaso deberia resetearse, ya que no hay peon en esa columna
+		p.borrarPieza('h', '5');
+		assertEquals(p.getAlPaso(), 0);
+		assertNull(p.getPieza('h', '5'));
+		
+		p.setPosicion("8/8/8/8/8/8/8/4K2R w K h 0 1");
 	}
 
 	/*
@@ -92,7 +135,12 @@ public class PositionTest extends TestCase {
 	 * Test method for 'com.mihail.chess.Position.getClavePosicion()'
 	 */
 	public void testGetClavePosicion() {
-
+		Posicion p = new Posicion();
+		p.setPieza(new Pieza(true, 'C'), 'd', '4');
+		int clave = p.getClavePosicion();
+		p.borrarPieza('d', '4');
+		p.setPieza(new Pieza(true, 'C'), 'd', '4');
+		assertEquals(clave, p.getClavePosicion());
 	}
 
 	/*
@@ -108,20 +156,11 @@ public class PositionTest extends TestCase {
 		p.setPieza(new Pieza(false, 'P'), 'h', '5');
 		p.setAlPaso('h');
 		assertEquals(p.getAlPaso(), 'h');
-		// Al borrar la pieza, alPaso deberia resetearse, ya que no hay peon en esa columna
-		p.borrarPieza('h', '6');
-		assertEquals(p.getAlPaso(), 0);
 		// Probamos lo mismo pero con un peon blanco
 		p.setPieza(new Pieza(true, 'P'), 'h', '4');
+		p.setTurno(Posicion.NEGRO);
 		p.setAlPaso('h');
 		assertEquals(p.getAlPaso(), 'h');
-	}
-
-	/*
-	 * Test method for 'com.mihail.chess.Position.getContadorTablas()'
-	 */
-	public void testGetContadorTablas() {
-
 	}
 
 	/*

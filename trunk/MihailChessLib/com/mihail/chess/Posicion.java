@@ -106,6 +106,11 @@ public class Posicion {
 		kingPosition[0] = new Casilla();
 		kingPosition[1] = new Casilla();
 	}
+	
+	public Posicion(String posicion) {
+		super();
+		setPosicion(posicion);
+	}
 
 	/**
 	 * Convierte el tipo de pieza expresado en castellano (P, C, A, etc.) al
@@ -271,74 +276,50 @@ public class Posicion {
 			switch (FEN[0].charAt(i)) {
 			case 'P':
 				setPieza(new Pieza(true, 'P'), let, num);
-				clavePosicion = clavePosicion
-						^ indices[0][0][num - '1'][let - 'a'];
 				let++;
 				break;
 			case 'p':
 				setPieza(new Pieza(false, 'P'), let, num);
-				clavePosicion = clavePosicion
-						^ indices[1][0][num - '1'][let - 'a'];
 				let++;
 				break;
 			case 'N':
 				setPieza(new Pieza(true, 'C'), let, num);
-				clavePosicion = clavePosicion
-						^ indices[0][1][num - '1'][let - 'a'];
 				let++;
 				break;
 			case 'n':
 				setPieza(new Pieza(false, 'C'), let, num);
-				clavePosicion = clavePosicion
-						^ indices[1][1][num - '1'][let - 'a'];
 				let++;
 				break;
 			case 'B':
 				setPieza(new Pieza(true, 'A'), let, num);
-				clavePosicion = clavePosicion
-						^ indices[0][2][num - '1'][let - 'a'];
 				let++;
 				break;
 			case 'b':
 				setPieza(new Pieza(false, 'A'), let, num);
-				clavePosicion = clavePosicion
-						^ indices[1][2][num - '1'][let - 'a'];
 				let++;
 				break;
 			case 'R':
 				setPieza(new Pieza(true, 'T'), let, num);
-				clavePosicion = clavePosicion
-						^ indices[0][3][num - '1'][let - 'a'];
 				let++;
 				break;
 			case 'r':
 				setPieza(new Pieza(false, 'T'), let, num);
-				clavePosicion = clavePosicion
-						^ indices[1][3][num - '1'][let - 'a'];
 				let++;
 				break;
 			case 'Q':
 				setPieza(new Pieza(true, 'D'), let, num);
-				clavePosicion = clavePosicion
-						^ indices[0][4][num - '1'][let - 'a'];
 				let++;
 				break;
 			case 'q':
 				setPieza(new Pieza(false, 'D'), let, num);
-				clavePosicion = clavePosicion
-						^ indices[1][4][num - '1'][let - 'a'];
 				let++;
 				break;
 			case 'K':
 				setPieza(new Pieza(true, 'R'), let, num);
-				clavePosicion = clavePosicion
-						^ indices[0][5][num - '1'][let - 'a'];
 				let++;
 				break;
 			case 'k':
 				setPieza(new Pieza(false, 'R'), let, num);
-				clavePosicion = clavePosicion
-						^ indices[1][5][num - '1'][let - 'a'];
 				let++;
 				break;
 			case '/':
@@ -359,9 +340,9 @@ public class Posicion {
 			}
 		}
 		if (FEN[1].charAt(0) == 'w') {
-			turno = 0;
+			setTurno(0);
 		} else {
-			turno = 1;
+			setTurno(1);
 		}
 		for (int i = 0; i <= 1; i++) {
 			for (int j = 0; j <= 1; j++) {
@@ -372,29 +353,28 @@ public class Posicion {
 			for (int i = 0; i < FEN[2].length(); i++) {
 				switch (FEN[2].charAt(i)) {
 				case 'K':
-					enroque[0][0] = true;
+					setEnroqueCorto(Posicion.BLANCO, true);
 					break;
 				case 'Q':
-					enroque[0][1] = true;
+					setEnroqueLargo(Posicion.BLANCO, true);
 					break;
 				case 'k':
-					enroque[1][0] = true;
+					setEnroqueCorto(Posicion.NEGRO, true);
 					break;
 				case 'q':
-					enroque[1][1] = true;
+					setEnroqueLargo(Posicion.NEGRO, true);
 					break;
 				}
 			}
 
 		}
 		if (FEN[3].charAt(0) == '-') {
-			alPaso = '\0';
+			setAlPaso('\0');
 		} else {
-			alPaso = FEN[3].charAt(0);
-
+			setAlPaso(FEN[3].charAt(0));
 		}
-		contadorTablas = (new Integer(FEN[4])).intValue();
-		numeroMovimiento = (new Integer(FEN[5])).intValue();
+		setContadorTablas((new Integer(FEN[4])).intValue());
+		setNumeroMovimiento((new Integer(FEN[5])).intValue());
 	}
 
 	/**
@@ -479,6 +459,10 @@ public class Posicion {
 	}
 
 	public boolean setEnroqueCorto(int b, boolean c) {
+		if(!c) {
+			enroque[b][0] = c;
+			return true;
+		}
 		if (b == BLANCO) {
 			Pieza p = getPieza('h', '1');
 			if (p != null && kingPosition[BLANCO].letra == 'e'
@@ -502,6 +486,10 @@ public class Posicion {
 	}
 
 	public boolean setEnroqueLargo(int b, boolean c) {
+		if(!c) {
+			enroque[b][1] = c;
+			return true;
+		}
 		if (b == BLANCO) {
 			Pieza p = getPieza('a', '1');
 			if (p != null && kingPosition[BLANCO].letra == 'e'
@@ -513,8 +501,8 @@ public class Posicion {
 				return false;
 		} else if (b == NEGRO) {
 			Pieza p = getPieza('a', '8');
-			if (p != null && kingPosition[BLANCO].letra == 'e'
-					&& kingPosition[BLANCO].numero == '8' && !p.bandoBlanco
+			if (p != null && kingPosition[NEGRO].letra == 'e'
+					&& kingPosition[NEGRO].numero == '8' && !p.bandoBlanco
 					&& p.tipo == 'T') {
 				enroque[1][1] = c;
 				return true;
@@ -573,7 +561,7 @@ public class Posicion {
 		// Se actualiza el estado de los enroques en caso de que se borre un rey
 		// o una torre
 		if (p != null) {
-			if (p.tipo == 'R')
+			if (p.tipo == 'R') {
 				if (p.bandoBlanco) {
 					enroque[0][0] = false;
 					enroque[0][1] = false;
@@ -585,7 +573,7 @@ public class Posicion {
 					kingPosition[NEGRO].letra = '\0';
 					kingPosition[NEGRO].numero = '\0';
 				}
-			else if (p.tipo == 'T')
+			} else if (p.tipo == 'T') {
 				if (p.letra == 'a' && p.num == '1' && p.bandoBlanco)
 					enroque[0][1] = false;
 				else if (p.letra == 'h' && p.num == '1' && p.bandoBlanco)
@@ -594,7 +582,11 @@ public class Posicion {
 					enroque[1][1] = false;
 				else if (p.letra == 'h' && p.num == '8' && !p.bandoBlanco)
 					enroque[1][0] = false;
-
+			} else if (p.tipo == 'P') {
+				if (letra == alPaso && (p.bandoBlanco && num == '4')
+						|| (!p.bandoBlanco && num == '5'))
+					alPaso = 0;
+			}
 			clavePosicion = clavePosicion
 					^ indices[bandoToInt(p.bandoBlanco)][tipoToInt(p.tipo)][iNum][iLetra];
 			tabla[num - '1'][letra - 'a'] = null;
@@ -638,11 +630,19 @@ public class Posicion {
 	 *            letra de la columna.
 	 */
 	public void setAlPaso(char alPaso) {
+		if(alPaso=='\0') {
+			this.alPaso = alPaso;
+			return;
+		}
 		boolean encontrado = false;
-		Pieza p = getPieza(alPaso, '4');
-		encontrado = p != null && p.bandoBlanco && p.tipo == 'P';
-		p = getPieza(alPaso, '5');
-		encontrado = p != null && !p.bandoBlanco && p.tipo == 'P';
+		Pieza p;
+		if(this.turno==NEGRO) {
+			p = getPieza(alPaso, '4');
+			encontrado = p != null && p.bandoBlanco && p.tipo == 'P';
+		} else {
+			p = getPieza(alPaso, '5');
+			encontrado = p != null && !p.bandoBlanco && p.tipo == 'P';
+		}
 		if (encontrado)
 			this.alPaso = alPaso;
 	}
