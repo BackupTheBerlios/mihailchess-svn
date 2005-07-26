@@ -69,6 +69,11 @@ public final class Pieza {
 		casilla = new Casilla ();
 		switch (tipo) {
 			case PEON:
+				direcciones = new VectorDireccion[1];
+				if(bando == Bando.BLANCO)
+					direcciones[0] = new VectorDireccion(0, 1);
+				else
+					direcciones[0] = new VectorDireccion(0, -1);
 				casillasValidas = new ArrayList<Casilla> (4);
 				break;
 			case TORRE:
@@ -101,6 +106,15 @@ public final class Pieza {
 				casillasValidas = new ArrayList<Casilla> (8);
 				break;
 			case REY:
+				direcciones = new VectorDireccion[8];
+				direcciones[0] = new VectorDireccion (1, 0);
+				direcciones[1] = new VectorDireccion (-1, 0);
+				direcciones[2] = new VectorDireccion (0, 1);
+				direcciones[3] = new VectorDireccion (0, -1);
+				direcciones[4] = new VectorDireccion (1, 1);
+				direcciones[5] = new VectorDireccion (-1, 1);
+				direcciones[6] = new VectorDireccion (1, -1);
+				direcciones[7] = new VectorDireccion (-1, -1);
 				casillasValidas = new ArrayList<Casilla> (8);
 				break;
 			case DAMA:
@@ -157,6 +171,10 @@ public final class Pieza {
 	 */
 	public void anadirMov (char let, char n) {
 		this.casillasValidas.add (new Casilla(let, n));
+	}
+	
+	public void anadirMov(Casilla c) {
+		this.casillasValidas.add(c);
 	}
 
 	public Bando getBando() {

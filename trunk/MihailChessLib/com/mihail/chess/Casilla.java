@@ -31,6 +31,10 @@ public class Casilla {
 		}
 		return false;
 	}
+	
+	public Casilla add(VectorDireccion v) {
+		return new Casilla((char)(this.letra + v.getX()), (char)(this.numero + v.getY()));
+	}
 
 	public char getLetra() {
 		return letra;

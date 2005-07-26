@@ -138,8 +138,6 @@ public class Logica {
 	 *            Pieza de la que queremos calcular sus movimientos legales
 	 */
 	private void calcularMovimientos (Pieza pieza) {
-		int posNum = pieza.getNum() - '1', posLet = pieza.getLetra() - 'a';
-		int numI = 0, letI = 0;
 		pieza.getCasillasValidas().clear ();
 		switch (pieza.getTipo()) {
 			case PEON:
@@ -154,14 +152,13 @@ public class Logica {
 										(char) (pieza.getNum() + 1))) {
 							pieza.anadirMov (pieza.getLetra(),
 												(char) (pieza.getNum() + 1));
-						}
-						if (pieza.getNum() == '2'
-								&& posicion.esVacia (pieza.getLetra(), (char) (pieza.getNum() + 1))
+							if (pieza.getNum() == '2'
 								&& posicion.esVacia (pieza.getLetra(), (char) (pieza.getNum() + 2))) {
-							if (esLegal (pieza.getLetra(), pieza.getNum(), pieza.getLetra(),
+								if (esLegal (pieza.getLetra(), pieza.getNum(), pieza.getLetra(),
 											(char) (pieza.getNum() + 2))) {
-								pieza.anadirMov (pieza.getLetra(),
-													(char) (pieza.getNum() + 2));
+									pieza.anadirMov (pieza.getLetra(),
+											(char) (pieza.getNum() + 2));
+								}
 							}
 						}
 					}
@@ -204,15 +201,13 @@ public class Logica {
 										(char) (pieza.getNum() - 1))) {
 							pieza.anadirMov (pieza.getLetra(),
 												(char) (pieza.getNum() - 1));
-
-						}
-						if (pieza.getNum() == '7'
-								&& posicion.esVacia (pieza.getLetra(), (char) (pieza.getNum() - 1))
+							if (pieza.getNum() == '7'
 								&& posicion.esVacia (pieza.getLetra(), (char) (pieza.getNum() - 2))) {
-							if (esLegal (pieza.getLetra(), pieza.getNum(), pieza.getLetra(),
+								if (esLegal (pieza.getLetra(), pieza.getNum(), pieza.getLetra(),
 											(char) (pieza.getNum() - 2))) {
 								pieza.anadirMov (pieza.getLetra(),
 													(char) (pieza.getNum() - 2));
+								}
 							}
 						}
 					}
@@ -249,90 +244,50 @@ public class Logica {
 				}
 				break;
 			case CABALLO:
-				posLet = pieza.getLetra() - 'a';
-				posNum = pieza.getNum() - '1';
-				for (int i = 0; i < pieza.getDirecciones().length; i++) {
-					VectorDireccion v = pieza.getDirecciones()[i];
-					boolean piezaEncontrada = false;
-					letI = posLet + v.getY ();
-					numI = posNum + v.getX ();
-					char l = (char)(letI + 'a'), n = (char)(numI + '1');
+				for(VectorDireccion v: pieza.getDirecciones()) {
+					Casilla destino = pieza.getCasilla().add(v);
 					try {
-						if (posicion.getPieza(l, n) == null) {
-
-							if (esLegal (pieza.getLetra(), pieza.getNum(), l, n))
-								pieza.anadirMov (l, n);
+						if(esLegal(pieza.getLetra(), pieza.getNum(), destino.getLetra(), destino.getNumero())) {
+							Pieza p = posicion.getPieza(destino.getLetra(), destino.getNumero());
+							if(p == null || (p!=null && Pieza.esBandoContrario(pieza, p)))
+								pieza.anadirMov(destino);
 						}
-						else
-							piezaEncontrada = true;
-					}
-					catch (ArrayIndexOutOfBoundsException e) {
-					}
-					if (piezaEncontrada
-							&& Pieza.esBandoContrario (pieza, posicion.getPieza(l, n))
-							&& esLegal (pieza.getLetra(), pieza.getNum(), l, n)) {
-						pieza.anadirMov (l, n);
-					}
+					} catch(ArrayIndexOutOfBoundsException e) {}
 				}
 
 				break;
 			case DAMA:
 			case ALFIL:
 			case TORRE:
-				posLet = pieza.getLetra() - 'a';
-				posNum = pieza.getNum() - '1';
-				for (int i = 0; i < pieza.getDirecciones().length; i++) {
-					VectorDireccion v = pieza.getDirecciones()[i];
-					boolean piezaEncontrada = false;
-
-					letI = posLet + v.getY ();
-					numI = posNum + v.getX ();
-					char l = (char)(letI + 'a'), n = (char)(numI + '1');
+				for(VectorDireccion v: pieza.getDirecciones()) {
 					try {
-						while (posicion.getPieza(l, n) == null) {
-							
-							if (esLegal (pieza.getLetra(), pieza.getNum(), l, n))
-								pieza.anadirMov ((char) (letI + 'a'),
-													(char) (numI + '1'));
-							letI += v.getY ();
-							numI += v.getX ();
-							l = (char)(letI + 'a');
-							n = (char)(numI + '1');
-						}
-						piezaEncontrada = true;
-					}
-					catch (ArrayIndexOutOfBoundsException e) {
-
-					}
-
-					if (piezaEncontrada
-							&& Pieza.esBandoContrario (pieza, posicion.getPieza(l, n))
-							&& esLegal (pieza.getLetra(), pieza.getNum(),
-										(char) (letI + 'a'),
-										(char) (numI + '1'))) {
-						pieza.anadirMov ((char) (letI + 'a'),
-											(char) (numI + '1'));
-					}
-				}
-				break;
-			case REY:
-				for (int i = -1; i <= 1; i++) {
-					for (int j = -1; j <= 1; j++) {
-						try {
-							char letDest = (char) (pieza.getLetra() + i), numDest = (char) (pieza.getNum() + j);
-							if (j != 0 || i != 0) {
-								if (esLegal (pieza.getLetra(), pieza.getNum(), letDest, numDest)
-									&& (posicion.esVacia (letDest, numDest) 
-									|| (!posicion.esVacia (letDest, numDest) 
-									&& posicion.getPieza(letDest, numDest).getBando() != pieza.getBando()))) {
-									pieza.anadirMov (letDest, numDest);
+						Casilla destino = pieza.getCasilla().add(v);
+						Pieza p = posicion.getPieza(destino.getLetra(), destino.getNumero());
+						while(p==null) {
+							p = posicion.getPieza(destino.getLetra(), destino.getNumero());
+							if(esLegal(pieza.getLetra(), pieza.getNum(), destino.getLetra(), destino.getNumero())) {
+								if(p == null || (p!=null && Pieza.esBandoContrario(pieza, p))) {
+									pieza.anadirMov(destino);
 								}
 							}
+							destino = destino.add(v);
 						}
-						catch (ArrayIndexOutOfBoundsException e) {
-						}
-					}
+					} catch(ArrayIndexOutOfBoundsException e) {}
 				}
+
+				break;
+			case REY:
+				for(VectorDireccion v: pieza.getDirecciones()) {
+					Casilla destino = pieza.getCasilla().add(v);
+					try {
+						if(esLegal(pieza.getLetra(), pieza.getNum(), destino.getLetra(), destino.getNumero())) {
+							Pieza p = posicion.getPieza(destino.getLetra(), destino.getNumero());
+							if(p == null || (p!=null && Pieza.esBandoContrario(pieza, p)))
+								pieza.anadirMov(destino);
+						}
+					} catch(ArrayIndexOutOfBoundsException e) {}
+				}
+
 				if (posicion.getEnroqueCorto(posicion.getTurno())
 						&& !esCasillaAtacada (posicion.getKingPosition(posicion.getTurno()))
 						&& posicion.esVacia ((char) (pieza.getLetra() + 1), pieza.getNum())
