@@ -15,58 +15,63 @@ public final class Movimiento {
 	/**
 	 * Este atributo indica la letra de la casilla origen.
 	 */
-	public char origenLetra;
+	// public char origenLetra;
 
 	/**
 	 * Este atributo indica el numero de la casilla origen.
 	 */
-	public char origenNum;
+	// public char origenNum;
+	
+	private Casilla casillaOrigen;
 
 	/**
 	 * Este atributo indica la letra de la casilla destino.
 	 */
-	public char destinoLetra;
+	// public char destinoLetra;
 
 	/**
 	 * Este atributo indica el numero de la casilla destino.
 	 */
-	public char destinoNum;
+	// public char destinoNum;
+	
+	private Casilla casillaDestino;
 
 	/**
 	 * Numero de movimiento en la partida. Es el mismo numero para blancas que
 	 * para negras. Por ejemplo: en '1. e4 c5', tanto e4 como c5 compartirian el
 	 * 1 como numero de movimiento.
 	 */
-	public int numeroMovimiento;
+	private int numeroMovimiento;
 
 	/**
 	 * Bando que mueve.
 	 */
-	public Bando bando;
+	private Bando bando;
 
 	/**
 	 * Este atributo indica el tipo de pieza que es: {P,C,A,T,D,R}
 	 * 
-	 * @see Pieza#tipo
 	 */
-	public char tipoPieza;
+	private char tipoPieza;
 
 	/**
 	 * Este atributo indica la letra de la casilla donde se come. Si no se ha
 	 * producido una captura contiene un 0.
 	 */
-	public char casillaComerLetra;
+	// public char casillaComerLetra;
 
 	/**
 	 * Este atributo indica el numero de la casilla donde se come. Si no se ha
 	 * producido una captura contiene un 0.
 	 */
-	public char casillaComerNum;
+	// public char casillaComerNum;
+	
+	private Casilla casillaComer;
 
 	/**
 	 * Este atributo indica si el movimiento produce un jaque.
 	 */
-	public boolean jaque;
+	private boolean jaque;
 
 	/**
 	 * Este atributo indica si el movimiento termina la partida y quien es el
@@ -76,7 +81,7 @@ public final class Movimiento {
 	 * 'T' -> Tablas <BR>
 	 * 0 -> No ha terminado la partida
 	 */
-	public int finPartida;
+	private int finPartida;
 
 	/**
 	 * Este atributo indica si se ha producido una coronacion y a que pieza se
@@ -87,13 +92,13 @@ public final class Movimiento {
 	 * 'D' -> Dama <BR>
 	 * 0 -> No hay coronacion
 	 */
-	public char coronacion;
+	private char coronacion;
 
 	/**
 	 * Este atributo indica el valor de contadorTablas en el momento que se
 	 * produce el movimiento.
 	 */
-	public int contadorTablas;
+	private int contadorTablas;
 
 	/**
 	 * Este atributo indica que enroques estan disponibles para que bandos en el
@@ -103,24 +108,136 @@ public final class Movimiento {
 	 * enroque[1][0] -> Negras, enroque corto <BR>
 	 * enroque[1][1] -> Negras, enroque largo <BR>
 	 */
-	public boolean[][] enroque;
+	private boolean[][] enroque;
 
 	/**
 	 * Este atributo contiene 0 en todos los casos salvo si se ha movido un peon
 	 * dos casillas. En ese caso contendra la letra de la columna del peon. Es
 	 * necesario para la captura al paso.
 	 */
-	public char alPaso;
+	private char alPaso;
 
 	/**
 	 * Este atributo indica el tipo de la pieza que se come. Si no se ha
 	 * producido una captura contiene un 0.
 	 */
-	public char tipoPiezaComida;
+	private char tipoPiezaComida;
 
 	/**
 	 * Este atributo guarda la representacion del movimiento en notacion
 	 * algebraica.
 	 */
-	public String notacion;
+	private String notacion;
+
+	public Casilla getCasillaDestino() {
+		return casillaDestino;
+	}
+
+	public void setCasillaDestino(Casilla casillaDestino) {
+		this.casillaDestino = casillaDestino;
+	}
+
+	public Casilla getCasillaOrigen() {
+		return casillaOrigen;
+	}
+
+	public void setCasillaOrigen(Casilla casillaOrigen) {
+		this.casillaOrigen = casillaOrigen;
+	}
+
+	public Bando getBando() {
+		return bando;
+	}
+
+	public void setBando(Bando bando) {
+		this.bando = bando;
+	}
+
+	public int getNumeroMovimiento() {
+		return numeroMovimiento;
+	}
+
+	public void setNumeroMovimiento(int numeroMovimiento) {
+		this.numeroMovimiento = numeroMovimiento;
+	}
+
+	public char getTipoPieza() {
+		return tipoPieza;
+	}
+
+	public void setTipoPieza(char tipoPieza) {
+		this.tipoPieza = tipoPieza;
+	}
+
+	public Casilla getCasillaComer() {
+		return casillaComer;
+	}
+
+	public void setCasillaComer(Casilla casillaComer) {
+		this.casillaComer = casillaComer;
+	}
+
+	public int getContadorTablas() {
+		return contadorTablas;
+	}
+
+	public void setContadorTablas(int contadorTablas) {
+		this.contadorTablas = contadorTablas;
+	}
+
+	public char getCoronacion() {
+		return coronacion;
+	}
+
+	public void setCoronacion(char coronacion) {
+		this.coronacion = coronacion;
+	}
+
+	public boolean[][] getEnroque() {
+		return enroque;
+	}
+
+	public void setEnroque(boolean[][] enroque) {
+		this.enroque = enroque;
+	}
+
+	public int getFinPartida() {
+		return finPartida;
+	}
+
+	public void setFinPartida(int finPartida) {
+		this.finPartida = finPartida;
+	}
+
+	public boolean isJaque() {
+		return jaque;
+	}
+
+	public void setJaque(boolean jaque) {
+		this.jaque = jaque;
+	}
+
+	public char getAlPaso() {
+		return alPaso;
+	}
+
+	public void setAlPaso(char alPaso) {
+		this.alPaso = alPaso;
+	}
+
+	public String getNotacion() {
+		return notacion;
+	}
+
+	public void setNotacion(String notacion) {
+		this.notacion = notacion;
+	}
+
+	public char getTipoPiezaComida() {
+		return tipoPiezaComida;
+	}
+
+	public void setTipoPiezaComida(char tipoPiezaComida) {
+		this.tipoPiezaComida = tipoPiezaComida;
+	}
 }

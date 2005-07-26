@@ -22,7 +22,7 @@ public final class Pieza {
 	 * Este atributo indica el bando de la pieza (blanco o negro): true -> bando
 	 * blanco false -> bando negro
 	 */
-	public Bando bando;
+	private Bando bando;
 
 	/**
 	 * Este atributo indica el tipo de pieza que es: <BR>
@@ -33,18 +33,9 @@ public final class Pieza {
 	 * 'D' -> dama <BR>
 	 * 'R' -> rey
 	 */
-	public char tipo;
+	private char tipo;
 
-	/**
-	 * Este atributo indica la letra de la casilla en que se encuentra la pieza.
-	 */
-	public char letra;
-
-	/**
-	 * Este atributo indica el numero de la casilla en que se encuentra la
-	 * pieza.
-	 */
-	public char num;
+	private Casilla casilla;
 
 	/**
 	 * Este atributo es un array que almacena todas las casillas a las que puede
@@ -55,9 +46,9 @@ public final class Pieza {
 	 * 
 	 * @see java.util.ArrayList
 	 */
-	public ArrayList<Casilla> casillasValidas;
+	private ArrayList<Casilla> casillasValidas;
 
-	public VectorDireccion[] direcciones;
+	private VectorDireccion[] direcciones;
 
 	/**
 	 * Inicializa una nueva instancia de esta clase.
@@ -71,8 +62,7 @@ public final class Pieza {
 	public Pieza (Bando ban, char claseDePieza) {
 		bando = ban;
 		tipo = claseDePieza;
-		letra = '\0';
-		num = '\0';
+		casilla = new Casilla ();
 		switch (tipo) {
 			case 'P':
 				casillasValidas = new ArrayList<Casilla> (4);
@@ -163,5 +153,61 @@ public final class Pieza {
 	 */
 	public void anadirMov (char let, char n) {
 		this.casillasValidas.add (new Casilla(let, n));
+	}
+
+	public Bando getBando() {
+		return bando;
+	}
+
+	public void setBando(Bando bando) {
+		this.bando = bando;
+	}
+
+	public ArrayList<Casilla> getCasillasValidas() {
+		return casillasValidas;
+	}
+
+	public void setCasillasValidas(ArrayList<Casilla> casillasValidas) {
+		this.casillasValidas = casillasValidas;
+	}
+
+	public VectorDireccion[] getDirecciones() {
+		return direcciones;
+	}
+
+	public void setDirecciones(VectorDireccion[] direcciones) {
+		this.direcciones = direcciones;
+	}
+
+	public char getTipo() {
+		return tipo;
+	}
+
+	public void setTipo(char tipo) {
+		this.tipo = tipo;
+	}
+	
+	public char getLetra() {
+		return casilla.getLetra();
+	}
+	
+	public void setLetra(char let) {
+		casilla.setLetra(let);
+	}
+	
+	public char getNum() {
+		return casilla.getNumero();		
+	}
+	
+	public void setNum(char num) {
+		casilla.setNumero(num);
+	}
+
+	public Casilla getCasilla() {
+		return casilla;
+	}
+
+	public void setCasilla(Casilla casilla) {
+		this.casilla = casilla;
 	}
 }

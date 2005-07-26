@@ -219,10 +219,10 @@ public class Posicion {
 				else {
 					if (cont > 0)
 						cad += cont;
-					if (p.bando == Bando.BLANCO)
-						cad += tipoToEnglish(p.tipo);
+					if (p.getBando() == Bando.BLANCO)
+						cad += tipoToEnglish(p.getTipo());
 					else
-						cad += (Character.toLowerCase(tipoToEnglish(p.tipo)));
+						cad += (Character.toLowerCase(tipoToEnglish(p.getTipo())));
 					cont = 0;
 				}
 			}
@@ -498,8 +498,8 @@ public class Posicion {
 		if (b == Bando.BLANCO) {
 			Pieza p = getPieza('h', '1');
 			if (p != null && kingPosition[bandoToInt(Bando.BLANCO)].getLetra() == 'e'
-					&& kingPosition[bandoToInt(Bando.BLANCO)].getNumero() == '1' && p.bando == Bando.BLANCO
-					&& p.tipo == 'T') {
+					&& kingPosition[bandoToInt(Bando.BLANCO)].getNumero() == '1' && p.getBando() == Bando.BLANCO
+					&& p.getTipo() == 'T') {
 				enroque[0][0] = c;
 				return true;
 			} else
@@ -507,8 +507,8 @@ public class Posicion {
 		} else if (b == Bando.NEGRO) {
 			Pieza p = getPieza('h', '8');
 			if (p != null && kingPosition[bandoToInt(Bando.NEGRO)].getLetra() == 'e'
-					&& kingPosition[bandoToInt(Bando.NEGRO)].getNumero() == '8' && p.bando == Bando.NEGRO
-					&& p.tipo == 'T') {
+					&& kingPosition[bandoToInt(Bando.NEGRO)].getNumero() == '8' && p.getBando() == Bando.NEGRO
+					&& p.getTipo() == 'T') {
 				enroque[1][0] = c;
 				return true;
 			} else
@@ -536,8 +536,8 @@ public class Posicion {
 		if (b == Bando.BLANCO) {
 			Pieza p = getPieza('a', '1');
 			if (p != null && kingPosition[bandoToInt(Bando.BLANCO)].getLetra() == 'e'
-					&& kingPosition[0].getNumero() == '1' && p.bando == Bando.BLANCO
-					&& p.tipo == 'T') {
+					&& kingPosition[0].getNumero() == '1' && p.getBando() == Bando.BLANCO
+					&& p.getTipo() == 'T') {
 				enroque[0][1] = c;
 				return true;
 			} else
@@ -545,8 +545,8 @@ public class Posicion {
 		} else if (b == Bando.NEGRO) {
 			Pieza p = getPieza('a', '8');
 			if (p != null && kingPosition[bandoToInt(Bando.NEGRO)].getLetra() == 'e'
-					&& kingPosition[bandoToInt(Bando.NEGRO)].getNumero() == '8' && p.bando == Bando.NEGRO
-					&& p.tipo == 'T') {
+					&& kingPosition[bandoToInt(Bando.NEGRO)].getNumero() == '8' && p.getBando() == Bando.NEGRO
+					&& p.getTipo() == 'T') {
 				enroque[1][1] = c;
 				return true;
 			} else
@@ -575,17 +575,19 @@ public class Posicion {
 	 *            Es el numero de la casilla
 	 */
 	public void setPieza(Pieza pieza, char letra, char num) {
-		pieza.letra = letra;
-		pieza.num = num;
+		pieza.setLetra(letra);
+		pieza.setNum(num);
 		tabla[num - '1'][letra - 'a'] = pieza;
 		clavePosicion = clavePosicion
-				^ indices[bandoToInt(pieza.bando)][tipoToInt(pieza.tipo)][num - '1'][letra - 'a'];
+				^ indices[bandoToInt(pieza.getBando())][tipoToInt(pieza.getTipo())][num - '1'][letra - 'a'];
 
-		if (pieza.tipo == 'R') {
-			kingPosition[bandoToInt(pieza.bando)].setLetra(pieza.letra);
-			kingPosition[bandoToInt(pieza.bando)].setNumero(pieza.num);
+		if (pieza.getTipo() == 'R') {
+			kingPosition[bandoToInt(pieza.getBando())] = pieza.getCasilla();
 		}
-
+	}
+	
+	public void borrarPieza (Casilla casilla) {
+			borrarPieza (casilla.getLetra(), casilla.getNumero());
 	}
 
 	/**
@@ -604,8 +606,8 @@ public class Posicion {
 		// Se actualiza el estado de los enroques en caso de que se borre un rey
 		// o una torre
 		if (p != null) {
-			if (p.tipo == 'R') {
-				if (p.bando == Bando.BLANCO) {
+			if (p.getTipo() == 'R') {
+				if (p.getBando() == Bando.BLANCO) {
 					enroque[0][0] = false;
 					enroque[0][1] = false;
 					kingPosition[bandoToInt(Bando.BLANCO)].setLetra ('\0');
@@ -616,22 +618,22 @@ public class Posicion {
 					kingPosition[bandoToInt(Bando.NEGRO)].setLetra ('\0');
 					kingPosition[bandoToInt(Bando.NEGRO)].setNumero ('\0');
 				}
-			} else if (p.tipo == 'T') {
-				if (p.letra == 'a' && p.num == '1' && p.bando == Bando.BLANCO)
+			} else if (p.getTipo() == 'T') {
+				if (p.getLetra() == 'a' && p.getNum() == '1' && p.getBando() == Bando.BLANCO)
 					enroque[0][1] = false;
-				else if (p.letra == 'h' && p.num == '1' && p.bando == Bando.BLANCO)
+				else if (p.getLetra() == 'h' && p.getNum() == '1' && p.getBando() == Bando.BLANCO)
 					enroque[0][0] = false;
-				else if (p.letra == 'a' && p.num == '8' && p.bando == Bando.NEGRO)
+				else if (p.getLetra() == 'a' && p.getNum() == '8' && p.getBando() == Bando.NEGRO)
 					enroque[1][1] = false;
-				else if (p.letra == 'h' && p.num == '8' && p.bando == Bando.NEGRO)
+				else if (p.getLetra() == 'h' && p.getNum() == '8' && p.getBando() == Bando.NEGRO)
 					enroque[1][0] = false;
-			} else if (p.tipo == 'P') {
-				if (letra == alPaso && (p.bando == Bando.BLANCO && num == '4')
-						|| (p.bando == Bando.NEGRO && num == '5'))
+			} else if (p.getTipo() == 'P') {
+				if (letra == alPaso && (p.getBando() == Bando.BLANCO && num == '4')
+						|| (p.getBando() == Bando.NEGRO && num == '5'))
 					alPaso = 0;
 			}
 			clavePosicion = clavePosicion
-					^ indices[bandoToInt(p.bando)][tipoToInt(p.tipo)][iNum][iLetra];
+					^ indices[bandoToInt(p.getBando())][tipoToInt(p.getTipo())][iNum][iLetra];
 			tabla[num - '1'][letra - 'a'] = null;
 		}
 	}
@@ -681,10 +683,10 @@ public class Posicion {
 		Pieza p;
 		if(this.turno==Bando.NEGRO) {
 			p = getPieza(alPaso, '4');
-			encontrado = p != null && p.bando == Bando.BLANCO && p.tipo == 'P';
+			encontrado = p != null && p.getBando() == Bando.BLANCO && p.getTipo() == 'P';
 		} else {
 			p = getPieza(alPaso, '5');
-			encontrado = p != null && p.bando == Bando.NEGRO && p.tipo == 'P';
+			encontrado = p != null && p.getBando() == Bando.NEGRO && p.getTipo() == 'P';
 		}
 		if (encontrado)
 			this.alPaso = alPaso;
@@ -740,9 +742,9 @@ public class Posicion {
 
 	protected void setPiezaInternal(Pieza p, char letra, char num) {
 		tabla[num - '1'][letra - 'a'] = p;
-		if (p.tipo == 'R') {
-			kingPosition[bandoToInt(p.bando)].setLetra (p.letra);
-			kingPosition[bandoToInt(p.bando)].setNumero (p.num);
+		if (p.getTipo() == 'R') {
+			kingPosition[bandoToInt(p.getBando())].setLetra (p.getLetra());
+			kingPosition[bandoToInt(p.getBando())].setNumero (p.getNum());
 		}
 	}
 }

@@ -5,7 +5,11 @@ import java.util.ArrayList;
 public class Logica {
 
 	public static enum Bando {
-		BLANCO, NEGRO
+		BLANCO, NEGRO;
+		
+		public boolean equals (Bando b) {
+			return this == b;			
+		}
 	}
 	
 	/**
@@ -115,7 +119,7 @@ public class Logica {
 	 *         '\0' -> Partida Inacabada o Resultado Desconocido
 	 */
 	public int getResultado () {
-		return movimientos.get (indice - 1).finPartida;
+		return movimientos.get (indice - 1).getFinPartida();
 	}
 
 	/**
@@ -142,59 +146,59 @@ public class Logica {
 	 *            Pieza de la que queremos calcular sus movimientos legales
 	 */
 	private void calcularMovimientos (Pieza pieza) {
-		int posNum = pieza.num - '1', posLet = pieza.letra - 'a';
+		int posNum = pieza.getNum() - '1', posLet = pieza.getLetra() - 'a';
 		int numI = 0, letI = 0;
-		pieza.casillasValidas.clear ();
-		switch (pieza.tipo) {
+		pieza.getCasillasValidas().clear ();
+		switch (pieza.getTipo()) {
 			case 'P':
 				// Peon
 				// Peon blanco
-				if (pieza.bando == Bando.BLANCO) {
+				if (pieza.getBando() == Bando.BLANCO) {
 					// Movimiento hacia delante
 					// Hacemos dos iteraciones, una para el caso de que avance
 					// una casilla, otra para el caso de que avance dos
-					if (posicion.esVacia (pieza.letra, (char) (pieza.num + 1))) {
-						if (esLegal (pieza.letra, pieza.num, pieza.letra,
-										(char) (pieza.num + 1))) {
-							pieza.anadirMov (pieza.letra,
-												(char) (pieza.num + 1));
+					if (posicion.esVacia (pieza.getLetra(), (char) (pieza.getNum() + 1))) {
+						if (esLegal (pieza.getLetra(), pieza.getNum(), pieza.getLetra(),
+										(char) (pieza.getNum() + 1))) {
+							pieza.anadirMov (pieza.getLetra(),
+												(char) (pieza.getNum() + 1));
 						}
-						if (pieza.num == '2'
-								&& posicion.esVacia (pieza.letra, (char) (pieza.num + 1))
-								&& posicion.esVacia (pieza.letra, (char) (pieza.num + 2))) {
-							if (esLegal (pieza.letra, pieza.num, pieza.letra,
-											(char) (pieza.num + 2))) {
-								pieza.anadirMov (pieza.letra,
-													(char) (pieza.num + 2));
+						if (pieza.getNum() == '2'
+								&& posicion.esVacia (pieza.getLetra(), (char) (pieza.getNum() + 1))
+								&& posicion.esVacia (pieza.getLetra(), (char) (pieza.getNum() + 2))) {
+							if (esLegal (pieza.getLetra(), pieza.getNum(), pieza.getLetra(),
+											(char) (pieza.getNum() + 2))) {
+								pieza.anadirMov (pieza.getLetra(),
+													(char) (pieza.getNum() + 2));
 							}
 						}
 					}
-					if (posicion.getAlPaso() != '\0' && pieza.num == '5'
-							&& Math.abs (pieza.letra - posicion.getAlPaso()) == 1) {
-						pieza.anadirMov (posicion.getAlPaso(), (char) (pieza.num + 1));
+					if (posicion.getAlPaso() != '\0' && pieza.getNum() == '5'
+							&& Math.abs (pieza.getLetra() - posicion.getAlPaso()) == 1) {
+						pieza.anadirMov (posicion.getAlPaso(), (char) (pieza.getNum() + 1));
 					}
 					// Movimientos para comer
 					try {
-						Pieza p = posicion.getPieza((char)(pieza.letra+1), (char)(pieza.num+1));
-						if (p != null && p.bando == Bando.NEGRO) {
-							if (esLegal (pieza.letra, pieza.num,
-											(char) (pieza.letra + 1),
-											(char) (pieza.num + 1))) {
-								pieza.anadirMov ((char) (pieza.letra + 1),
-													(char) (pieza.num + 1));
+						Pieza p = posicion.getPieza((char)(pieza.getLetra()+1), (char)(pieza.getNum()+1));
+						if (p != null && p.getBando() == Bando.NEGRO) {
+							if (esLegal (pieza.getLetra(), pieza.getNum(),
+											(char) (pieza.getLetra() + 1),
+											(char) (pieza.getNum() + 1))) {
+								pieza.anadirMov ((char) (pieza.getLetra() + 1),
+													(char) (pieza.getNum() + 1));
 							}
 						}
 					}
 					catch (ArrayIndexOutOfBoundsException e) {
 					}
 					try {
-						Pieza p = posicion.getPieza((char)(pieza.letra+1), (char)(pieza.num-1));
-						if (p != null && p.bando == Bando.NEGRO) {
-							if (esLegal (pieza.letra, pieza.num,
-											(char) (pieza.letra - 1),
-											(char) (pieza.num + 1))) {
-								pieza.anadirMov ((char) (pieza.letra - 1),
-													(char) (pieza.num + 1));
+						Pieza p = posicion.getPieza((char)(pieza.getLetra()+1), (char)(pieza.getNum()-1));
+						if (p != null && p.getBando() == Bando.NEGRO) {
+							if (esLegal (pieza.getLetra(), pieza.getNum(),
+											(char) (pieza.getLetra() - 1),
+											(char) (pieza.getNum() + 1))) {
+								pieza.anadirMov ((char) (pieza.getLetra() - 1),
+													(char) (pieza.getNum() + 1));
 							}
 						}
 					}
@@ -203,48 +207,48 @@ public class Logica {
 				}
 				// Peon negro
 				else {
-					if (posicion.esVacia (pieza.letra, (char) (pieza.num - 1))) {
-						if (esLegal (pieza.letra, pieza.num, pieza.letra,
-										(char) (pieza.num - 1))) {
-							pieza.anadirMov (pieza.letra,
-												(char) (pieza.num - 1));
+					if (posicion.esVacia (pieza.getLetra(), (char) (pieza.getNum() - 1))) {
+						if (esLegal (pieza.getLetra(), pieza.getNum(), pieza.getLetra(),
+										(char) (pieza.getNum() - 1))) {
+							pieza.anadirMov (pieza.getLetra(),
+												(char) (pieza.getNum() - 1));
 
 						}
-						if (pieza.num == '7'
-								&& posicion.esVacia (pieza.letra, (char) (pieza.num - 1))
-								&& posicion.esVacia (pieza.letra, (char) (pieza.num - 2))) {
-							if (esLegal (pieza.letra, pieza.num, pieza.letra,
-											(char) (pieza.num - 2))) {
-								pieza.anadirMov (pieza.letra,
-													(char) (pieza.num - 2));
+						if (pieza.getNum() == '7'
+								&& posicion.esVacia (pieza.getLetra(), (char) (pieza.getNum() - 1))
+								&& posicion.esVacia (pieza.getLetra(), (char) (pieza.getNum() - 2))) {
+							if (esLegal (pieza.getLetra(), pieza.getNum(), pieza.getLetra(),
+											(char) (pieza.getNum() - 2))) {
+								pieza.anadirMov (pieza.getLetra(),
+													(char) (pieza.getNum() - 2));
 							}
 						}
 					}
-					if (posicion.getAlPaso() != '\0' && pieza.num == '4'
-							&& Math.abs (pieza.letra - posicion.getAlPaso()) == 1) {
-						pieza.anadirMov (posicion.getAlPaso(), (char) (pieza.num - 1));
+					if (posicion.getAlPaso() != '\0' && pieza.getNum() == '4'
+							&& Math.abs (pieza.getLetra() - posicion.getAlPaso()) == 1) {
+						pieza.anadirMov (posicion.getAlPaso(), (char) (pieza.getNum() - 1));
 					}
 					try {
-						Pieza p = posicion.getPieza((char)(pieza.letra-1), (char)(pieza.num+1));
-						if (p != null && p.bando == Bando.NEGRO) {
-							if (esLegal (pieza.letra, pieza.num,
-											(char) (pieza.letra + 1),
-											(char) (pieza.num - 1))) {
-								pieza.anadirMov ((char) (pieza.letra + 1),
-													(char) (pieza.num - 1));
+						Pieza p = posicion.getPieza((char)(pieza.getLetra()-1), (char)(pieza.getNum()+1));
+						if (p != null && p.getBando() == Bando.NEGRO) {
+							if (esLegal (pieza.getLetra(), pieza.getNum(),
+											(char) (pieza.getLetra() + 1),
+											(char) (pieza.getNum() - 1))) {
+								pieza.anadirMov ((char) (pieza.getLetra() + 1),
+													(char) (pieza.getNum() - 1));
 							}
 						}
 					}
 					catch (ArrayIndexOutOfBoundsException e) {
 					}
 					try {
-						Pieza p = posicion.getPieza((char)(pieza.letra-1), (char)(pieza.num-1));
-						if (p != null && p.bando == Bando.NEGRO) {
-							if (esLegal (pieza.letra, pieza.num,
-											(char) (pieza.letra - 1),
-											(char) (pieza.num - 1))) {
-								pieza.anadirMov ((char) (pieza.letra - 1),
-													(char) (pieza.num - 1));
+						Pieza p = posicion.getPieza((char)(pieza.getLetra()-1), (char)(pieza.getNum()-1));
+						if (p != null && p.getBando() == Bando.NEGRO) {
+							if (esLegal (pieza.getLetra(), pieza.getNum(),
+											(char) (pieza.getLetra() - 1),
+											(char) (pieza.getNum() - 1))) {
+								pieza.anadirMov ((char) (pieza.getLetra() - 1),
+													(char) (pieza.getNum() - 1));
 							}
 						}
 					}
@@ -253,10 +257,10 @@ public class Logica {
 				}
 				break;
 			case 'C':
-				posLet = pieza.letra - 'a';
-				posNum = pieza.num - '1';
-				for (int i = 0; i < pieza.direcciones.length; i++) {
-					VectorDireccion v = pieza.direcciones[i];
+				posLet = pieza.getLetra() - 'a';
+				posNum = pieza.getNum() - '1';
+				for (int i = 0; i < pieza.getDirecciones().length; i++) {
+					VectorDireccion v = pieza.getDirecciones()[i];
 					boolean piezaEncontrada = false;
 					letI = posLet + v.getY ();
 					numI = posNum + v.getX ();
@@ -264,7 +268,7 @@ public class Logica {
 					try {
 						if (posicion.getPieza(l, n) == null) {
 
-							if (esLegal (pieza.letra, pieza.num, l, n))
+							if (esLegal (pieza.getLetra(), pieza.getNum(), l, n))
 								pieza.anadirMov (l, n);
 						}
 						else
@@ -274,7 +278,7 @@ public class Logica {
 					}
 					if (piezaEncontrada
 							&& Pieza.esBandoContrario (pieza, posicion.getPieza(l, n))
-							&& esLegal (pieza.letra, pieza.num, l, n)) {
+							&& esLegal (pieza.getLetra(), pieza.getNum(), l, n)) {
 						pieza.anadirMov (l, n);
 					}
 				}
@@ -283,10 +287,10 @@ public class Logica {
 			case 'D':
 			case 'A':
 			case 'T':
-				posLet = pieza.letra - 'a';
-				posNum = pieza.num - '1';
-				for (int i = 0; i < pieza.direcciones.length; i++) {
-					VectorDireccion v = pieza.direcciones[i];
+				posLet = pieza.getLetra() - 'a';
+				posNum = pieza.getNum() - '1';
+				for (int i = 0; i < pieza.getDirecciones().length; i++) {
+					VectorDireccion v = pieza.getDirecciones()[i];
 					boolean piezaEncontrada = false;
 
 					letI = posLet + v.getY ();
@@ -295,7 +299,7 @@ public class Logica {
 					try {
 						while (posicion.getPieza(l, n) == null) {
 							
-							if (esLegal (pieza.letra, pieza.num, l, n))
+							if (esLegal (pieza.getLetra(), pieza.getNum(), l, n))
 								pieza.anadirMov ((char) (letI + 'a'),
 													(char) (numI + '1'));
 							letI += v.getY ();
@@ -311,7 +315,7 @@ public class Logica {
 
 					if (piezaEncontrada
 							&& Pieza.esBandoContrario (pieza, posicion.getPieza(l, n))
-							&& esLegal (pieza.letra, pieza.num,
+							&& esLegal (pieza.getLetra(), pieza.getNum(),
 										(char) (letI + 'a'),
 										(char) (numI + '1'))) {
 						pieza.anadirMov ((char) (letI + 'a'),
@@ -323,12 +327,12 @@ public class Logica {
 				for (int i = -1; i <= 1; i++) {
 					for (int j = -1; j <= 1; j++) {
 						try {
-							char letDest = (char) (pieza.letra + i), numDest = (char) (pieza.num + j);
+							char letDest = (char) (pieza.getLetra() + i), numDest = (char) (pieza.getNum() + j);
 							if (j != 0 || i != 0) {
-								if (esLegal (pieza.letra, pieza.num, letDest, numDest)
+								if (esLegal (pieza.getLetra(), pieza.getNum(), letDest, numDest)
 									&& (posicion.esVacia (letDest, numDest) 
 									|| (!posicion.esVacia (letDest, numDest) 
-									&& posicion.getPieza(letDest, numDest).bando != pieza.bando))) {
+									&& posicion.getPieza(letDest, numDest).getBando() != pieza.getBando()))) {
 									pieza.anadirMov (letDest, numDest);
 								}
 							}
@@ -339,23 +343,23 @@ public class Logica {
 				}
 				if (posicion.getEnroqueCorto(posicion.getTurno())
 						&& !esCasillaAtacada (posicion.getKingPosition(posicion.getTurno()))
-						&& posicion.esVacia ((char) (pieza.letra + 1), pieza.num)
-						&& !esCasillaAtacada ((char) (pieza.letra + 1),
-												(pieza.num))
-						&& posicion.esVacia ((char) (pieza.letra + 2), pieza.num)
-						&& !esCasillaAtacada ((char) (pieza.letra + 2),
-												(pieza.num))) {
-					pieza.anadirMov ((char) (pieza.letra + 2), pieza.num);
+						&& posicion.esVacia ((char) (pieza.getLetra() + 1), pieza.getNum())
+						&& !esCasillaAtacada ((char) (pieza.getLetra() + 1),
+												(pieza.getNum()))
+						&& posicion.esVacia ((char) (pieza.getLetra() + 2), pieza.getNum())
+						&& !esCasillaAtacada ((char) (pieza.getLetra() + 2),
+												(pieza.getNum()))) {
+					pieza.anadirMov ((char) (pieza.getLetra() + 2), pieza.getNum());
 				}
 				if (posicion.getEnroqueLargo(posicion.getTurno())
 						&& !esCasillaAtacada (posicion.getKingPosition(posicion.getTurno()))
-						&& posicion.esVacia ((char) (pieza.letra - 1), pieza.num)
-						&& !esCasillaAtacada ((char) (pieza.letra - 1),
-												(pieza.num))
-						&& posicion.esVacia ((char) (pieza.letra - 2), pieza.num)
-						&& !esCasillaAtacada ((char) (pieza.letra - 2),
-												(pieza.num))) {
-					pieza.anadirMov ((char) (pieza.letra - 2), pieza.num);
+						&& posicion.esVacia ((char) (pieza.getLetra() - 1), pieza.getNum())
+						&& !esCasillaAtacada ((char) (pieza.getLetra() - 1),
+												(pieza.getNum()))
+						&& posicion.esVacia ((char) (pieza.getLetra() - 2), pieza.getNum())
+						&& !esCasillaAtacada ((char) (pieza.getLetra() - 2),
+												(pieza.getNum()))) {
+					pieza.anadirMov ((char) (pieza.getLetra() - 2), pieza.getNum());
 				}
 				break;
 		}
@@ -419,7 +423,7 @@ public class Logica {
 					}
 					Pieza p = posicion.getPieza((char)(letI + 'a'), (char)(numI + '1'));
 					if (p != null) {
-						if (Pieza.esBandoContrario (posicion.getTurno(), p) && p.tipo == 'C') {
+						if (Pieza.esBandoContrario (posicion.getTurno(), p) && p.getTipo() == 'C') {
 							return true;
 						}
 					}
@@ -441,7 +445,7 @@ public class Logica {
 			// Si no, ademas, si es un rey, y se encuentra en la casilla
 			// adyacente, tambien lo estara.
 			if (Pieza.esBandoContrario (posicion.getTurno(), piezaObjetivo)
-					&& (piezaObjetivo.tipo == 'D' || piezaObjetivo.tipo == 'T' || (numI == posNum + 1 && piezaObjetivo.tipo == 'R'))) {
+					&& (piezaObjetivo.getTipo() == 'D' || piezaObjetivo.getTipo() == 'T' || (numI == posNum + 1 && piezaObjetivo.getTipo() == 'R'))) {
 				return true;
 			}
 		}
@@ -456,7 +460,7 @@ public class Logica {
 				n--;
 			}
 			if (Pieza.esBandoContrario (posicion.getTurno(), piezaObjetivo)
-					&& (piezaObjetivo.tipo == 'D' || piezaObjetivo.tipo == 'T' || (numI == posNum - 1 && piezaObjetivo.tipo == 'R'))) {
+					&& (piezaObjetivo.getTipo() == 'D' || piezaObjetivo.getTipo() == 'T' || (numI == posNum - 1 && piezaObjetivo.getTipo() == 'R'))) {
 				return true;
 			}
 		}
@@ -471,7 +475,7 @@ public class Logica {
 				l--;
 			}
 			if (Pieza.esBandoContrario (posicion.getTurno(), piezaObjetivo)
-					&& (piezaObjetivo.tipo == 'D' || piezaObjetivo.tipo == 'T' || (letI == posLet - 1 && piezaObjetivo.tipo == 'R'))) {
+					&& (piezaObjetivo.getTipo() == 'D' || piezaObjetivo.getTipo() == 'T' || (letI == posLet - 1 && piezaObjetivo.getTipo() == 'R'))) {
 				return true;
 			}
 		}
@@ -486,7 +490,7 @@ public class Logica {
 				l++;
 			}
 			if (Pieza.esBandoContrario (posicion.getTurno(), piezaObjetivo)
-					&& (piezaObjetivo.tipo == 'D' || piezaObjetivo.tipo == 'T' || (letI == posLet + 1 && piezaObjetivo.tipo == 'R'))) {
+					&& (piezaObjetivo.getTipo() == 'D' || piezaObjetivo.getTipo() == 'T' || (letI == posLet + 1 && piezaObjetivo.getTipo() == 'R'))) {
 				return true;
 			}
 		}
@@ -502,8 +506,8 @@ public class Logica {
 				l--;
 			}
 			if (Pieza.esBandoContrario (posicion.getTurno(), piezaObjetivo)
-					&& (piezaObjetivo.tipo == 'D' || piezaObjetivo.tipo == 'A' || (numI == posNum - 1
-							&& letI == posLet - 1 && (piezaObjetivo.tipo == 'R' || (piezaObjetivo.tipo == 'P' && piezaObjetivo.bando == Bando.BLANCO))))) {
+					&& (piezaObjetivo.getTipo() == 'D' || piezaObjetivo.getTipo() == 'A' || (numI == posNum - 1
+							&& letI == posLet - 1 && (piezaObjetivo.getTipo() == 'R' || (piezaObjetivo.getTipo() == 'P' && piezaObjetivo.getBando() == Bando.BLANCO))))) {
 				return true;
 			}
 		}
@@ -519,8 +523,8 @@ public class Logica {
 				l++;
 			}
 			if (Pieza.esBandoContrario (posicion.getTurno(), piezaObjetivo)
-					&& (piezaObjetivo.tipo == 'D' || piezaObjetivo.tipo == 'A' || (numI == posNum - 1
-							&& letI == posLet + 1 && (piezaObjetivo.tipo == 'R' || (piezaObjetivo.tipo == 'P' && piezaObjetivo.bando == Bando.BLANCO))))) {
+					&& (piezaObjetivo.getTipo() == 'D' || piezaObjetivo.getTipo() == 'A' || (numI == posNum - 1
+							&& letI == posLet + 1 && (piezaObjetivo.getTipo() == 'R' || (piezaObjetivo.getTipo() == 'P' && piezaObjetivo.getBando() == Bando.BLANCO))))) {
 				return true;
 			}
 		}
@@ -536,8 +540,8 @@ public class Logica {
 				l--;
 			}
 			if (Pieza.esBandoContrario (posicion.getTurno(), piezaObjetivo)
-					&& (piezaObjetivo.tipo == 'D' || piezaObjetivo.tipo == 'A' || (numI == posNum + 1
-							&& letI == posLet - 1 && (piezaObjetivo.tipo == 'R' || (piezaObjetivo.tipo == 'P' && piezaObjetivo.bando == Bando.NEGRO))))) {
+					&& (piezaObjetivo.getTipo() == 'D' || piezaObjetivo.getTipo() == 'A' || (numI == posNum + 1
+							&& letI == posLet - 1 && (piezaObjetivo.getTipo() == 'R' || (piezaObjetivo.getTipo() == 'P' && piezaObjetivo.getBando() == Bando.NEGRO))))) {
 				return true;
 			}
 		}
@@ -553,8 +557,8 @@ public class Logica {
 				l++;
 			}
 			if (Pieza.esBandoContrario (posicion.getTurno(), piezaObjetivo)
-					&& (piezaObjetivo.tipo == 'D' || piezaObjetivo.tipo == 'A' || (numI == posNum + 1
-							&& letI == posLet + 1 && (piezaObjetivo.tipo == 'R' || (piezaObjetivo.tipo == 'P' && piezaObjetivo.bando == Bando.NEGRO))))) {
+					&& (piezaObjetivo.getTipo() == 'D' || piezaObjetivo.getTipo() == 'A' || (numI == posNum + 1
+							&& letI == posLet + 1 && (piezaObjetivo.getTipo() == 'R' || (piezaObjetivo.getTipo() == 'P' && piezaObjetivo.getBando() == Bando.NEGRO))))) {
 				return true;
 			}
 		}
@@ -627,51 +631,47 @@ public class Logica {
 		i = 0;
 		do {
 			// Buscamos la letra.
-			while ((i < piezaQueMueve.casillasValidas.size ())
-					&& (destinoLetra != piezaQueMueve.casillasValidas.get (i).getLetra())) {
+			while ((i < piezaQueMueve.getCasillasValidas().size ())
+					&& (destinoLetra != piezaQueMueve.getCasillasValidas().get (i).getLetra())) {
 				i++;
 				// Comprobamos si el numero de la letra encontrada coincide.
 			}
-			if (i < piezaQueMueve.casillasValidas.size ()) {
+			if (i < piezaQueMueve.getCasillasValidas().size ()) {
 				// Si se entra en el siguiente caso, es que el movimiento es
 				// valido
-				if (destinoNum == piezaQueMueve.casillasValidas.get (i).getLetra()) {
+				if (destinoNum == piezaQueMueve.getCasillasValidas().get (i).getLetra()) {
 					mov = new Movimiento ();
-					mov.origenLetra = origenLetra;
-					mov.origenNum = origenNum;
-					mov.destinoLetra = destinoLetra;
-					mov.destinoNum = destinoNum;
-					mov.numeroMovimiento = posicion.getNumeroMovimiento();
-					mov.bando = posicion.getTurno();
-					mov.tipoPieza = piezaQueMueve.tipo;
+					mov.setCasillaOrigen(new Casilla (origenLetra, origenNum));
+					mov.setCasillaDestino(new Casilla (destinoLetra, destinoNum));
+					mov.setNumeroMovimiento (posicion.getNumeroMovimiento());
+					mov.setBando (posicion.getTurno());
+					mov.setTipoPieza (piezaQueMueve.getTipo());
 
 					// Si se come ponemos el contador a 0
 					if (!posicion.esVacia (destinoLetra, destinoNum)) {
 						posicion.setContadorTablas(0);
 						hash.borrarTabla ();
-						mov.casillaComerLetra = destinoLetra;
-						mov.casillaComerNum = destinoNum;
-						mov.tipoPiezaComida = posicion.getPieza (destinoLetra,
-														destinoNum).tipo;
-						posicion.borrarPieza(mov.casillaComerLetra, mov.casillaComerNum);
+						mov.setCasillaComer (new Casilla (destinoLetra, destinoNum));
+						mov.setTipoPiezaComida (posicion.getPieza (destinoLetra,
+														destinoNum).getTipo());
+						posicion.borrarPieza(mov.getCasillaComer());
 					}
 
 					// Se hacen los calculos especiales si se trata de un peon
-					if (piezaQueMueve.tipo == 'P') {
+					if (piezaQueMueve.getTipo() == 'P') {
 						// Se borra la pieza correspondiente si se come al paso
 						if (Math.abs (destinoLetra - origenLetra) == 1
 								&& posicion.esVacia (destinoLetra, destinoNum)) {
-							mov.tipoPiezaComida = posicion.getPieza (destinoLetra,
-															origenNum).tipo;
-							mov.casillaComerLetra = destinoLetra;
-							mov.casillaComerNum = origenNum;
-							posicion.borrarPieza(mov.casillaComerLetra, mov.casillaComerNum);
+							mov.setTipoPiezaComida (posicion.getPieza (destinoLetra,
+															origenNum).getTipo());
+							mov.setCasillaComer (new Casilla (destinoLetra, origenNum));
+							posicion.borrarPieza(mov.getCasillaComer());
 						}
 						// Se establece la variable alPaso a su valor
 						// correspondiente
 						if (Math.abs (destinoNum - origenNum) == 2) {
 							posicion.setAlPaso(origenLetra);
-							mov.alPaso = posicion.getAlPaso();
+							mov.setAlPaso (posicion.getAlPaso());
 						}
 						else {
 							posicion.setAlPaso('\0');
@@ -682,15 +682,15 @@ public class Logica {
 							// mostrarDialogoCoronacion ();
 							// }
 							piezaQueMueve = new Pieza (
-									piezaQueMueve.bando, coronar);
+									piezaQueMueve.getBando(), coronar);
 
-							mov.coronacion = coronar;
+							mov.setCoronacion (coronar);
 						}
 						posicion.setContadorTablas(0);
 						hash.borrarTabla ();
 					}
 					// Se hacen los calculos especiales si se trata de un rey
-					if (piezaQueMueve.tipo == 'R') {
+					if (piezaQueMueve.getTipo() == 'R') {
 						// Movemos las torres en caso de enroque
 						if ((destinoLetra - origenLetra) == 2) {
 							Pieza torre = posicion.getPieza ('h', origenNum);
@@ -706,11 +706,13 @@ public class Logica {
 						}
 					}
 
-					mov.contadorTablas = posicion.getContadorTablas();
-					mov.enroque[0][0] = posicion.getEnroqueCorto(Bando.BLANCO);
-					mov.enroque[0][1] = posicion.getEnroqueLargo(Bando.BLANCO);
-					mov.enroque[1][0] = posicion.getEnroqueLargo(Bando.NEGRO);
-					mov.enroque[1][1] = posicion.getEnroqueLargo(Bando.NEGRO);
+					mov.setContadorTablas (posicion.getContadorTablas());
+					boolean[][] enroque = new boolean[2][2];
+					enroque[0][0] = posicion.getEnroqueCorto(Bando.BLANCO);
+					enroque[0][1] = posicion.getEnroqueLargo(Bando.BLANCO);
+					enroque[1][0] = posicion.getEnroqueCorto(Bando.NEGRO);
+					enroque[1][1] = posicion.getEnroqueLargo(Bando.NEGRO);
+					mov.setEnroque(enroque);
 					if (posicion.getTurno() == Bando.NEGRO)
 						posicion.addNumeroMovimiento();
 					posicion.setTurno ();
@@ -721,12 +723,12 @@ public class Logica {
 					calcularMovimientos ();
 
 					if (esCasillaAtacada (posicion.getKingPosition(posicion.getTurno()))) {
-						mov.jaque = true;
+						mov.setJaque (true);
 					}
 					else {
-						mov.jaque = false;
+						mov.setJaque (false);
 					}
-					mov.finPartida = esFinPartida ();
+					mov.setFinPartida (esFinPartida ());
 
 					hash.insertar (posicion.getClavePosicion());
 					movimientos.add (mov);
@@ -775,12 +777,12 @@ public class Logica {
 				pieza = posicion.getPieza(i, j);
 				if (pieza != null) {
 					if (posibleMatInsuf) {
-						if (pieza.tipo != 'R') {
+						if (pieza.getTipo() != 'R') {
 							fin2 = true;
 						}
 					}
 					else {
-						switch (pieza.tipo) {
+						switch (pieza.getTipo()) {
 							case 'P':
 							case 'D':
 							case 'T':
@@ -809,7 +811,7 @@ public class Logica {
 			while (j <= '8' && !fin) {
 				pieza = posicion.getPieza(i, j);
 				if ((pieza != null) && (!Pieza.esBandoContrario (posicion.getTurno(), pieza))
-						&& (!pieza.casillasValidas.isEmpty ())) {
+						&& (!pieza.getCasillasValidas().isEmpty ())) {
 					fin = true;
 				}
 				j++;
