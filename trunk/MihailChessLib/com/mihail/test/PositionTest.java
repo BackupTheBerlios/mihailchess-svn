@@ -9,10 +9,12 @@
  */
 package com.mihail.test;
 
-import junit.framework.TestCase;
-
 import com.mihail.chess.Pieza;
 import com.mihail.chess.Posicion;
+
+import junit.framework.TestCase;
+
+import static com.mihail.chess.Logica.Bando;
 
 public class PositionTest extends TestCase {
 
@@ -44,7 +46,7 @@ public class PositionTest extends TestCase {
 	 */
 	public void testSetTurno() {
 		Posicion p = new Posicion();
-		int turno = p.getTurno();
+		Bando turno = p.getTurno();
 		p.setTurno();
 		p.setTurno();
 		assertEquals(turno, p.getTurno());
@@ -55,10 +57,10 @@ public class PositionTest extends TestCase {
 	 */
 	public void testSetTurnoInt() {
 		Posicion p = new Posicion();
-		p.setTurno(Posicion.BLANCO);
-		assertEquals(Posicion.BLANCO, p.getTurno());
-		p.setTurno(Posicion.NEGRO);
-		assertEquals(Posicion.NEGRO, p.getTurno());
+		p.setTurno(Bando.BLANCO);
+		assertEquals(Bando.BLANCO, p.getTurno());
+		p.setTurno(Bando.NEGRO);
+		assertEquals(Bando.NEGRO, p.getTurno());
 	}
 
 	/*
@@ -66,19 +68,19 @@ public class PositionTest extends TestCase {
 	 */
 	public void testSetEnroqueCorto() {
 		Posicion p = new Posicion();
-		p.setPieza(new Pieza(true, 'R'), 'e', '1');
-		p.setEnroqueCorto(Posicion.BLANCO, true);
-		assertEquals(false, p.getEnroqueCorto(Posicion.BLANCO));
-		p.setPieza(new Pieza(true, 'T'), 'h', '1');
-		p.setEnroqueCorto(Posicion.BLANCO, true);
-		assertEquals(true, p.getEnroqueCorto(Posicion.BLANCO));
+		p.setPieza(new Pieza(Bando.BLANCO, 'R'), 'e', '1');
+		p.setEnroqueCorto(Bando.BLANCO, true);
+		assertEquals(false, p.getEnroqueCorto(Bando.BLANCO));
+		p.setPieza(new Pieza(Bando.BLANCO, 'T'), 'h', '1');
+		p.setEnroqueCorto(Bando.BLANCO, true);
+		assertEquals(true, p.getEnroqueCorto(Bando.BLANCO));
 		
-		p.setPieza(new Pieza(false, 'R'), 'e', '8');
-		p.setEnroqueCorto(Posicion.NEGRO, true);
-		assertEquals(false, p.getEnroqueCorto(Posicion.NEGRO));
-		p.setPieza(new Pieza(false, 'T'), 'h', '8');
-		p.setEnroqueCorto(Posicion.NEGRO, true);
-		assertEquals(true, p.getEnroqueCorto(Posicion.NEGRO));
+		p.setPieza(new Pieza(Bando.NEGRO, 'R'), 'e', '8');
+		p.setEnroqueCorto(Bando.NEGRO, true);
+		assertEquals(false, p.getEnroqueCorto(Bando.NEGRO));
+		p.setPieza(new Pieza(Bando.NEGRO, 'T'), 'h', '8');
+		p.setEnroqueCorto(Bando.NEGRO, true);
+		assertEquals(true, p.getEnroqueCorto(Bando.NEGRO));
 		System.out.println(p.getFEN());
 	}
 
@@ -87,19 +89,19 @@ public class PositionTest extends TestCase {
 	 */
 	public void testSetEnroqueLargo() {
 		Posicion p = new Posicion();
-		p.setPieza(new Pieza(true, 'R'), 'e', '1');
-		p.setEnroqueLargo(Posicion.BLANCO, true);
-		assertEquals(false, p.getEnroqueLargo(Posicion.BLANCO));
-		p.setPieza(new Pieza(true, 'T'), 'a', '1');
-		p.setEnroqueLargo(Posicion.BLANCO, true);
-		assertEquals(true, p.getEnroqueLargo(Posicion.BLANCO));
+		p.setPieza(new Pieza(Bando.BLANCO, 'R'), 'e', '1');
+		p.setEnroqueLargo(Bando.BLANCO, true);
+		assertEquals(false, p.getEnroqueLargo(Bando.BLANCO));
+		p.setPieza(new Pieza(Bando.BLANCO, 'T'), 'a', '1');
+		p.setEnroqueLargo(Bando.BLANCO, true);
+		assertEquals(true, p.getEnroqueLargo(Bando.BLANCO));
 		
-		p.setPieza(new Pieza(false, 'R'), 'e', '8');
-		p.setEnroqueLargo(Posicion.NEGRO, true);
-		assertEquals(false, p.getEnroqueLargo(Posicion.NEGRO));
-		p.setPieza(new Pieza(false, 'T'), 'a', '8');
-		p.setEnroqueLargo(Posicion.NEGRO, true);
-		assertEquals(true, p.getEnroqueLargo(Posicion.NEGRO));
+		p.setPieza(new Pieza(Bando.NEGRO, 'R'), 'e', '8');
+		p.setEnroqueLargo(Bando.NEGRO, true);
+		assertEquals(false, p.getEnroqueLargo(Bando.NEGRO));
+		p.setPieza(new Pieza(Bando.NEGRO, 'T'), 'a', '8');
+		p.setEnroqueLargo(Bando.NEGRO, true);
+		assertEquals(true, p.getEnroqueLargo(Bando.NEGRO));
 		System.out.println(p.getFEN());
 	}
 	
@@ -136,10 +138,10 @@ public class PositionTest extends TestCase {
 	 */
 	public void testGetClavePosicion() {
 		Posicion p = new Posicion();
-		p.setPieza(new Pieza(true, 'C'), 'd', '4');
+		p.setPieza(new Pieza(Bando.BLANCO, 'C'), 'd', '4');
 		int clave = p.getClavePosicion();
 		p.borrarPieza('d', '4');
-		p.setPieza(new Pieza(true, 'C'), 'd', '4');
+		p.setPieza(new Pieza(Bando.BLANCO, 'C'), 'd', '4');
 		assertEquals(clave, p.getClavePosicion());
 	}
 
@@ -149,16 +151,16 @@ public class PositionTest extends TestCase {
 	public void testSetAlPaso() {
 		Posicion p = new Posicion();
 		// Comprobamos que no se pone siempre alPaso
-		p.setPieza(new Pieza(true, 'P'), 'a', '1');
+		p.setPieza(new Pieza(Bando.BLANCO, 'P'), 'a', '1');
 		p.setAlPaso('a');
 		assertEquals(p.getAlPaso(), 0);
 		// Comprobamos que al poner un peon negro en una casilla de alPaso, la funcion deja
-		p.setPieza(new Pieza(false, 'P'), 'h', '5');
+		p.setPieza(new Pieza(Bando.NEGRO, 'P'), 'h', '5');
 		p.setAlPaso('h');
 		assertEquals(p.getAlPaso(), 'h');
 		// Probamos lo mismo pero con un peon blanco
-		p.setPieza(new Pieza(true, 'P'), 'h', '4');
-		p.setTurno(Posicion.NEGRO);
+		p.setPieza(new Pieza(Bando.BLANCO, 'P'), 'h', '4');
+		p.setTurno(Bando.NEGRO);
 		p.setAlPaso('h');
 		assertEquals(p.getAlPaso(), 'h');
 	}

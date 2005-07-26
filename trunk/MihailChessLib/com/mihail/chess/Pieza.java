@@ -2,6 +2,8 @@ package com.mihail.chess;
 
 import java.util.*;
 
+import static com.mihail.chess.Logica.Bando;
+
 /**
  * Esta clase define un objeto Pieza y sus caracteristicas: bando, tipo de pieza
  * (peon, caballo, alfil, torre, dama, rey), posicion en la que se encuentra y
@@ -20,7 +22,7 @@ public final class Pieza {
 	 * Este atributo indica el bando de la pieza (blanco o negro): true -> bando
 	 * blanco false -> bando negro
 	 */
-	public boolean bandoBlanco;
+	public Bando bando;
 
 	/**
 	 * Este atributo indica el tipo de pieza que es: <BR>
@@ -66,8 +68,8 @@ public final class Pieza {
 	 *            Es el tipo de la pieza {P,C,A,T,D,R}
 	 * @see #tipo
 	 */
-	public Pieza (boolean bando, char claseDePieza) {
-		bandoBlanco = bando;
+	public Pieza (Bando ban, char claseDePieza) {
+		bando = bando;
 		tipo = claseDePieza;
 		letra = '\0';
 		num = '\0';
@@ -133,7 +135,7 @@ public final class Pieza {
 	 *         false cuando sean del mismo bando.
 	 */
 	public final static boolean esBandoContrario (Pieza pieza1, Pieza pieza2) {
-		return ((pieza1.bandoBlanco && !pieza2.bandoBlanco) || (!pieza1.bandoBlanco && pieza2.bandoBlanco));
+		return pieza1.bando != pieza2.bando;
 	}
 
 	/**
@@ -147,13 +149,8 @@ public final class Pieza {
 	 * @return Devuelve true cuando pieza sea del bando contrario al que le toca
 	 *         mover, false si es del mismo bando
 	 */
-	public final static boolean esBandoContrario (int turno, Pieza pieza) {
-		if (turno == Tablero.BLANCO) {
-			return (!pieza.bandoBlanco);
-		}
-		else {
-			return (pieza.bandoBlanco);
-		}
+	public final static boolean esBandoContrario (Bando turno, Pieza pieza) {
+		return turno != pieza.bando;
 	}
 
 	/**

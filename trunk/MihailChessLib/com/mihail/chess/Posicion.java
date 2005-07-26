@@ -1,20 +1,20 @@
 package com.mihail.chess;
 
-public class Posicion {
+import static com.mihail.chess.Logica.Bando;
 
-	public static enum Bando {
-		Blanco, Negro
-	}
+import com.mihail.chess.Logica.Bando;
+
+public class Posicion {
 
 	/**
 	 * Constante que representa al bando blanco.
 	 */
-	public final static int BLANCO = 0;
+	// public final static int BLANCO = 0;
 
 	/**
 	 * Constante que representa al bando negro.
 	 */
-	public final static int NEGRO = 1;
+	// public final static int NEGRO = 1;
 
 	/**
 	 * Constante que representa la posición inicial en el tablero.
@@ -33,7 +33,7 @@ public class Posicion {
 	 * Este atributo indica a quien le toca mover. Vale BLANCO cuando mueven
 	 * blancas y NEGRO cuando mueven negras.
 	 */
-	private int turno;
+	private Bando turno;
 
 	/**
 	 * Este atributo indica el numero de movimiento por el que va la partida.
@@ -116,7 +116,7 @@ public class Posicion {
 	 * Convierte el tipo de pieza expresado en castellano (P, C, A, etc.) al
 	 * ingles.
 	 * 
-	 * @param c
+	 * @param t
 	 *            Caracter que indica el tipo de pieza en castellano.
 	 * @return Tipo de pieza en ingles, es decir: <BR>
 	 *         P -> P <BR>
@@ -153,11 +153,11 @@ public class Posicion {
 	 *            Es el booleano en cuestion.
 	 * @return 0 si el turno es blanco y 1 si el turno es negro
 	 */
-	private final static int bandoToInt(boolean c) {
-		if (c) {
-			return BLANCO;
+	private final static int bandoToInt(Bando c) {
+		if (c == Bando.BLANCO) {
+			return 0;
 		}
-		return NEGRO;
+		return 1;
 	}
 
 	/**
@@ -210,7 +210,7 @@ public class Posicion {
 				else {
 					if (cont > 0)
 						cad += cont;
-					if (p.bandoBlanco)
+					if (p.bando == Bando.BLANCO)
 						cad += tipoToEnglish(p.tipo);
 					else
 						cad += (Character.toLowerCase(tipoToEnglish(p.tipo)));
@@ -224,7 +224,7 @@ public class Posicion {
 			cont = 0;
 		}
 
-		if (turno == BLANCO)
+		if (turno == Bando.BLANCO)
 			cad += " w";
 		else
 			cad += " b";
@@ -275,51 +275,51 @@ public class Posicion {
 		for (int i = 0; i < FEN[0].length(); i++) {
 			switch (FEN[0].charAt(i)) {
 			case 'P':
-				setPieza(new Pieza(true, 'P'), let, num);
+				setPieza(new Pieza(Bando.BLANCO, 'P'), let, num);
 				let++;
 				break;
 			case 'p':
-				setPieza(new Pieza(false, 'P'), let, num);
+				setPieza(new Pieza(Bando.NEGRO, 'P'), let, num);
 				let++;
 				break;
 			case 'N':
-				setPieza(new Pieza(true, 'C'), let, num);
+				setPieza(new Pieza(Bando.BLANCO, 'C'), let, num);
 				let++;
 				break;
 			case 'n':
-				setPieza(new Pieza(false, 'C'), let, num);
+				setPieza(new Pieza(Bando.NEGRO, 'C'), let, num);
 				let++;
 				break;
 			case 'B':
-				setPieza(new Pieza(true, 'A'), let, num);
+				setPieza(new Pieza(Bando.BLANCO, 'A'), let, num);
 				let++;
 				break;
 			case 'b':
-				setPieza(new Pieza(false, 'A'), let, num);
+				setPieza(new Pieza(Bando.NEGRO, 'A'), let, num);
 				let++;
 				break;
 			case 'R':
-				setPieza(new Pieza(true, 'T'), let, num);
+				setPieza(new Pieza(Bando.BLANCO, 'T'), let, num);
 				let++;
 				break;
 			case 'r':
-				setPieza(new Pieza(false, 'T'), let, num);
+				setPieza(new Pieza(Bando.NEGRO, 'T'), let, num);
 				let++;
 				break;
 			case 'Q':
-				setPieza(new Pieza(true, 'D'), let, num);
+				setPieza(new Pieza(Bando.BLANCO, 'D'), let, num);
 				let++;
 				break;
 			case 'q':
-				setPieza(new Pieza(false, 'D'), let, num);
+				setPieza(new Pieza(Bando.NEGRO, 'D'), let, num);
 				let++;
 				break;
 			case 'K':
-				setPieza(new Pieza(true, 'R'), let, num);
+				setPieza(new Pieza(Bando.BLANCO, 'R'), let, num);
 				let++;
 				break;
 			case 'k':
-				setPieza(new Pieza(false, 'R'), let, num);
+				setPieza(new Pieza(Bando.NEGRO, 'R'), let, num);
 				let++;
 				break;
 			case '/':
@@ -340,9 +340,9 @@ public class Posicion {
 			}
 		}
 		if (FEN[1].charAt(0) == 'w') {
-			setTurno(0);
+			setTurno(Bando.BLANCO);
 		} else {
-			setTurno(1);
+			setTurno(Bando.NEGRO);
 		}
 		for (int i = 0; i <= 1; i++) {
 			for (int j = 0; j <= 1; j++) {
@@ -353,16 +353,16 @@ public class Posicion {
 			for (int i = 0; i < FEN[2].length(); i++) {
 				switch (FEN[2].charAt(i)) {
 				case 'K':
-					setEnroqueCorto(Posicion.BLANCO, true);
+					setEnroqueCorto(Bando.BLANCO, true);
 					break;
 				case 'Q':
-					setEnroqueLargo(Posicion.BLANCO, true);
+					setEnroqueLargo(Bando.BLANCO, true);
 					break;
 				case 'k':
-					setEnroqueCorto(Posicion.NEGRO, true);
+					setEnroqueCorto(Bando.NEGRO, true);
 					break;
 				case 'q':
-					setEnroqueLargo(Posicion.NEGRO, true);
+					setEnroqueLargo(Bando.NEGRO, true);
 					break;
 				}
 			}
@@ -395,8 +395,14 @@ public class Posicion {
 	 * @return True si el enroque corto puede realizarse, false en caso
 	 *         contrario.
 	 */
-	public boolean getEnroqueCorto(int c) {
-		return enroque[c][0];
+	public boolean getEnroqueCorto(Bando c) {
+		switch (c) {
+		case BLANCO:
+			return enroque[0][0];
+		case NEGRO:
+			return enroque[1][0];
+		}
+		throw new AssertionError("El Bando solo puede ser BLANCO o NEGRO: " + this);
 	}
 
 	/**
@@ -407,8 +413,14 @@ public class Posicion {
 	 * @return True si el enroque largo puede realizarse, false en caso
 	 *         contrario.
 	 */
-	public boolean getEnroqueLargo(int c) {
-		return enroque[c][1];
+	public boolean getEnroqueLargo(Bando c) {
+		switch (c) {
+		case BLANCO:
+			return enroque[0][1];
+		case NEGRO:
+			return enroque[1][1];
+		}
+		throw new AssertionError("El Bando solo puede ser BLANCO o NEGRO: " + this);
 	}
 
 	/**
@@ -431,7 +443,7 @@ public class Posicion {
 	 * 
 	 * @return Devuelve el valor del turno (0 -> blancas, 1 -> negras)
 	 */
-	public int getTurno() {
+	public Bando getTurno() {
 		return turno;
 	}
 
@@ -440,10 +452,10 @@ public class Posicion {
 	 * viceversa.
 	 */
 	public void setTurno() {
-		if (turno == BLANCO) {
-			turno = NEGRO;
+		if (turno == Bando.BLANCO) {
+			turno = Bando.NEGRO;
 		} else {
-			turno = BLANCO;
+			turno = Bando.BLANCO;
 		}
 	}
 
@@ -454,28 +466,39 @@ public class Posicion {
 	 *            BLANCO -> blancas <BR>
 	 *            NEGRO -> negras
 	 */
-	public void setTurno(int t) {
+	public void setTurno(Bando t) {
 		turno = t;
 	}
 
-	public boolean setEnroqueCorto(int b, boolean c) {
+	public boolean setEnroqueCorto(Bando b, boolean c) {
 		if(!c) {
-			enroque[b][0] = c;
+			int x;
+			switch (b) {
+			case BLANCO:
+				x = 0;
+				break;
+			case NEGRO:
+				x = 1;
+				break;
+			default:
+				throw new AssertionError("El Bando solo puede ser BLANCO o NEGRO: " + this);
+			}
+			enroque[x][0] = c;
 			return true;
 		}
-		if (b == BLANCO) {
+		if (b == Bando.BLANCO) {
 			Pieza p = getPieza('h', '1');
-			if (p != null && kingPosition[BLANCO].letra == 'e'
-					&& kingPosition[BLANCO].numero == '1' && p.bandoBlanco
+			if (p != null && kingPosition[bandoToInt(Bando.BLANCO)].getLetra() == 'e'
+					&& kingPosition[bandoToInt(Bando.BLANCO)].getNumero() == '1' && p.bando == Bando.BLANCO
 					&& p.tipo == 'T') {
 				enroque[0][0] = c;
 				return true;
 			} else
 				return false;
-		} else if (b == NEGRO) {
+		} else if (b == Bando.NEGRO) {
 			Pieza p = getPieza('h', '8');
-			if (p != null && kingPosition[NEGRO].letra == 'e'
-					&& kingPosition[NEGRO].numero == '8' && !p.bandoBlanco
+			if (p != null && kingPosition[bandoToInt(Bando.NEGRO)].getLetra() == 'e'
+					&& kingPosition[bandoToInt(Bando.NEGRO)].getNumero() == '8' && p.bando == Bando.NEGRO
 					&& p.tipo == 'T') {
 				enroque[1][0] = c;
 				return true;
@@ -485,24 +508,35 @@ public class Posicion {
 		return false;
 	}
 
-	public boolean setEnroqueLargo(int b, boolean c) {
+	public boolean setEnroqueLargo(Bando b, boolean c) {
 		if(!c) {
-			enroque[b][1] = c;
+			int x;
+			switch (b) {
+			case BLANCO:
+				x = 0;
+				break;
+			case NEGRO:
+				x = 1;
+				break;
+			default:
+				throw new AssertionError("El Bando solo puede ser BLANCO o NEGRO: " + this);
+			}
+			enroque[x][1] = c;
 			return true;
 		}
-		if (b == BLANCO) {
+		if (b == Bando.BLANCO) {
 			Pieza p = getPieza('a', '1');
-			if (p != null && kingPosition[BLANCO].letra == 'e'
-					&& kingPosition[BLANCO].numero == '1' && p.bandoBlanco
+			if (p != null && kingPosition[bandoToInt(Bando.BLANCO)].getLetra() == 'e'
+					&& kingPosition[0].getNumero() == '1' && p.bando == Bando.BLANCO
 					&& p.tipo == 'T') {
 				enroque[0][1] = c;
 				return true;
 			} else
 				return false;
-		} else if (b == NEGRO) {
+		} else if (b == Bando.NEGRO) {
 			Pieza p = getPieza('a', '8');
-			if (p != null && kingPosition[NEGRO].letra == 'e'
-					&& kingPosition[NEGRO].numero == '8' && !p.bandoBlanco
+			if (p != null && kingPosition[bandoToInt(Bando.NEGRO)].getLetra() == 'e'
+					&& kingPosition[bandoToInt(Bando.NEGRO)].getNumero() == '8' && p.bando == Bando.NEGRO
 					&& p.tipo == 'T') {
 				enroque[1][1] = c;
 				return true;
@@ -536,11 +570,11 @@ public class Posicion {
 		pieza.num = num;
 		tabla[num - '1'][letra - 'a'] = pieza;
 		clavePosicion = clavePosicion
-				^ indices[bandoToInt(pieza.bandoBlanco)][tipoToInt(pieza.tipo)][num - '1'][letra - 'a'];
+				^ indices[bandoToInt(pieza.bando)][tipoToInt(pieza.tipo)][num - '1'][letra - 'a'];
 
 		if (pieza.tipo == 'R') {
-			kingPosition[bandoToInt(pieza.bandoBlanco)].letra = pieza.letra;
-			kingPosition[bandoToInt(pieza.bandoBlanco)].numero = pieza.num;
+			kingPosition[bandoToInt(pieza.bando)].setLetra(pieza.letra);
+			kingPosition[bandoToInt(pieza.bando)].setNumero(pieza.num);
 		}
 
 	}
@@ -562,33 +596,33 @@ public class Posicion {
 		// o una torre
 		if (p != null) {
 			if (p.tipo == 'R') {
-				if (p.bandoBlanco) {
+				if (p.bando == Bando.BLANCO) {
 					enroque[0][0] = false;
 					enroque[0][1] = false;
-					kingPosition[BLANCO].letra = '\0';
-					kingPosition[BLANCO].numero = '\0';
+					kingPosition[bandoToInt(Bando.BLANCO)].setLetra ('\0');
+					kingPosition[bandoToInt(Bando.BLANCO)].setNumero ('\0');
 				} else {
 					enroque[1][0] = false;
 					enroque[1][1] = false;
-					kingPosition[NEGRO].letra = '\0';
-					kingPosition[NEGRO].numero = '\0';
+					kingPosition[bandoToInt(Bando.NEGRO)].setLetra ('\0');
+					kingPosition[bandoToInt(Bando.NEGRO)].setNumero ('\0');
 				}
 			} else if (p.tipo == 'T') {
-				if (p.letra == 'a' && p.num == '1' && p.bandoBlanco)
+				if (p.letra == 'a' && p.num == '1' && p.bando == Bando.BLANCO)
 					enroque[0][1] = false;
-				else if (p.letra == 'h' && p.num == '1' && p.bandoBlanco)
+				else if (p.letra == 'h' && p.num == '1' && p.bando == Bando.BLANCO)
 					enroque[0][0] = false;
-				else if (p.letra == 'a' && p.num == '8' && !p.bandoBlanco)
+				else if (p.letra == 'a' && p.num == '8' && p.bando == Bando.NEGRO)
 					enroque[1][1] = false;
-				else if (p.letra == 'h' && p.num == '8' && !p.bandoBlanco)
+				else if (p.letra == 'h' && p.num == '8' && p.bando == Bando.NEGRO)
 					enroque[1][0] = false;
 			} else if (p.tipo == 'P') {
-				if (letra == alPaso && (p.bandoBlanco && num == '4')
-						|| (!p.bandoBlanco && num == '5'))
+				if (letra == alPaso && (p.bando == Bando.BLANCO && num == '4')
+						|| (p.bando == Bando.NEGRO && num == '5'))
 					alPaso = 0;
 			}
 			clavePosicion = clavePosicion
-					^ indices[bandoToInt(p.bandoBlanco)][tipoToInt(p.tipo)][iNum][iLetra];
+					^ indices[bandoToInt(p.bando)][tipoToInt(p.tipo)][iNum][iLetra];
 			tabla[num - '1'][letra - 'a'] = null;
 		}
 	}
@@ -636,12 +670,12 @@ public class Posicion {
 		}
 		boolean encontrado = false;
 		Pieza p;
-		if(this.turno==NEGRO) {
+		if(this.turno==Bando.NEGRO) {
 			p = getPieza(alPaso, '4');
-			encontrado = p != null && p.bandoBlanco && p.tipo == 'P';
+			encontrado = p != null && p.bando == Bando.BLANCO && p.tipo == 'P';
 		} else {
 			p = getPieza(alPaso, '5');
-			encontrado = p != null && !p.bandoBlanco && p.tipo == 'P';
+			encontrado = p != null && p.bando == Bando.NEGRO && p.tipo == 'P';
 		}
 		if (encontrado)
 			this.alPaso = alPaso;
@@ -681,8 +715,8 @@ public class Posicion {
 	/**
 	 * @return Returns the kingPosition.
 	 */
-	public Casilla getKingPosition(int color) {
-		return kingPosition[color];
+	public Casilla getKingPosition(Bando color) {
+		return kingPosition[bandoToInt(color)];
 	}
 
 	/**
@@ -698,8 +732,8 @@ public class Posicion {
 	protected void setPiezaInternal(Pieza p, char letra, char num) {
 		tabla[num - '1'][letra - 'a'] = p;
 		if (p.tipo == 'R') {
-			kingPosition[bandoToInt(p.bandoBlanco)].letra = p.letra;
-			kingPosition[bandoToInt(p.bandoBlanco)].numero = p.num;
+			kingPosition[bandoToInt(p.bando)].setLetra (p.letra);
+			kingPosition[bandoToInt(p.bando)].setNumero (p.num);
 		}
 	}
 }

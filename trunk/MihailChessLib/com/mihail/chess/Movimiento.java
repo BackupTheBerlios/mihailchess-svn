@@ -1,4 +1,6 @@
 package com.mihail.chess;
+
+import static com.mihail.chess.Logica.Bando;
 /**
  * Esta clase define un objeto Movimiento, que guarda informacion sobre el
  * movimiento que se realiza y sobre el estado de la partida en ese momento (qué
@@ -43,7 +45,7 @@ public final class Movimiento {
 	 * @see Logica#BLANCO
 	 * @see Logica#NEGRO
 	 */
-	public int bando;
+	public Bando bando;
 
 	/**
 	 * Este atributo indica el tipo de pieza que es: {P,C,A,T,D,R}

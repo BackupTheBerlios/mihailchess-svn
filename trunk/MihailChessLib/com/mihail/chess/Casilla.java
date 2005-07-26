@@ -10,8 +10,9 @@
 package com.mihail.chess;
 
 public class Casilla {
-	public char letra;
-	public char numero;
+	
+	private char letra;
+	private char numero;
 	
 	public Casilla() {
 		this.letra = 0;
@@ -29,5 +30,21 @@ public class Casilla {
 			return c.letra == letra && c.numero == numero;
 		}
 		return false;
+	}
+
+	public char getLetra() {
+		return letra;
+	}
+
+	public void setLetra(char letra) {
+		this.letra = letra;
+	}
+
+	public char getNumero() {
+		return numero;
+	}
+
+	public void setNumero(char numero) {
+		this.numero = numero;
 	}
 }
