@@ -341,23 +341,20 @@ public class Logica {
 	 * @return Devuelve un booleano indicando si es una casilla atacada o no
 	 */
 	private boolean esCasillaAtacada (char letra, char num) {
-		Pieza piezaObjetivo;
-		int posNum = num - '1', posLet = letra - 'a';
-		int letI, numI;
 		// Primero miro las casillas
 		// a salto de caballo. Despues, las verticales, horizontales y
 		// diagonales.
 
 		// Casillas a salto de caballo
-		VectorDireccion [] dir = new VectorDireccion[8];
-		dir[0] = new VectorDireccion (1, 2);
-		dir[1] = new VectorDireccion (-1, 2);
-		dir[2] = new VectorDireccion (2, 1);
-		dir[3] = new VectorDireccion (2, -1);
-		dir[4] = new VectorDireccion (1, -2);
-		dir[5] = new VectorDireccion (-1, -2);
-		dir[6] = new VectorDireccion (-2, 1);
-		dir[7] = new VectorDireccion (-2, -1);
+		ArrayList<VectorDireccion> dir = new ArrayList<VectorDireccion>();
+		dir.add(new VectorDireccion (1, 2));
+		dir.add(new VectorDireccion (-1, 2));
+		dir.add(new VectorDireccion (2, 1));
+		dir.add(new VectorDireccion (2, -1));
+		dir.add(new VectorDireccion (1, -2));
+		dir.add(new VectorDireccion (-1, -2));
+		dir.add(new VectorDireccion (-2, 1));
+		dir.add(new VectorDireccion (-2, -1));
 		for(VectorDireccion v: dir) {
 			try {
 				Pieza p = posicion.getPieza((char)(letra + v.getX()), (char)(num + v.getY()));
@@ -368,10 +365,11 @@ public class Logica {
 				}
 			} catch(ArrayIndexOutOfBoundsException e) {}
 		}
-		dir[0] = new VectorDireccion (1, 0);
-		dir[1] = new VectorDireccion (-1, 0);
-		dir[2] = new VectorDireccion (0, 1);
-		dir[3] = new VectorDireccion (0, -1);
+		dir.clear();
+		dir.add(new VectorDireccion (1, 0));
+		dir.add(new VectorDireccion (-1, 0));
+		dir.add(new VectorDireccion (0, 1));
+		dir.add(new VectorDireccion (0, -1));
 		
 		for(VectorDireccion v: dir) {
 			try {
@@ -390,10 +388,10 @@ public class Logica {
 				}
 			} catch(ArrayIndexOutOfBoundsException e) {}
 		}
-		/*dir[0] = new VectorDireccion (1, 1); // CASO DE LAS DIAGONALES. QUEDA MIRAR COMO SE HARIA PARA LOS PEONES
-		dir[1] = new VectorDireccion (-1, 1);
-		dir[2] = new VectorDireccion (1, -1);
-		dir[3] = new VectorDireccion (-1, -1);
+		dir.clear();
+		dir.add(new VectorDireccion (1, 1));
+		dir.add(new VectorDireccion (-1, 1));
+		
 		for(VectorDireccion v: dir) {
 			try {
 				char letDest=(char)(letra + v.getX()), numDest=(char)(num + v.getY());
@@ -406,79 +404,35 @@ public class Logica {
 				if (Pieza.esBandoContrario (posicion.getTurno(), p)
 						&& (p.getTipo() == Tipo.DAMA || 
 							p.getTipo() == Tipo.ALFIL || 
-							(num+v.getY() == numDest && letra+v.getX() == letDest && p.getTipo() == Tipo.REY))) {
+							(num+v.getY() == numDest && letra+v.getX() == letDest && 
+							(p.getTipo() == Tipo.REY || (p.getTipo() == Tipo.PEON && p.getBando() == Bando.NEGRO))))) {
 					return true;
 				}
 			} catch(ArrayIndexOutOfBoundsException e) {}
-		}*/
-		// Diagonal abajo izquierda
-		try {
-			letI = posLet - 1;
-			numI = posNum - 1;
-			char l = (char)(letI + 'a'), n = (char)(numI + '1');
-			while ((piezaObjetivo=posicion.getPieza(l, n)) == null) {
-				n--;
-				l--;
-			}
-			if (Pieza.esBandoContrario (posicion.getTurno(), piezaObjetivo)
-					&& (piezaObjetivo.getTipo() == Tipo.DAMA || piezaObjetivo.getTipo() == Tipo.ALFIL || (numI == posNum - 1
-							&& letI == posLet - 1 && (piezaObjetivo.getTipo() == Tipo.REY || (piezaObjetivo.getTipo() == Tipo.PEON && piezaObjetivo.getBando() == Bando.BLANCO))))) {
-				return true;
-			}
 		}
-		catch (ArrayIndexOutOfBoundsException e) {
+		dir.clear();
+		dir.add(new VectorDireccion (1, -1));
+		dir.add(new VectorDireccion (-1, -1));
+		
+		for(VectorDireccion v: dir) {
+			try {
+				char letDest=(char)(letra + v.getX()), numDest=(char)(num + v.getY());
+				Pieza p = posicion.getPieza(letDest, numDest);
+				while(p==null) {
+					letDest=(char)(letDest + v.getX());
+					numDest=(char)(numDest + v.getY());
+					p = posicion.getPieza(letDest, numDest);
+				}
+				if (Pieza.esBandoContrario (posicion.getTurno(), p)
+						&& (p.getTipo() == Tipo.DAMA || 
+							p.getTipo() == Tipo.ALFIL || 
+							(num+v.getY() == numDest && letra+v.getX() == letDest && 
+							(p.getTipo() == Tipo.REY || (p.getTipo() == Tipo.PEON && p.getBando() == Bando.BLANCO))))) {
+					return true;
+				}
+			} catch(ArrayIndexOutOfBoundsException e) {}
 		}
-		// Diagonal abajo derecha
-		try {
-			letI = posLet + 1;
-			numI = posNum - 1;
-			char l = (char)(letI + 'a'), n = (char)(numI + '1');
-			while ((piezaObjetivo=posicion.getPieza(l, n)) == null) {
-				n--;
-				l++;
-			}
-			if (Pieza.esBandoContrario (posicion.getTurno(), piezaObjetivo)
-					&& (piezaObjetivo.getTipo() == Tipo.DAMA || piezaObjetivo.getTipo() == Tipo.ALFIL || (numI == posNum - 1
-							&& letI == posLet + 1 && (piezaObjetivo.getTipo() == Tipo.REY || (piezaObjetivo.getTipo() == Tipo.PEON && piezaObjetivo.getBando() == Bando.BLANCO))))) {
-				return true;
-			}
-		}
-		catch (ArrayIndexOutOfBoundsException e) {
-		}
-		// Diagonal arriba izquierda
-		try {
-			letI = posLet - 1;
-			numI = posNum + 1;
-			char l = (char)(letI + 'a'), n = (char)(numI + '1');
-			while ((piezaObjetivo=posicion.getPieza(l, n)) == null) {
-				n++;
-				l--;
-			}
-			if (Pieza.esBandoContrario (posicion.getTurno(), piezaObjetivo)
-					&& (piezaObjetivo.getTipo() == Tipo.DAMA || piezaObjetivo.getTipo() == Tipo.ALFIL || (numI == posNum + 1
-							&& letI == posLet - 1 && (piezaObjetivo.getTipo() == Tipo.REY || (piezaObjetivo.getTipo() == Tipo.PEON && piezaObjetivo.getBando() == Bando.NEGRO))))) {
-				return true;
-			}
-		}
-		catch (ArrayIndexOutOfBoundsException e) {
-		}
-		// Diagonal arriba derecha
-		try {
-			letI = posLet + 1;
-			numI = posNum + 1;
-			char l = (char)(letI + 'a'), n = (char)(numI + '1');
-			while ((piezaObjetivo=posicion.getPieza(l, n)) == null) {
-				n++;
-				l++;
-			}
-			if (Pieza.esBandoContrario (posicion.getTurno(), piezaObjetivo)
-					&& (piezaObjetivo.getTipo() == Tipo.DAMA || piezaObjetivo.getTipo() == Tipo.ALFIL || (numI == posNum + 1
-							&& letI == posLet + 1 && (piezaObjetivo.getTipo() == Tipo.REY || (piezaObjetivo.getTipo() == Tipo.PEON && piezaObjetivo.getBando() == Bando.NEGRO))))) {
-				return true;
-			}
-		}
-		catch (ArrayIndexOutOfBoundsException e) {
-		}
+
 		return false;
 	}
 
