@@ -103,8 +103,17 @@ public class Posicion {
 				}
 			}
 		}
+		turno = Bando.BLANCO;
 		kingPosition[0] = new Casilla();
 		kingPosition[1] = new Casilla();
+		enroque[0][0] = false;
+		enroque[0][1] = false;
+		enroque[1][0] = false;
+		enroque[1][1] = false;
+		alPaso = '\0';
+		clavePosicion = 0;
+		contadorTablas = 0;
+		numeroMovimiento = 1;
 	}
 	
 	public Posicion(String posicion) {
@@ -248,7 +257,7 @@ public class Posicion {
 		else
 			cad += (" -");
 		cad += (" " + contadorTablas);
-		cad += " 1";
+		cad += (" " + numeroMovimiento);
 		return cad;
 	}
 
