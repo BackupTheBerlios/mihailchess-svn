@@ -349,100 +349,68 @@ public class Logica {
 		// diagonales.
 
 		// Casillas a salto de caballo
-		// Con dos bucles for conseguimos recorrer las 8 casillas de caballo
-
-		// Se hace un bucle que va {-2, -1, 1, 2}
-		for (int i = 0; i <= 3; i++) {
-			if (i == 0 || i == 1) {
-				numI = posNum + (i - 2);
-			}
-			else { // i==2 || i==3
-				numI = posNum + (i - 1);
-				// Este bucle va {-1, 1}
-			}
-			for (int j = -1; j <= 1; j = j + 2) {
-				try {
-					if (i == 0 || i == 3) {
-						letI = posLet + j;
-					}
-					else { // i==1 || i==2
-						letI = posLet + 2 * j;
-					}
-					Pieza p = posicion.getPieza((char)(letI + 'a'), (char)(numI + '1'));
-					if (p != null) {
-						if (Pieza.esBandoContrario (posicion.getTurno(), p) && p.getTipo() == Tipo.CABALLO) {
-							return true;
-						}
+		VectorDireccion [] dir = new VectorDireccion[8];
+		dir[0] = new VectorDireccion (1, 2);
+		dir[1] = new VectorDireccion (-1, 2);
+		dir[2] = new VectorDireccion (2, 1);
+		dir[3] = new VectorDireccion (2, -1);
+		dir[4] = new VectorDireccion (1, -2);
+		dir[5] = new VectorDireccion (-1, -2);
+		dir[6] = new VectorDireccion (-2, 1);
+		dir[7] = new VectorDireccion (-2, -1);
+		for(VectorDireccion v: dir) {
+			try {
+				Pieza p = posicion.getPieza((char)(letra + v.getX()), (char)(num + v.getY()));
+				if (p != null) {
+					if (Pieza.esBandoContrario (posicion.getTurno(), p) && p.getTipo() == Tipo.CABALLO) {
+						return true;
 					}
 				}
-				catch (ArrayIndexOutOfBoundsException e) {
+			} catch(ArrayIndexOutOfBoundsException e) {}
+		}
+		dir[0] = new VectorDireccion (1, 0);
+		dir[1] = new VectorDireccion (-1, 0);
+		dir[2] = new VectorDireccion (0, 1);
+		dir[3] = new VectorDireccion (0, -1);
+		
+		for(VectorDireccion v: dir) {
+			try {
+				char letDest=(char)(letra + v.getX()), numDest=(char)(num + v.getY());
+				Pieza p = posicion.getPieza(letDest, numDest);
+				while(p==null) {
+					letDest=(char)(letDest + v.getX());
+					numDest=(char)(numDest + v.getY());
+					p = posicion.getPieza(letDest, numDest);
 				}
-			}
+				if (Pieza.esBandoContrario (posicion.getTurno(), p)
+						&& (p.getTipo() == Tipo.DAMA || 
+							p.getTipo() == Tipo.TORRE || 
+							(num+v.getY() == numDest && letra+v.getX() == letDest && p.getTipo() == Tipo.REY))) {
+					return true;
+				}
+			} catch(ArrayIndexOutOfBoundsException e) {}
 		}
-		// Vertical hacia arriba
-		try {
-			letI = posLet;
-			numI = posNum + 1;
-			char l = (char)(letI + 'a'), n = (char)(numI + '1');
-			while ((piezaObjetivo=posicion.getPieza(l, n)) == null) {
-				n++;
-			}
-			// Si la pieza es del bando contrario, y es una dama o una torre,
-			// la casilla estara atacada.
-			// Si no, ademas, si es un rey, y se encuentra en la casilla
-			// adyacente, tambien lo estara.
-			if (Pieza.esBandoContrario (posicion.getTurno(), piezaObjetivo)
-					&& (piezaObjetivo.getTipo() == Tipo.DAMA || piezaObjetivo.getTipo() == Tipo.TORRE || (numI == posNum + 1 && piezaObjetivo.getTipo() == Tipo.REY))) {
-				return true;
-			}
-		}
-		catch (ArrayIndexOutOfBoundsException e) {
-		}
-		// Vertical hacia abajo
-		try {
-			letI = posLet;
-			numI = posNum - 1;
-			char l = (char)(letI + 'a'), n = (char)(numI + '1');
-			while ((piezaObjetivo=posicion.getPieza(l, n)) == null) {
-				n--;
-			}
-			if (Pieza.esBandoContrario (posicion.getTurno(), piezaObjetivo)
-					&& (piezaObjetivo.getTipo() == Tipo.DAMA || piezaObjetivo.getTipo() == Tipo.TORRE || (numI == posNum - 1 && piezaObjetivo.getTipo() == Tipo.REY))) {
-				return true;
-			}
-		}
-		catch (ArrayIndexOutOfBoundsException e) {
-		}
-		// Horizontal hacia la izquierda
-		try {
-			letI = posLet - 1;
-			numI = posNum;
-			char l = (char)(letI + 'a'), n = (char)(numI + '1');
-			while ((piezaObjetivo=posicion.getPieza(l, n)) == null) {
-				l--;
-			}
-			if (Pieza.esBandoContrario (posicion.getTurno(), piezaObjetivo)
-					&& (piezaObjetivo.getTipo() == Tipo.DAMA || piezaObjetivo.getTipo() == Tipo.TORRE || (letI == posLet - 1 && piezaObjetivo.getTipo() == Tipo.REY))) {
-				return true;
-			}
-		}
-		catch (ArrayIndexOutOfBoundsException e) {
-		}
-		// Horizontal hacia la derecha
-		try {
-			letI = posLet + 1;
-			numI = posNum;
-			char l = (char)(letI + 'a'), n = (char)(numI + '1');
-			while ((piezaObjetivo=posicion.getPieza(l, n)) == null) {
-				l++;
-			}
-			if (Pieza.esBandoContrario (posicion.getTurno(), piezaObjetivo)
-					&& (piezaObjetivo.getTipo() == Tipo.DAMA || piezaObjetivo.getTipo() == Tipo.TORRE || (letI == posLet + 1 && piezaObjetivo.getTipo() == Tipo.REY))) {
-				return true;
-			}
-		}
-		catch (ArrayIndexOutOfBoundsException e) {
-		}
+		/*dir[0] = new VectorDireccion (1, 1); // CASO DE LAS DIAGONALES. QUEDA MIRAR COMO SE HARIA PARA LOS PEONES
+		dir[1] = new VectorDireccion (-1, 1);
+		dir[2] = new VectorDireccion (1, -1);
+		dir[3] = new VectorDireccion (-1, -1);
+		for(VectorDireccion v: dir) {
+			try {
+				char letDest=(char)(letra + v.getX()), numDest=(char)(num + v.getY());
+				Pieza p = posicion.getPieza(letDest, numDest);
+				while(p==null) {
+					letDest=(char)(letDest + v.getX());
+					numDest=(char)(numDest + v.getY());
+					p = posicion.getPieza(letDest, numDest);
+				}
+				if (Pieza.esBandoContrario (posicion.getTurno(), p)
+						&& (p.getTipo() == Tipo.DAMA || 
+							p.getTipo() == Tipo.ALFIL || 
+							(num+v.getY() == numDest && letra+v.getX() == letDest && p.getTipo() == Tipo.REY))) {
+					return true;
+				}
+			} catch(ArrayIndexOutOfBoundsException e) {}
+		}*/
 		// Diagonal abajo izquierda
 		try {
 			letI = posLet - 1;
