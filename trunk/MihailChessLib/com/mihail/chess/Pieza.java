@@ -69,7 +69,7 @@ public final class Pieza {
 	 * @see #tipo
 	 */
 	public Pieza (Bando ban, char claseDePieza) {
-		bando = bando;
+		bando = ban;
 		tipo = claseDePieza;
 		letra = '\0';
 		num = '\0';

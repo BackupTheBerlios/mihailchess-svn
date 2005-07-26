@@ -2,16 +2,21 @@ package com.mihail.chess;
 
 import java.util.ArrayList;
 
-public class Tablero {
+public class Logica {
+
+	public static enum Bando {
+		BLANCO, NEGRO
+	}
+	
 	/**
 	 * Constante que representa al bando blanco.
 	 */
-	public final static int BLANCO = 0;
+	// public final static int BLANCO = 0;
 
 	/**
 	 * Constante que representa al bando negro.
 	 */
-	public final static int NEGRO = 1;
+	// public final static int NEGRO = 1;
 
 	/**
 	 * Constantes de resultado de partida
@@ -54,7 +59,7 @@ public class Tablero {
 	 * Crea una nueva instancia de la clase y crea las piezas, situandolas en su
 	 * posicion de inicio de partida.
 	 */
-	public Tablero () {
+	public Logica () {
 		this (Posicion.POS_INICIAL);
 	}
 
@@ -66,7 +71,7 @@ public class Tablero {
 	 *            Es un String que indica una posicion de juego, siguiendo el
 	 *            estandar FEN.
 	 */
-	public Tablero (String posInicial) {
+	public Logica (String posInicial) {
 		movimientos = new ArrayList<Movimiento> ();
 		posicion.setPosicion (posInicial);
 		hash.insertar (posicion.getClavePosicion());
@@ -144,7 +149,7 @@ public class Tablero {
 			case 'P':
 				// Peon
 				// Peon blanco
-				if (pieza.bandoBlanco) {
+				if (pieza.bando == Bando.BLANCO) {
 					// Movimiento hacia delante
 					// Hacemos dos iteraciones, una para el caso de que avance
 					// una casilla, otra para el caso de que avance dos
@@ -171,7 +176,7 @@ public class Tablero {
 					// Movimientos para comer
 					try {
 						Pieza p = posicion.getPieza((char)(pieza.letra+1), (char)(pieza.num+1));
-						if (p != null && !p.bandoBlanco) {
+						if (p != null && p.bando == Bando.NEGRO) {
 							if (esLegal (pieza.letra, pieza.num,
 											(char) (pieza.letra + 1),
 											(char) (pieza.num + 1))) {
@@ -184,7 +189,7 @@ public class Tablero {
 					}
 					try {
 						Pieza p = posicion.getPieza((char)(pieza.letra+1), (char)(pieza.num-1));
-						if (p != null && !p.bandoBlanco) {
+						if (p != null && p.bando == Bando.NEGRO) {
 							if (esLegal (pieza.letra, pieza.num,
 											(char) (pieza.letra - 1),
 											(char) (pieza.num + 1))) {
@@ -221,7 +226,7 @@ public class Tablero {
 					}
 					try {
 						Pieza p = posicion.getPieza((char)(pieza.letra-1), (char)(pieza.num+1));
-						if (p != null && !p.bandoBlanco) {
+						if (p != null && p.bando == Bando.NEGRO) {
 							if (esLegal (pieza.letra, pieza.num,
 											(char) (pieza.letra + 1),
 											(char) (pieza.num - 1))) {
@@ -234,7 +239,7 @@ public class Tablero {
 					}
 					try {
 						Pieza p = posicion.getPieza((char)(pieza.letra-1), (char)(pieza.num-1));
-						if (p != null && !p.bandoBlanco) {
+						if (p != null && p.bando == Bando.NEGRO) {
 							if (esLegal (pieza.letra, pieza.num,
 											(char) (pieza.letra - 1),
 											(char) (pieza.num - 1))) {
@@ -323,7 +328,7 @@ public class Tablero {
 								if (esLegal (pieza.letra, pieza.num, letDest, numDest)
 									&& (posicion.esVacia (letDest, numDest) 
 									|| (!posicion.esVacia (letDest, numDest) 
-									&& posicion.getPieza(letDest, numDest).bandoBlanco != pieza.bandoBlanco))) {
+									&& posicion.getPieza(letDest, numDest).bando != pieza.bando))) {
 									pieza.anadirMov (letDest, numDest);
 								}
 							}
@@ -363,7 +368,7 @@ public class Tablero {
 	 * @return Devuelve un booleano indicando si es una casilla atacada o no
 	 */
 	private boolean esCasillaAtacada(Casilla c) {
-		return esCasillaAtacada(c.letra, c.numero);
+		return esCasillaAtacada(c.getLetra(), c.getNumero());
 	}
 	
 	/**
@@ -498,7 +503,7 @@ public class Tablero {
 			}
 			if (Pieza.esBandoContrario (posicion.getTurno(), piezaObjetivo)
 					&& (piezaObjetivo.tipo == 'D' || piezaObjetivo.tipo == 'A' || (numI == posNum - 1
-							&& letI == posLet - 1 && (piezaObjetivo.tipo == 'R' || (piezaObjetivo.tipo == 'P' && piezaObjetivo.bandoBlanco == true))))) {
+							&& letI == posLet - 1 && (piezaObjetivo.tipo == 'R' || (piezaObjetivo.tipo == 'P' && piezaObjetivo.bando == Bando.BLANCO))))) {
 				return true;
 			}
 		}
@@ -515,7 +520,7 @@ public class Tablero {
 			}
 			if (Pieza.esBandoContrario (posicion.getTurno(), piezaObjetivo)
 					&& (piezaObjetivo.tipo == 'D' || piezaObjetivo.tipo == 'A' || (numI == posNum - 1
-							&& letI == posLet + 1 && (piezaObjetivo.tipo == 'R' || (piezaObjetivo.tipo == 'P' && piezaObjetivo.bandoBlanco == true))))) {
+							&& letI == posLet + 1 && (piezaObjetivo.tipo == 'R' || (piezaObjetivo.tipo == 'P' && piezaObjetivo.bando == Bando.BLANCO))))) {
 				return true;
 			}
 		}
@@ -532,7 +537,7 @@ public class Tablero {
 			}
 			if (Pieza.esBandoContrario (posicion.getTurno(), piezaObjetivo)
 					&& (piezaObjetivo.tipo == 'D' || piezaObjetivo.tipo == 'A' || (numI == posNum + 1
-							&& letI == posLet - 1 && (piezaObjetivo.tipo == 'R' || (piezaObjetivo.tipo == 'P' && piezaObjetivo.bandoBlanco == false))))) {
+							&& letI == posLet - 1 && (piezaObjetivo.tipo == 'R' || (piezaObjetivo.tipo == 'P' && piezaObjetivo.bando == Bando.NEGRO))))) {
 				return true;
 			}
 		}
@@ -549,7 +554,7 @@ public class Tablero {
 			}
 			if (Pieza.esBandoContrario (posicion.getTurno(), piezaObjetivo)
 					&& (piezaObjetivo.tipo == 'D' || piezaObjetivo.tipo == 'A' || (numI == posNum + 1
-							&& letI == posLet + 1 && (piezaObjetivo.tipo == 'R' || (piezaObjetivo.tipo == 'P' && piezaObjetivo.bandoBlanco == false))))) {
+							&& letI == posLet + 1 && (piezaObjetivo.tipo == 'R' || (piezaObjetivo.tipo == 'P' && piezaObjetivo.bando == Bando.NEGRO))))) {
 				return true;
 			}
 		}
@@ -623,14 +628,14 @@ public class Tablero {
 		do {
 			// Buscamos la letra.
 			while ((i < piezaQueMueve.casillasValidas.size ())
-					&& (destinoLetra != piezaQueMueve.casillasValidas.get (i).letra)) {
+					&& (destinoLetra != piezaQueMueve.casillasValidas.get (i).getLetra())) {
 				i++;
 				// Comprobamos si el numero de la letra encontrada coincide.
 			}
 			if (i < piezaQueMueve.casillasValidas.size ()) {
 				// Si se entra en el siguiente caso, es que el movimiento es
 				// valido
-				if (destinoNum == piezaQueMueve.casillasValidas.get (i).letra) {
+				if (destinoNum == piezaQueMueve.casillasValidas.get (i).getLetra()) {
 					mov = new Movimiento ();
 					mov.origenLetra = origenLetra;
 					mov.origenNum = origenNum;
@@ -677,7 +682,7 @@ public class Tablero {
 							// mostrarDialogoCoronacion ();
 							// }
 							piezaQueMueve = new Pieza (
-									piezaQueMueve.bandoBlanco, coronar);
+									piezaQueMueve.bando, coronar);
 
 							mov.coronacion = coronar;
 						}
@@ -702,11 +707,11 @@ public class Tablero {
 					}
 
 					mov.contadorTablas = posicion.getContadorTablas();
-					mov.enroque[0][0] = posicion.getEnroqueCorto(BLANCO);
-					mov.enroque[0][1] = posicion.getEnroqueLargo(BLANCO);
-					mov.enroque[1][0] = posicion.getEnroqueLargo(NEGRO);
-					mov.enroque[1][1] = posicion.getEnroqueLargo(NEGRO);
-					if (posicion.getTurno() == NEGRO)
+					mov.enroque[0][0] = posicion.getEnroqueCorto(Bando.BLANCO);
+					mov.enroque[0][1] = posicion.getEnroqueLargo(Bando.BLANCO);
+					mov.enroque[1][0] = posicion.getEnroqueLargo(Bando.NEGRO);
+					mov.enroque[1][1] = posicion.getEnroqueLargo(Bando.NEGRO);
+					if (posicion.getTurno() == Bando.NEGRO)
 						posicion.addNumeroMovimiento();
 					posicion.setTurno ();
 
@@ -814,8 +819,8 @@ public class Tablero {
 		}
 		if (!fin) {
 			// Negras dan jaque mate
-			if (posicion.getTurno () == BLANCO)
-				if (esCasillaAtacada (posicion.getKingPosition(BLANCO))) {
+			if (posicion.getTurno () == Bando.BLANCO)
+				if (esCasillaAtacada (posicion.getKingPosition(Bando.BLANCO))) {
 					devolver = JAQUE_MATE_NEGRO;
 				}
 				else {
@@ -823,7 +828,7 @@ public class Tablero {
 				}
 			else
 				// Blancas dan jaque mate
-				if (esCasillaAtacada (posicion.getKingPosition(NEGRO))) {
+				if (esCasillaAtacada (posicion.getKingPosition(Bando.NEGRO))) {
 					devolver = JAQUE_MATE_BLANCO;
 				}
 				// Tablas por ahogado
