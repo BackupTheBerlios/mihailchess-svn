@@ -1,6 +1,9 @@
 package com.mihail.chess;
 
 import static com.mihail.chess.Logica.Bando;
+
+import com.mihail.chess.Logica.Resultado;
+import com.mihail.chess.Pieza.Tipo;
 /**
  * Esta clase define un objeto Movimiento, que guarda informacion sobre el
  * movimiento que se realiza y sobre el estado de la partida en ese momento (qué
@@ -52,7 +55,7 @@ public final class Movimiento {
 	 * Este atributo indica el tipo de pieza que es: {P,C,A,T,D,R}
 	 * 
 	 */
-	private char tipoPieza;
+	private Tipo tipoPieza;
 
 	/**
 	 * Este atributo indica la letra de la casilla donde se come. Si no se ha
@@ -81,7 +84,7 @@ public final class Movimiento {
 	 * 'T' -> Tablas <BR>
 	 * 0 -> No ha terminado la partida
 	 */
-	private int finPartida;
+	private Resultado finPartida;
 
 	/**
 	 * Este atributo indica si se ha producido una coronacion y a que pieza se
@@ -92,7 +95,7 @@ public final class Movimiento {
 	 * 'D' -> Dama <BR>
 	 * 0 -> No hay coronacion
 	 */
-	private char coronacion;
+	private Tipo coronacion;
 
 	/**
 	 * Este atributo indica el valor de contadorTablas en el momento que se
@@ -121,7 +124,7 @@ public final class Movimiento {
 	 * Este atributo indica el tipo de la pieza que se come. Si no se ha
 	 * producido una captura contiene un 0.
 	 */
-	private char tipoPiezaComida;
+	private Tipo tipoPiezaComida;
 
 	/**
 	 * Este atributo guarda la representacion del movimiento en notacion
@@ -161,11 +164,11 @@ public final class Movimiento {
 		this.numeroMovimiento = numeroMovimiento;
 	}
 
-	public char getTipoPieza() {
+	public Tipo getTipoPieza() {
 		return tipoPieza;
 	}
 
-	public void setTipoPieza(char tipoPieza) {
+	public void setTipoPieza(Tipo tipoPieza) {
 		this.tipoPieza = tipoPieza;
 	}
 
@@ -185,11 +188,11 @@ public final class Movimiento {
 		this.contadorTablas = contadorTablas;
 	}
 
-	public char getCoronacion() {
+	public Tipo getCoronacion() {
 		return coronacion;
 	}
 
-	public void setCoronacion(char coronacion) {
+	public void setCoronacion(Tipo coronacion) {
 		this.coronacion = coronacion;
 	}
 
@@ -201,11 +204,11 @@ public final class Movimiento {
 		this.enroque = enroque;
 	}
 
-	public int getFinPartida() {
+	public Resultado getFinPartida() {
 		return finPartida;
 	}
 
-	public void setFinPartida(int finPartida) {
+	public void setFinPartida(Resultado finPartida) {
 		this.finPartida = finPartida;
 	}
 
@@ -233,11 +236,11 @@ public final class Movimiento {
 		this.notacion = notacion;
 	}
 
-	public char getTipoPiezaComida() {
+	public Tipo getTipoPiezaComida() {
 		return tipoPiezaComida;
 	}
 
-	public void setTipoPiezaComida(char tipoPiezaComida) {
+	public void setTipoPiezaComida(Tipo tipoPiezaComida) {
 		this.tipoPiezaComida = tipoPiezaComida;
 	}
 }

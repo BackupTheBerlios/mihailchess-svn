@@ -2,6 +2,8 @@ package com.mihail.chess;
 
 import java.util.ArrayList;
 
+import com.mihail.chess.Pieza.Tipo;
+
 public class Logica {
 
 	public static enum Bando {
@@ -12,25 +14,15 @@ public class Logica {
 		}
 	}
 	
-	/**
-	 * Constante que representa al bando blanco.
-	 */
-	// public final static int BLANCO = 0;
-
-	/**
-	 * Constante que representa al bando negro.
-	 */
-	// public final static int NEGRO = 1;
-
-	/**
-	 * Constantes de resultado de partida
-	 */
-	public static final int JAQUE_MATE_BLANCO = 6;
-	public static final int JAQUE_MATE_NEGRO = 1;
-	public static final int TABLAS_REPETICION = 2;
-	public static final int TABLAS_50_MOV = 3;
-	public static final int TABLAS_INSUF_MATERIAL = 4;
-	public static final int TABLAS_AHOGADO = 5;
+	public static enum Resultado {
+		JAQUE_MATE_BLANCO, JAQUE_MATE_NEGRO, TABLAS_REPETICION, TABLAS_50_MOV, TABLAS_INSUF_MATERIAL, TABLAS_AHOGADO
+	}
+//	public static final int JAQUE_MATE_BLANCO = 6;
+//	public static final int JAQUE_MATE_NEGRO = 1;
+//	public static final int TABLAS_REPETICION = 2;
+//	public static final int TABLAS_50_MOV = 3;
+//	public static final int TABLAS_INSUF_MATERIAL = 4;
+//	public static final int TABLAS_AHOGADO = 5;
 
 	/**
 	 * Este atributo sirve para guardar la lista de movimientos de una partida.
@@ -47,7 +39,7 @@ public class Logica {
 	/**
 	 * Este atributo se utiliza para las coronaciones.
 	 */
-	private char coronar = 'D';
+	private Tipo coronar = Tipo.DAMA;
 
 	/**
 	 * Tabla hash usada para comprobar posiciones repetidas.
@@ -75,9 +67,9 @@ public class Logica {
 	 *            Es un String que indica una posicion de juego, siguiendo el
 	 *            estandar FEN.
 	 */
-	public Logica (String posInicial) {
+	public Logica (Posicion posInicial) {
 		movimientos = new ArrayList<Movimiento> ();
-		posicion.setPosicion (posInicial);
+		posicion = posInicial;
 		hash.insertar (posicion.getClavePosicion());
 	}
 
@@ -85,7 +77,7 @@ public class Logica {
 	 * Reinicia la posicion del tablero a la posicion inicial.
 	 */
 	public void reiniciarTablero () {
-		posicion.setPosicion (Posicion.POS_INICIAL);
+		posicion = Posicion.POS_INICIAL;
 	}
 
 	/**
@@ -95,7 +87,7 @@ public class Logica {
 	 *            Caracter que indica el tipo de pieza a coronar (C, A, T, D).
 	 */
 
-	public void setCoronacion (char c) {
+	public void setCoronacion (Tipo c) {
 		coronar = c;
 	}
 
@@ -118,7 +110,7 @@ public class Logica {
 	 *         'T' -> Tablas <BR>
 	 *         '\0' -> Partida Inacabada o Resultado Desconocido
 	 */
-	public int getResultado () {
+	public Resultado getResultado () {
 		return movimientos.get (indice - 1).getFinPartida();
 	}
 
@@ -150,7 +142,7 @@ public class Logica {
 		int numI = 0, letI = 0;
 		pieza.getCasillasValidas().clear ();
 		switch (pieza.getTipo()) {
-			case 'P':
+			case PEON:
 				// Peon
 				// Peon blanco
 				if (pieza.getBando() == Bando.BLANCO) {
@@ -256,7 +248,7 @@ public class Logica {
 					}
 				}
 				break;
-			case 'C':
+			case CABALLO:
 				posLet = pieza.getLetra() - 'a';
 				posNum = pieza.getNum() - '1';
 				for (int i = 0; i < pieza.getDirecciones().length; i++) {
@@ -284,9 +276,9 @@ public class Logica {
 				}
 
 				break;
-			case 'D':
-			case 'A':
-			case 'T':
+			case DAMA:
+			case ALFIL:
+			case TORRE:
 				posLet = pieza.getLetra() - 'a';
 				posNum = pieza.getNum() - '1';
 				for (int i = 0; i < pieza.getDirecciones().length; i++) {
@@ -323,7 +315,7 @@ public class Logica {
 					}
 				}
 				break;
-			case 'R':
+			case REY:
 				for (int i = -1; i <= 1; i++) {
 					for (int j = -1; j <= 1; j++) {
 						try {
@@ -423,7 +415,7 @@ public class Logica {
 					}
 					Pieza p = posicion.getPieza((char)(letI + 'a'), (char)(numI + '1'));
 					if (p != null) {
-						if (Pieza.esBandoContrario (posicion.getTurno(), p) && p.getTipo() == 'C') {
+						if (Pieza.esBandoContrario (posicion.getTurno(), p) && p.getTipo() == Tipo.CABALLO) {
 							return true;
 						}
 					}
@@ -445,7 +437,7 @@ public class Logica {
 			// Si no, ademas, si es un rey, y se encuentra en la casilla
 			// adyacente, tambien lo estara.
 			if (Pieza.esBandoContrario (posicion.getTurno(), piezaObjetivo)
-					&& (piezaObjetivo.getTipo() == 'D' || piezaObjetivo.getTipo() == 'T' || (numI == posNum + 1 && piezaObjetivo.getTipo() == 'R'))) {
+					&& (piezaObjetivo.getTipo() == Tipo.DAMA || piezaObjetivo.getTipo() == Tipo.TORRE || (numI == posNum + 1 && piezaObjetivo.getTipo() == Tipo.REY))) {
 				return true;
 			}
 		}
@@ -460,7 +452,7 @@ public class Logica {
 				n--;
 			}
 			if (Pieza.esBandoContrario (posicion.getTurno(), piezaObjetivo)
-					&& (piezaObjetivo.getTipo() == 'D' || piezaObjetivo.getTipo() == 'T' || (numI == posNum - 1 && piezaObjetivo.getTipo() == 'R'))) {
+					&& (piezaObjetivo.getTipo() == Tipo.DAMA || piezaObjetivo.getTipo() == Tipo.TORRE || (numI == posNum - 1 && piezaObjetivo.getTipo() == Tipo.REY))) {
 				return true;
 			}
 		}
@@ -475,7 +467,7 @@ public class Logica {
 				l--;
 			}
 			if (Pieza.esBandoContrario (posicion.getTurno(), piezaObjetivo)
-					&& (piezaObjetivo.getTipo() == 'D' || piezaObjetivo.getTipo() == 'T' || (letI == posLet - 1 && piezaObjetivo.getTipo() == 'R'))) {
+					&& (piezaObjetivo.getTipo() == Tipo.DAMA || piezaObjetivo.getTipo() == Tipo.TORRE || (letI == posLet - 1 && piezaObjetivo.getTipo() == Tipo.REY))) {
 				return true;
 			}
 		}
@@ -490,7 +482,7 @@ public class Logica {
 				l++;
 			}
 			if (Pieza.esBandoContrario (posicion.getTurno(), piezaObjetivo)
-					&& (piezaObjetivo.getTipo() == 'D' || piezaObjetivo.getTipo() == 'T' || (letI == posLet + 1 && piezaObjetivo.getTipo() == 'R'))) {
+					&& (piezaObjetivo.getTipo() == Tipo.DAMA || piezaObjetivo.getTipo() == Tipo.TORRE || (letI == posLet + 1 && piezaObjetivo.getTipo() == Tipo.REY))) {
 				return true;
 			}
 		}
@@ -506,8 +498,8 @@ public class Logica {
 				l--;
 			}
 			if (Pieza.esBandoContrario (posicion.getTurno(), piezaObjetivo)
-					&& (piezaObjetivo.getTipo() == 'D' || piezaObjetivo.getTipo() == 'A' || (numI == posNum - 1
-							&& letI == posLet - 1 && (piezaObjetivo.getTipo() == 'R' || (piezaObjetivo.getTipo() == 'P' && piezaObjetivo.getBando() == Bando.BLANCO))))) {
+					&& (piezaObjetivo.getTipo() == Tipo.DAMA || piezaObjetivo.getTipo() == Tipo.ALFIL || (numI == posNum - 1
+							&& letI == posLet - 1 && (piezaObjetivo.getTipo() == Tipo.REY || (piezaObjetivo.getTipo() == Tipo.PEON && piezaObjetivo.getBando() == Bando.BLANCO))))) {
 				return true;
 			}
 		}
@@ -523,8 +515,8 @@ public class Logica {
 				l++;
 			}
 			if (Pieza.esBandoContrario (posicion.getTurno(), piezaObjetivo)
-					&& (piezaObjetivo.getTipo() == 'D' || piezaObjetivo.getTipo() == 'A' || (numI == posNum - 1
-							&& letI == posLet + 1 && (piezaObjetivo.getTipo() == 'R' || (piezaObjetivo.getTipo() == 'P' && piezaObjetivo.getBando() == Bando.BLANCO))))) {
+					&& (piezaObjetivo.getTipo() == Tipo.DAMA || piezaObjetivo.getTipo() == Tipo.ALFIL || (numI == posNum - 1
+							&& letI == posLet + 1 && (piezaObjetivo.getTipo() == Tipo.REY || (piezaObjetivo.getTipo() == Tipo.PEON && piezaObjetivo.getBando() == Bando.BLANCO))))) {
 				return true;
 			}
 		}
@@ -540,8 +532,8 @@ public class Logica {
 				l--;
 			}
 			if (Pieza.esBandoContrario (posicion.getTurno(), piezaObjetivo)
-					&& (piezaObjetivo.getTipo() == 'D' || piezaObjetivo.getTipo() == 'A' || (numI == posNum + 1
-							&& letI == posLet - 1 && (piezaObjetivo.getTipo() == 'R' || (piezaObjetivo.getTipo() == 'P' && piezaObjetivo.getBando() == Bando.NEGRO))))) {
+					&& (piezaObjetivo.getTipo() == Tipo.DAMA || piezaObjetivo.getTipo() == Tipo.ALFIL || (numI == posNum + 1
+							&& letI == posLet - 1 && (piezaObjetivo.getTipo() == Tipo.REY || (piezaObjetivo.getTipo() == Tipo.PEON && piezaObjetivo.getBando() == Bando.NEGRO))))) {
 				return true;
 			}
 		}
@@ -557,8 +549,8 @@ public class Logica {
 				l++;
 			}
 			if (Pieza.esBandoContrario (posicion.getTurno(), piezaObjetivo)
-					&& (piezaObjetivo.getTipo() == 'D' || piezaObjetivo.getTipo() == 'A' || (numI == posNum + 1
-							&& letI == posLet + 1 && (piezaObjetivo.getTipo() == 'R' || (piezaObjetivo.getTipo() == 'P' && piezaObjetivo.getBando() == Bando.NEGRO))))) {
+					&& (piezaObjetivo.getTipo() == Tipo.DAMA || piezaObjetivo.getTipo() == Tipo.ALFIL || (numI == posNum + 1
+							&& letI == posLet + 1 && (piezaObjetivo.getTipo() == Tipo.REY || (piezaObjetivo.getTipo() == Tipo.PEON && piezaObjetivo.getBando() == Bando.NEGRO))))) {
 				return true;
 			}
 		}
@@ -658,7 +650,7 @@ public class Logica {
 					}
 
 					// Se hacen los calculos especiales si se trata de un peon
-					if (piezaQueMueve.getTipo() == 'P') {
+					if (piezaQueMueve.getTipo() == Tipo.PEON) {
 						// Se borra la pieza correspondiente si se come al paso
 						if (Math.abs (destinoLetra - origenLetra) == 1
 								&& posicion.esVacia (destinoLetra, destinoNum)) {
@@ -690,7 +682,7 @@ public class Logica {
 						hash.borrarTabla ();
 					}
 					// Se hacen los calculos especiales si se trata de un rey
-					if (piezaQueMueve.getTipo() == 'R') {
+					if (piezaQueMueve.getTipo() == Tipo.REY) {
 						// Movemos las torres en caso de enroque
 						if ((destinoLetra - origenLetra) == 2) {
 							Pieza torre = posicion.getPieza ('h', origenNum);
@@ -754,20 +746,20 @@ public class Logica {
 	 *         han dado jaque mate, 'N' si las negras han dado jaque mate o 'T'
 	 *         si se produce una situacion de tablas.
 	 */
-	private char esFinPartida () {
+	private Resultado esFinPartida () {
 		Pieza pieza;
-		char devolver = '\0';
+		Resultado devolver = null;
 		boolean fin = false, fin2 = false, posibleMatInsuf = false;
 		char i, j;
 		// Tablas por 50 movimientos
 		if (posicion.getContadorTablas() == 50) {
 			fin = true;
-			devolver = TABLAS_50_MOV;
+			devolver = Resultado.TABLAS_50_MOV;
 		}
 		// Tablas por repeticion de posiciones
 		if (hash.getRepeticiones (posicion.getClavePosicion()) == 3) {
 			fin = true;
-			devolver = TABLAS_REPETICION;
+			devolver = Resultado.TABLAS_REPETICION;
 		}
 		// Tablas por material insuficiente
 		i = 'a';
@@ -777,20 +769,22 @@ public class Logica {
 				pieza = posicion.getPieza(i, j);
 				if (pieza != null) {
 					if (posibleMatInsuf) {
-						if (pieza.getTipo() != 'R') {
+						if (pieza.getTipo() != Tipo.REY) {
 							fin2 = true;
 						}
 					}
 					else {
 						switch (pieza.getTipo()) {
-							case 'P':
-							case 'D':
-							case 'T':
+							case PEON:
+							case DAMA:
+							case TORRE:
 								fin2 = true;
 								break;
-							case 'A':
-							case 'C':
+							case ALFIL:
+							case CABALLO:
 								posibleMatInsuf = true;
+								break;
+							case REY:
 								break;
 						}
 					}
@@ -802,7 +796,7 @@ public class Logica {
 		}
 		if (!fin2) {
 			fin = true;
-			devolver = TABLAS_INSUF_MATERIAL;
+			devolver = Resultado.TABLAS_INSUF_MATERIAL;
 		}
 		// Miramos si hay movimientos posibles
 		i = 'a';
@@ -823,19 +817,19 @@ public class Logica {
 			// Negras dan jaque mate
 			if (posicion.getTurno () == Bando.BLANCO)
 				if (esCasillaAtacada (posicion.getKingPosition(Bando.BLANCO))) {
-					devolver = JAQUE_MATE_NEGRO;
+					devolver = Resultado.JAQUE_MATE_NEGRO;
 				}
 				else {
-					devolver = TABLAS_AHOGADO;
+					devolver = Resultado.TABLAS_AHOGADO;
 				}
 			else
 				// Blancas dan jaque mate
 				if (esCasillaAtacada (posicion.getKingPosition(Bando.NEGRO))) {
-					devolver = JAQUE_MATE_BLANCO;
+					devolver = Resultado.JAQUE_MATE_BLANCO;
 				}
 				// Tablas por ahogado
 				else {
-					devolver = TABLAS_AHOGADO;
+					devolver = Resultado.TABLAS_AHOGADO;
 				}
 		}
 		return devolver;

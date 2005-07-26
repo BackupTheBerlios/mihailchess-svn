@@ -16,6 +16,10 @@ import static com.mihail.chess.Logica.Bando;
 
 public final class Pieza {
 
+	public static enum Tipo {
+		PEON, CABALLO, ALFIL, TORRE, DAMA, REY
+	}
+	
 	// Atributos
 
 	/**
@@ -33,7 +37,7 @@ public final class Pieza {
 	 * 'D' -> dama <BR>
 	 * 'R' -> rey
 	 */
-	private char tipo;
+	private Tipo tipo;
 
 	private Casilla casilla;
 
@@ -59,15 +63,15 @@ public final class Pieza {
 	 *            Es el tipo de la pieza {P,C,A,T,D,R}
 	 * @see #tipo
 	 */
-	public Pieza (Bando ban, char claseDePieza) {
+	public Pieza (Bando ban, Tipo claseDePieza) {
 		bando = ban;
 		tipo = claseDePieza;
 		casilla = new Casilla ();
 		switch (tipo) {
-			case 'P':
+			case PEON:
 				casillasValidas = new ArrayList<Casilla> (4);
 				break;
-			case 'T':
+			case TORRE:
 				direcciones = new VectorDireccion[4];
 				direcciones[0] = new VectorDireccion (1, 0);
 				direcciones[1] = new VectorDireccion (-1, 0);
@@ -75,7 +79,7 @@ public final class Pieza {
 				direcciones[3] = new VectorDireccion (0, -1);
 				casillasValidas = new ArrayList<Casilla> (13);
 				break;
-			case 'A':
+			case ALFIL:
 				direcciones = new VectorDireccion[4];
 				direcciones[0] = new VectorDireccion (1, 1);
 				direcciones[1] = new VectorDireccion (-1, 1);
@@ -83,7 +87,7 @@ public final class Pieza {
 				direcciones[3] = new VectorDireccion (-1, -1);
 				casillasValidas = new ArrayList<Casilla> (13);
 				break;
-			case 'C':
+			case CABALLO:
 				direcciones = new VectorDireccion[8];
 				direcciones[0] = new VectorDireccion (1, 2);
 				direcciones[1] = new VectorDireccion (-1, 2);
@@ -96,10 +100,10 @@ public final class Pieza {
 				direcciones[7] = new VectorDireccion (-2, -1);
 				casillasValidas = new ArrayList<Casilla> (8);
 				break;
-			case 'R':
+			case REY:
 				casillasValidas = new ArrayList<Casilla> (8);
 				break;
-			case 'D':
+			case DAMA:
 				direcciones = new VectorDireccion[8];
 				direcciones[0] = new VectorDireccion (1, 0);
 				direcciones[1] = new VectorDireccion (-1, 0);
@@ -179,11 +183,11 @@ public final class Pieza {
 		this.direcciones = direcciones;
 	}
 
-	public char getTipo() {
+	public Tipo getTipo() {
 		return tipo;
 	}
 
-	public void setTipo(char tipo) {
+	public void setTipo(Tipo tipo) {
 		this.tipo = tipo;
 	}
 	
