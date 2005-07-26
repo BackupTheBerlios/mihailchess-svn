@@ -158,10 +158,10 @@ public final class Pieza {
 	 * 
 	 * @param let
 	 *            Es la casilla de destino que queremos añadir
-	 * @param num
+	 * @param n
 	 *            Es el numero de destino que queremos añadir
 	 */
-	public void anadirMov (char let, char num) {
-		this.casillasValidas.add (new Casilla(let, num));
+	public void anadirMov (char let, char n) {
+		this.casillasValidas.add (new Casilla(let, n));
 	}
 }

@@ -108,7 +108,7 @@ public class Posicion {
 	}
 	
 	public Posicion(String posicion) {
-		super();
+		this();
 		setPosicion(posicion);
 	}
 

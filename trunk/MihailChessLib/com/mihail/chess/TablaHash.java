@@ -23,7 +23,7 @@ public final class TablaHash {
 	public TablaHash (int TAM) {
 		tabla = new ArrayList[TAM];
 		for (int i = 0; i < tabla.length; i++)
-			tabla[i] = new ArrayList<Item> ();
+			tabla[i] = new ArrayList ();
 		tam = TAM;
 	}
 
