@@ -1,4 +1,4 @@
-package aperturas;
+package com.mihail.openings;
 
 import java.io.*;
 import java.util.Locale;

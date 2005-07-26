@@ -1,4 +1,4 @@
-package aperturas;
+package com.mihail.openings;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
