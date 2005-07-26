@@ -62,7 +62,7 @@ public final class Pieza {
 	/**
 	 * Inicializa una nueva instancia de esta clase.
 	 * 
-	 * @param bando
+	 * @param ban
 	 *            True para Blancas, false para Negras
 	 * @param claseDePieza
 	 *            Es el tipo de la pieza {P,C,A,T,D,R}

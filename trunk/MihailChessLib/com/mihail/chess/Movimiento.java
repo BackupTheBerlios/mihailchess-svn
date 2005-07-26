@@ -40,10 +40,7 @@ public final class Movimiento {
 	public int numeroMovimiento;
 
 	/**
-	 * Bando que mueve. Vale Logica.BLANCO o Logica.NEGRO.
-	 * 
-	 * @see Logica#BLANCO
-	 * @see Logica#NEGRO
+	 * Bando que mueve.
 	 */
 	public Bando bando;
 

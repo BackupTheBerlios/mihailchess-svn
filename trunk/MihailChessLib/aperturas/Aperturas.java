@@ -16,7 +16,6 @@ public class Aperturas {
 	 * Recibe el tablero donde se va a mirar la apertura y el idioma en que se
 	 * quieren las aperturas.
 	 * 
-	 * @param tab
 	 * @param loc
 	 * @throws FileNotFoundException
 	 * @throws IOException
@@ -31,7 +30,7 @@ public class Aperturas {
 	 * Obtiene la apertura que se esta jugando en una Posicion pos
 	 * 
 	 * @param pos
-	 * @return
+	 * @return Nombre de la apertura que se esta jugando en la Posicion pos.
 	 */
 	public String getApertura (Posicion pos) {
 		int clave = pos.getClavePosicion ();
