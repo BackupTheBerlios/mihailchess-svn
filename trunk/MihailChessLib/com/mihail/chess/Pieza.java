@@ -163,32 +163,16 @@ public final class Pieza {
 		return bando;
 	}
 
-	public void setBando(Bando bando) {
-		this.bando = bando;
-	}
-
 	public ArrayList<Casilla> getCasillasValidas() {
 		return casillasValidas;
-	}
-
-	public void setCasillasValidas(ArrayList<Casilla> casillasValidas) {
-		this.casillasValidas = casillasValidas;
 	}
 
 	public VectorDireccion[] getDirecciones() {
 		return direcciones;
 	}
 
-	public void setDirecciones(VectorDireccion[] direcciones) {
-		this.direcciones = direcciones;
-	}
-
 	public Tipo getTipo() {
 		return tipo;
-	}
-
-	public void setTipo(Tipo tipo) {
-		this.tipo = tipo;
 	}
 	
 	public char getLetra() {
