@@ -20,11 +20,11 @@ public final class TablaHash {
 	  * con un tamaño proximo a 40-50, para situarse en el peor caso de repeticiones, y 
 	  * aumentar el rendimiento de la tabla.
 	  */
-	public TablaHash (int TAM) {
-		tabla = new ArrayList[TAM];
+	public TablaHash (int t) {
+		tabla = new ArrayList[t];
 		for (int i = 0; i < tabla.length; i++)
 			tabla[i] = new ArrayList ();
-		tam = TAM;
+		tam = t;
 	}
 
 	/**

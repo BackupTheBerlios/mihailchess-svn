@@ -14,12 +14,9 @@ import java.util.Timer;
  * estando obligado el observador a recargar el Reloj cuando lo desee. Presenta
  * dos estados, parado y en marcha. Estos estados nos permiten parar el Reloj
  * cuando sea el turno del oponente.<br>
- * Por otra parte, cada vez que el tiempo del Reloj cambie, los observadores
- * seran notificados mediante el metodo notifyObservers(Object arg). Cuando
- * Reloj llame a este metodo, se enviara a si mismo como argumento, siendo tarea
- * del observador, en su metodo update() (vease documentacoin de la interfaz
- * Observer) obtener el nuevo tiempo para su representacion y determinar si se
- * ha acabado.<br>
+ * El metodo Observer.update() sera llamado cada vez que haya un cambio de
+ * estado en el Reloj, esto es, cada vez que se decrementa el tiempo. Es
+ * responsabilidad del observador controlar el fin de tiempo.<br>
  * El manejo de la clase Reloj se realiza basicamente con tres metodos: comenzar
  * (), setParado (boolean b) y recargar ().<br>
  * Una vez instanciada la clase, se llamara a comenzar(). Esto hace que el Timer
