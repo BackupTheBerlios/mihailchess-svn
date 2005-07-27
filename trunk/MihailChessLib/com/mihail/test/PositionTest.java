@@ -119,9 +119,20 @@ public class PositionTest extends TestCase {
 		assertEquals(p.getAlPaso(), 0);
 		assertNull(p.getPieza('h', '5'));
 		
-		p.setPosicion("8/8/8/8/8/8/8/4K2R w K - 0 1");
+		p.setPosicion("8/8/8/8/8/8/8/R3K2R w KQ - 0 1");
 		p.borrarPieza('e', '1');
+		assertFalse(p.getEnroqueLargo(Bando.BLANCO));
 		assertFalse(p.getEnroqueCorto(Bando.BLANCO));
+		
+		p.setPosicion("8/8/8/8/8/8/8/R3K2R w KQ - 0 1");
+		p.borrarPieza('h', '1');
+		assertTrue(p.getEnroqueLargo(Bando.BLANCO));
+		assertFalse(p.getEnroqueCorto(Bando.BLANCO));
+		
+		p.setPosicion("r3k2r/8/8/8/8/8/8/8 w kq - 0 1");
+		p.borrarPieza('e', '8');
+		assertFalse(p.getEnroqueLargo(Bando.NEGRO));
+		assertFalse(p.getEnroqueCorto(Bando.NEGRO));
 		
 		p.setPosicion("r3k2r/8/8/8/8/8/8/8 w kq - 0 1");
 		p.borrarPieza('a', '8');

@@ -749,8 +749,8 @@ public class Posicion {
 	protected void setPiezaInternal(Pieza p, char letra, char num) {
 		tabla[num - '1'][letra - 'a'] = p;
 		if (p.getTipo() == Tipo.REY) {
-			kingPosition[bandoToInt(p.getBando())].setLetra (p.getLetra());
-			kingPosition[bandoToInt(p.getBando())].setNumero (p.getNum());
+			kingPosition[bandoToInt(p.getBando())].setLetra (letra);
+			kingPosition[bandoToInt(p.getBando())].setNumero (num);
 		}
 	}
 }

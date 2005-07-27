@@ -117,7 +117,7 @@ public class Logica {
 	/**
 	 * Calcula los movimientos validos para todas las piezas del tablero.
 	 */
-	private void calcularMovimientos () {
+	public void calcularMovimientos () {
 		for (char i = 'a'; i <= 'h'; i++) {
 			for (char j = '1'; j <= '8'; j++) {
 				Pieza p = posicion.getPieza(i, j);
@@ -318,7 +318,7 @@ public class Logica {
 	 * @param c Casilla que queremos comprobar si esta siendo atacada
 	 * @return Devuelve un booleano indicando si es una casilla atacada o no
 	 */
-	private boolean esCasillaAtacada(Casilla c) {
+	public boolean esCasillaAtacada(Casilla c) {
 		return esCasillaAtacada(c.getLetra(), c.getNumero());
 	}
 	
@@ -340,7 +340,7 @@ public class Logica {
 	 *            atacada
 	 * @return Devuelve un booleano indicando si es una casilla atacada o no
 	 */
-	private boolean esCasillaAtacada (char letra, char num) {
+	public boolean esCasillaAtacada (char letra, char num) {
 		// Primero miro las casillas
 		// a salto de caballo. Despues, las verticales, horizontales y
 		// diagonales.
@@ -460,7 +460,7 @@ public class Logica {
 		resultado = esCasillaAtacada (posicion.getKingPosition(posicion.getTurno()));
 		posicion.borrarPiezaInternal(letDest, numDest);
 		posicion.setPiezaInternal (movida, letOrig, numOrig);
-		posicion.setPiezaInternal (temp, numDest, letDest);
+		if(temp!=null) posicion.setPiezaInternal (temp, letDest, numDest);
 		return !resultado;
 	}
 

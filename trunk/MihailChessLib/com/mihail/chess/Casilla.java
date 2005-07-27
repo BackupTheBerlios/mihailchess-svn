@@ -51,4 +51,8 @@ public class Casilla {
 	public void setNumero(char numero) {
 		this.numero = numero;
 	}
+	
+	public String toString() {
+		return letra + "" + numero;
+	}
 }
