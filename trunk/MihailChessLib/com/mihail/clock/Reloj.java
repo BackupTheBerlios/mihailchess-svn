@@ -152,7 +152,7 @@ public class Reloj extends Observable {
 	}
 
 	public boolean isFinTiempo() {
-		return horas <= 0 && minutos <= 0 && segundos <= 0 && decimas <= 0;
+		return horas < 0;
 	}
 
 	public void setRecarga(int segs) {

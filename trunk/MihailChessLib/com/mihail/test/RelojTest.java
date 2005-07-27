@@ -11,8 +11,10 @@ public class RelojTest implements Observer {
 	public void update(Observable arg0, Object arg1) {
 		if (arg0 instanceof Reloj) {
 			Reloj r = (Reloj) arg0;
-			System.out.println(r.getHoras() + ":" + r.getMinutos() + ":"
-					+ r.getSegundos() + "." + r.getDecimas());
+			if (r.getDecimas() == 0) {
+				System.out.println(r.getHoras() + ":" + r.getMinutos() + ":"
+						+ r.getSegundos() + "." + r.getDecimas());
+			}
 			if (r.isFinTiempo())
 				System.out.println("FIN TIEMPO");
 		}
