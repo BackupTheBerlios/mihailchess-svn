@@ -11,11 +11,10 @@ package com.mihail.test;
 
 import com.mihail.chess.Pieza;
 import com.mihail.chess.Posicion;
-import com.mihail.chess.Pieza.Tipo;
-
 import junit.framework.TestCase;
 
 import static com.mihail.chess.Logica.Bando;
+import static com.mihail.chess.Pieza.Tipo;
 
 public class PositionTest extends TestCase {
 
@@ -33,7 +32,9 @@ public class PositionTest extends TestCase {
 	public void testGetFEN() {
 		Posicion p = new Posicion();
 		p.setPosicion(Posicion.CAD_INICIAL);
-		assertEquals("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1", p.getFEN());
+		assertEquals(
+				"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1", p
+						.getFEN());
 	}
 
 	public void testSetPosicion() {
@@ -73,7 +74,7 @@ public class PositionTest extends TestCase {
 		p.setPieza(new Pieza(Bando.BLANCO, Tipo.TORRE), 'h', '1');
 		p.setEnroqueCorto(Bando.BLANCO, true);
 		assertTrue(p.getEnroqueCorto(Bando.BLANCO));
-		
+
 		p.setPieza(new Pieza(Bando.NEGRO, Tipo.REY), 'e', '8');
 		p.setEnroqueCorto(Bando.NEGRO, true);
 		assertFalse(p.getEnroqueCorto(Bando.NEGRO));
@@ -93,7 +94,7 @@ public class PositionTest extends TestCase {
 		p.setPieza(new Pieza(Bando.BLANCO, Tipo.TORRE), 'a', '1');
 		p.setEnroqueLargo(Bando.BLANCO, true);
 		assertTrue(p.getEnroqueLargo(Bando.BLANCO));
-		
+
 		p.setPieza(new Pieza(Bando.NEGRO, Tipo.REY), 'e', '8');
 		p.setEnroqueLargo(Bando.NEGRO, true);
 		assertFalse(p.getEnroqueLargo(Bando.NEGRO));
@@ -101,7 +102,7 @@ public class PositionTest extends TestCase {
 		p.setEnroqueLargo(Bando.NEGRO, true);
 		assertTrue(p.getEnroqueLargo(Bando.NEGRO));
 	}
-	
+
 	/*
 	 * Test method for 'com.mihail.chess.Position.setPieza(Piece, char, char)'
 	 */
@@ -114,16 +115,17 @@ public class PositionTest extends TestCase {
 	 */
 	public void testBorrarPieza() {
 		Posicion p = new Posicion("8/8/8/7p/8/8/8/8 w - h 0 1");
-		// Al borrar la pieza, alPaso deberia resetearse, ya que no hay peon en esa columna
+		// Al borrar la pieza, alPaso deberia resetearse, ya que no hay peon en
+		// esa columna
 		p.borrarPieza('h', '5');
 		assertEquals(p.getAlPaso(), 0);
 		assertNull(p.getPieza('h', '5'));
-		
+
 		p.setPosicion("8/8/8/8/8/8/8/R3K2R w KQ - 0 1");
 		p.borrarPieza('e', '1');
 		assertFalse(p.getEnroqueLargo(Bando.BLANCO));
 		assertFalse(p.getEnroqueCorto(Bando.BLANCO));
-		
+
 		p.setPosicion("8/8/8/8/8/8/8/R3K2R w KQ - 0 1");
 		p.borrarPieza('h', '1');
 		assertTrue(p.getEnroqueLargo(Bando.BLANCO));
@@ -168,7 +170,8 @@ public class PositionTest extends TestCase {
 		p.setPieza(new Pieza(Bando.BLANCO, Tipo.PEON), 'a', '1');
 		p.setAlPaso('a');
 		assertEquals(p.getAlPaso(), 0);
-		// Comprobamos que al poner un peon negro en una casilla de alPaso, la funcion deja
+		// Comprobamos que al poner un peon negro en una casilla de alPaso, la
+		// funcion deja
 		p.setPieza(new Pieza(Bando.NEGRO, Tipo.PEON), 'h', '5');
 		p.setAlPaso('h');
 		assertEquals(p.getAlPaso(), 'h');
@@ -213,8 +216,8 @@ public class PositionTest extends TestCase {
 	public void testGetKingPosition() {
 
 	}
-	
-	public static void main(String [] args) {
+
+	public static void main(String[] args) {
 		junit.textui.TestRunner.run(PositionTest.class);
 	}
 }

@@ -1,9 +1,7 @@
 package com.mihail.chess;
 
 import static com.mihail.chess.Logica.Bando;
-
-import com.mihail.chess.Logica.Bando;
-import com.mihail.chess.Pieza.Tipo;
+import static com.mihail.chess.Pieza.Tipo;
 
 public class Posicion {
 
