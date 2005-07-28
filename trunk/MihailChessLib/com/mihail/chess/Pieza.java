@@ -19,7 +19,7 @@ public final class Pieza {
 	public static enum Tipo {
 		PEON, CABALLO, ALFIL, TORRE, DAMA, REY
 	}
-	
+
 	// Atributos
 
 	/**
@@ -63,72 +63,72 @@ public final class Pieza {
 	 *            Es el tipo de la pieza {P,C,A,T,D,R}
 	 * @see #tipo
 	 */
-	public Pieza (Bando ban, Tipo claseDePieza) {
+	public Pieza(Bando ban, Tipo claseDePieza) {
 		bando = ban;
 		tipo = claseDePieza;
-		casilla = new Casilla ();
+		casilla = new Casilla();
 		switch (tipo) {
-			case PEON:
-				direcciones = new VectorDireccion[1];
-				if(bando == Bando.BLANCO)
-					direcciones[0] = new VectorDireccion(0, 1);
-				else
-					direcciones[0] = new VectorDireccion(0, -1);
-				casillasValidas = new ArrayList<Casilla> (4);
-				break;
-			case TORRE:
-				direcciones = new VectorDireccion[4];
-				direcciones[0] = new VectorDireccion (1, 0);
-				direcciones[1] = new VectorDireccion (-1, 0);
-				direcciones[2] = new VectorDireccion (0, 1);
-				direcciones[3] = new VectorDireccion (0, -1);
-				casillasValidas = new ArrayList<Casilla> (13);
-				break;
-			case ALFIL:
-				direcciones = new VectorDireccion[4];
-				direcciones[0] = new VectorDireccion (1, 1);
-				direcciones[1] = new VectorDireccion (-1, 1);
-				direcciones[2] = new VectorDireccion (1, -1);
-				direcciones[3] = new VectorDireccion (-1, -1);
-				casillasValidas = new ArrayList<Casilla> (13);
-				break;
-			case CABALLO:
-				direcciones = new VectorDireccion[8];
-				direcciones[0] = new VectorDireccion (1, 2);
-				direcciones[1] = new VectorDireccion (-1, 2);
-				direcciones[2] = new VectorDireccion (2, 1);
-				direcciones[3] = new VectorDireccion (2, -1);
+		case PEON:
+			direcciones = new VectorDireccion[1];
+			if (bando == Bando.BLANCO)
+				direcciones[0] = new VectorDireccion(0, 1);
+			else
+				direcciones[0] = new VectorDireccion(0, -1);
+			casillasValidas = new ArrayList<Casilla>(4);
+			break;
+		case TORRE:
+			direcciones = new VectorDireccion[4];
+			direcciones[0] = new VectorDireccion(1, 0);
+			direcciones[1] = new VectorDireccion(-1, 0);
+			direcciones[2] = new VectorDireccion(0, 1);
+			direcciones[3] = new VectorDireccion(0, -1);
+			casillasValidas = new ArrayList<Casilla>(13);
+			break;
+		case ALFIL:
+			direcciones = new VectorDireccion[4];
+			direcciones[0] = new VectorDireccion(1, 1);
+			direcciones[1] = new VectorDireccion(-1, 1);
+			direcciones[2] = new VectorDireccion(1, -1);
+			direcciones[3] = new VectorDireccion(-1, -1);
+			casillasValidas = new ArrayList<Casilla>(13);
+			break;
+		case CABALLO:
+			direcciones = new VectorDireccion[8];
+			direcciones[0] = new VectorDireccion(1, 2);
+			direcciones[1] = new VectorDireccion(-1, 2);
+			direcciones[2] = new VectorDireccion(2, 1);
+			direcciones[3] = new VectorDireccion(2, -1);
 
-				direcciones[4] = new VectorDireccion (1, -2);
-				direcciones[5] = new VectorDireccion (-1, -2);
-				direcciones[6] = new VectorDireccion (-2, 1);
-				direcciones[7] = new VectorDireccion (-2, -1);
-				casillasValidas = new ArrayList<Casilla> (8);
-				break;
-			case REY:
-				direcciones = new VectorDireccion[8];
-				direcciones[0] = new VectorDireccion (1, 0);
-				direcciones[1] = new VectorDireccion (-1, 0);
-				direcciones[2] = new VectorDireccion (0, 1);
-				direcciones[3] = new VectorDireccion (0, -1);
-				direcciones[4] = new VectorDireccion (1, 1);
-				direcciones[5] = new VectorDireccion (-1, 1);
-				direcciones[6] = new VectorDireccion (1, -1);
-				direcciones[7] = new VectorDireccion (-1, -1);
-				casillasValidas = new ArrayList<Casilla> (8);
-				break;
-			case DAMA:
-				direcciones = new VectorDireccion[8];
-				direcciones[0] = new VectorDireccion (1, 0);
-				direcciones[1] = new VectorDireccion (-1, 0);
-				direcciones[2] = new VectorDireccion (0, 1);
-				direcciones[3] = new VectorDireccion (0, -1);
-				direcciones[4] = new VectorDireccion (1, 1);
-				direcciones[5] = new VectorDireccion (-1, 1);
-				direcciones[6] = new VectorDireccion (1, -1);
-				direcciones[7] = new VectorDireccion (-1, -1);
-				casillasValidas = new ArrayList<Casilla> (27);
-				break;
+			direcciones[4] = new VectorDireccion(1, -2);
+			direcciones[5] = new VectorDireccion(-1, -2);
+			direcciones[6] = new VectorDireccion(-2, 1);
+			direcciones[7] = new VectorDireccion(-2, -1);
+			casillasValidas = new ArrayList<Casilla>(8);
+			break;
+		case REY:
+			direcciones = new VectorDireccion[8];
+			direcciones[0] = new VectorDireccion(1, 0);
+			direcciones[1] = new VectorDireccion(-1, 0);
+			direcciones[2] = new VectorDireccion(0, 1);
+			direcciones[3] = new VectorDireccion(0, -1);
+			direcciones[4] = new VectorDireccion(1, 1);
+			direcciones[5] = new VectorDireccion(-1, 1);
+			direcciones[6] = new VectorDireccion(1, -1);
+			direcciones[7] = new VectorDireccion(-1, -1);
+			casillasValidas = new ArrayList<Casilla>(8);
+			break;
+		case DAMA:
+			direcciones = new VectorDireccion[8];
+			direcciones[0] = new VectorDireccion(1, 0);
+			direcciones[1] = new VectorDireccion(-1, 0);
+			direcciones[2] = new VectorDireccion(0, 1);
+			direcciones[3] = new VectorDireccion(0, -1);
+			direcciones[4] = new VectorDireccion(1, 1);
+			direcciones[5] = new VectorDireccion(-1, 1);
+			direcciones[6] = new VectorDireccion(1, -1);
+			direcciones[7] = new VectorDireccion(-1, -1);
+			casillasValidas = new ArrayList<Casilla>(27);
+			break;
 		}
 	}
 
@@ -142,7 +142,7 @@ public final class Pieza {
 	 * @return Devuelve true cuando pieza1 y pieza2 sean de bandos contrarios,
 	 *         false cuando sean del mismo bando.
 	 */
-	public final static boolean esBandoContrario (Pieza pieza1, Pieza pieza2) {
+	public final static boolean esBandoContrario(Pieza pieza1, Pieza pieza2) {
 		return pieza1.bando != pieza2.bando;
 	}
 
@@ -157,7 +157,7 @@ public final class Pieza {
 	 * @return Devuelve true cuando pieza sea del bando contrario al que le toca
 	 *         mover, false si es del mismo bando
 	 */
-	public final static boolean esBandoContrario (Bando turno, Pieza pieza) {
+	public final static boolean esBandoContrario(Bando turno, Pieza pieza) {
 		return turno != pieza.bando;
 	}
 
@@ -169,10 +169,10 @@ public final class Pieza {
 	 * @param n
 	 *            Es el numero de destino que queremos añadir
 	 */
-	public void anadirMov (char let, char n) {
-		this.casillasValidas.add (new Casilla(let, n));
+	public void anadirMov(char let, char n) {
+		this.casillasValidas.add(new Casilla(let, n));
 	}
-	
+
 	public void anadirMov(Casilla c) {
 		this.casillasValidas.add(c);
 	}
@@ -192,19 +192,19 @@ public final class Pieza {
 	public Tipo getTipo() {
 		return tipo;
 	}
-	
+
 	public char getLetra() {
 		return casilla.getLetra();
 	}
-	
+
 	public void setLetra(char let) {
 		casilla.setLetra(let);
 	}
-	
+
 	public char getNum() {
-		return casilla.getNumero();		
+		return casilla.getNumero();
 	}
-	
+
 	public void setNum(char num) {
 		casilla.setNumero(num);
 	}

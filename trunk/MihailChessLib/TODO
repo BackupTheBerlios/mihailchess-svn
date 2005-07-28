@@ -1,2 +1,4 @@
 - Cambiar nombre metodo Casilla.add
 - Cambiar nombre clase TablaHash
+- En vez de usar int clave en los Diccionarios, usar Posicion posicion.
+- Tratar de usar la clase Casilla lo maximo posible, en vez de dos chars.

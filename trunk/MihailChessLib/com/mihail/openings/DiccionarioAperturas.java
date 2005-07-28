@@ -1,4 +1,5 @@
 package com.mihail.openings;
+
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -52,13 +53,13 @@ public final class DiccionarioAperturas {
 	 * Crea una nueva instancia de la clase y crea la Tabla Hash con capacidad
 	 * CAPACIDAD.
 	 */
-	public DiccionarioAperturas (Locale id) {
-		tabla = new HashMap<Integer, String> (CAPACIDAD);
+	public DiccionarioAperturas(Locale id) {
+		tabla = new HashMap<Integer, String>(CAPACIDAD);
 		// Segun el idioma que se use en el programa, se cargan las aperturas en
 		// ingles o en castellano.
 		idioma = id;
-		String lang = idioma.getLanguage ();
-		if (lang.equals ("en") || lang.equals ("de"))
+		String lang = idioma.getLanguage();
+		if (lang.equals("en") || lang.equals("de"))
 			SUFIJO_FICHERO_APERTURAS = "_en";
 		else
 			SUFIJO_FICHERO_APERTURAS = "_es";
@@ -68,7 +69,7 @@ public final class DiccionarioAperturas {
 	 * Lee el fichero de aperturas FICHERO_APERTURAS e introduce sus datos en la
 	 * Tabla Hash.
 	 */
-	public void parse () throws FileNotFoundException, IOException {
+	public void parse() throws FileNotFoundException, IOException {
 		byte[] text;
 		String c;
 		String[] lineas, partes;
@@ -76,48 +77,47 @@ public final class DiccionarioAperturas {
 		StringBuffer aInsertar;
 		Integer clave;
 		FileInputStream ent;
-		ent = new FileInputStream (NOMBRE_FICHERO_APERTURAS
+		ent = new FileInputStream(NOMBRE_FICHERO_APERTURAS
 				+ SUFIJO_FICHERO_APERTURAS + EXTENSION_FICHERO_APERTURAS);
-		text = new byte[ent.available ()];
-		ent.read (text);
-		ent.close ();
-		c = new String (text);
-		lineas = c.split ("\n");
+		text = new byte[ent.available()];
+		ent.read(text);
+		ent.close();
+		c = new String(text);
+		lineas = c.split("\n");
 		for (int i = 0; i < lineas.length; i++) {
-			partes = lineas[i].split ("\t");
-			clave = new Integer (partes[0]);
+			partes = lineas[i].split("\t");
+			clave = new Integer(partes[0]);
 			eco = partes[1];
 			apertura = partes[2];
 			variante = partes[3];
-			aInsertar = new StringBuffer (eco + " " + apertura + ", "
-					+ variante);
-			if (aInsertar.charAt (aInsertar.length () - 2) == ',') {
-				aInsertar.deleteCharAt (aInsertar.length () - 1);
-				aInsertar.deleteCharAt (aInsertar.length () - 1);
+			aInsertar = new StringBuffer(eco + " " + apertura + ", " + variante);
+			if (aInsertar.charAt(aInsertar.length() - 2) == ',') {
+				aInsertar.deleteCharAt(aInsertar.length() - 1);
+				aInsertar.deleteCharAt(aInsertar.length() - 1);
 			}
-			tabla.put (clave, aInsertar.toString ());
+			tabla.put(clave, aInsertar.toString());
 		}
 	}
 
 	/**
 	 * Este método sirve para consultar si la tabla hash contiene la clave n.
 	 * 
-	 * @param n
+	 * @param clave
 	 *            La clave hash.
 	 * @return True si la contiene, false en caso contrario.
 	 */
-	public boolean containsKey (Integer n) {
-		return tabla.containsKey (n);
+	public boolean containsKey(int clave) {
+		return tabla.containsKey(clave);
 	}
 
 	/**
 	 * Este método sirve para obtener un nombre de apertura de la tabla hash.
 	 * 
-	 * @param n
+	 * @param clave
 	 *            La clave hash.
 	 * @return El string que corresponde con la clave n.
 	 */
-	public String get (Integer n) {
-		return tabla.get (n);
+	public String get(int clave) {
+		return tabla.get(clave);
 	}
 }

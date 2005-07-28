@@ -5,7 +5,6 @@ import java.util.Locale;
 
 import com.mihail.chess.*;
 
-
 public class Aperturas {
 	/**
 	 * Tabla hash con las aperturas.
@@ -20,10 +19,10 @@ public class Aperturas {
 	 * @throws FileNotFoundException
 	 * @throws IOException
 	 */
-	public Aperturas (Locale loc) throws FileNotFoundException, IOException {
+	public Aperturas(Locale loc) throws FileNotFoundException, IOException {
 		// Se construye la Tabla Hash con las aperturas.
-		aperturas = new DiccionarioAperturas (loc);
-		aperturas.parse ();
+		aperturas = new DiccionarioAperturas(loc);
+		aperturas.parse();
 	}
 
 	/**
@@ -32,10 +31,10 @@ public class Aperturas {
 	 * @param pos
 	 * @return Nombre de la apertura que se esta jugando en la Posicion pos.
 	 */
-	public String getApertura (Posicion pos) {
-		int clave = pos.getClavePosicion ();
-		if (aperturas.containsKey (clave))
-			return aperturas.get (clave);
+	public String getApertura(Posicion pos) {
+		int clave = pos.getClavePosicion();
+		if (aperturas.containsKey(clave))
+			return aperturas.get(clave);
 		else
 			return null;
 	}

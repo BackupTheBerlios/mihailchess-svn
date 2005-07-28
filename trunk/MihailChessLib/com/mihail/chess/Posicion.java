@@ -9,21 +9,15 @@ public class Posicion {
 	 * Constante que representa al bando blanco.
 	 */
 	// public final static int BLANCO = 0;
-
 	/**
 	 * Constante que representa al bando negro.
 	 */
 	// public final static int NEGRO = 1;
-
 	/**
-	 * Constante que representa la cadena FEN con la posición inicial en el tablero.
+	 * Constante que representa la cadena FEN con la posición inicial en el
+	 * tablero.
 	 */
 	public final static String CAD_INICIAL = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
-	
-	/**
-	 * Constante que representa la Posicion inicial en el tablero. 
-	 */
-	public final static Posicion POS_INICIAL = new Posicion (CAD_INICIAL);
 
 	/**
 	 * Este atributo es la representacion del tablero en la logica del programa.
@@ -119,7 +113,7 @@ public class Posicion {
 		contadorTablas = 0;
 		numeroMovimiento = 1;
 	}
-	
+
 	public Posicion(String posicion) {
 		this();
 		setPosicion(posicion);
@@ -226,7 +220,8 @@ public class Posicion {
 					if (p.getBando() == Bando.BLANCO)
 						cad += tipoToEnglish(p.getTipo());
 					else
-						cad += (Character.toLowerCase(tipoToEnglish(p.getTipo())));
+						cad += (Character
+								.toLowerCase(tipoToEnglish(p.getTipo())));
 					cont = 0;
 				}
 			}
@@ -415,7 +410,8 @@ public class Posicion {
 		case NEGRO:
 			return enroque[1][0];
 		}
-		throw new AssertionError("El Bando solo puede ser BLANCO o NEGRO: " + this);
+		throw new AssertionError("El Bando solo puede ser BLANCO o NEGRO: "
+				+ this);
 	}
 
 	/**
@@ -433,7 +429,8 @@ public class Posicion {
 		case NEGRO:
 			return enroque[1][1];
 		}
-		throw new AssertionError("El Bando solo puede ser BLANCO o NEGRO: " + this);
+		throw new AssertionError("El Bando solo puede ser BLANCO o NEGRO: "
+				+ this);
 	}
 
 	/**
@@ -484,7 +481,7 @@ public class Posicion {
 	}
 
 	public boolean setEnroqueCorto(Bando b, boolean c) {
-		if(!c) {
+		if (!c) {
 			int x;
 			switch (b) {
 			case BLANCO:
@@ -494,15 +491,18 @@ public class Posicion {
 				x = 1;
 				break;
 			default:
-				throw new AssertionError("El Bando solo puede ser BLANCO o NEGRO: " + this);
+				throw new AssertionError(
+						"El Bando solo puede ser BLANCO o NEGRO: " + this);
 			}
 			enroque[x][0] = c;
 			return true;
 		}
 		if (b == Bando.BLANCO) {
 			Pieza p = getPieza('h', '1');
-			if (p != null && kingPosition[bandoToInt(Bando.BLANCO)].getLetra() == 'e'
-					&& kingPosition[bandoToInt(Bando.BLANCO)].getNumero() == '1' && p.getBando() == Bando.BLANCO
+			if (p != null
+					&& kingPosition[bandoToInt(Bando.BLANCO)].getLetra() == 'e'
+					&& kingPosition[bandoToInt(Bando.BLANCO)].getNumero() == '1'
+					&& p.getBando() == Bando.BLANCO
 					&& p.getTipo() == Tipo.TORRE) {
 				enroque[0][0] = c;
 				return true;
@@ -510,9 +510,10 @@ public class Posicion {
 				return false;
 		} else if (b == Bando.NEGRO) {
 			Pieza p = getPieza('h', '8');
-			if (p != null && kingPosition[bandoToInt(Bando.NEGRO)].getLetra() == 'e'
-					&& kingPosition[bandoToInt(Bando.NEGRO)].getNumero() == '8' && p.getBando() == Bando.NEGRO
-					&& p.getTipo() == Tipo.TORRE) {
+			if (p != null
+					&& kingPosition[bandoToInt(Bando.NEGRO)].getLetra() == 'e'
+					&& kingPosition[bandoToInt(Bando.NEGRO)].getNumero() == '8'
+					&& p.getBando() == Bando.NEGRO && p.getTipo() == Tipo.TORRE) {
 				enroque[1][0] = c;
 				return true;
 			} else
@@ -522,7 +523,7 @@ public class Posicion {
 	}
 
 	public boolean setEnroqueLargo(Bando b, boolean c) {
-		if(!c) {
+		if (!c) {
 			int x;
 			switch (b) {
 			case BLANCO:
@@ -532,15 +533,18 @@ public class Posicion {
 				x = 1;
 				break;
 			default:
-				throw new AssertionError("El Bando solo puede ser BLANCO o NEGRO: " + this);
+				throw new AssertionError(
+						"El Bando solo puede ser BLANCO o NEGRO: " + this);
 			}
 			enroque[x][1] = c;
 			return true;
 		}
 		if (b == Bando.BLANCO) {
 			Pieza p = getPieza('a', '1');
-			if (p != null && kingPosition[bandoToInt(Bando.BLANCO)].getLetra() == 'e'
-					&& kingPosition[0].getNumero() == '1' && p.getBando() == Bando.BLANCO
+			if (p != null
+					&& kingPosition[bandoToInt(Bando.BLANCO)].getLetra() == 'e'
+					&& kingPosition[0].getNumero() == '1'
+					&& p.getBando() == Bando.BLANCO
 					&& p.getTipo() == Tipo.TORRE) {
 				enroque[0][1] = c;
 				return true;
@@ -548,9 +552,10 @@ public class Posicion {
 				return false;
 		} else if (b == Bando.NEGRO) {
 			Pieza p = getPieza('a', '8');
-			if (p != null && kingPosition[bandoToInt(Bando.NEGRO)].getLetra() == 'e'
-					&& kingPosition[bandoToInt(Bando.NEGRO)].getNumero() == '8' && p.getBando() == Bando.NEGRO
-					&& p.getTipo() == Tipo.TORRE) {
+			if (p != null
+					&& kingPosition[bandoToInt(Bando.NEGRO)].getLetra() == 'e'
+					&& kingPosition[bandoToInt(Bando.NEGRO)].getNumero() == '8'
+					&& p.getBando() == Bando.NEGRO && p.getTipo() == Tipo.TORRE) {
 				enroque[1][1] = c;
 				return true;
 			} else
@@ -583,15 +588,16 @@ public class Posicion {
 		pieza.setNum(num);
 		tabla[num - '1'][letra - 'a'] = pieza;
 		clavePosicion = clavePosicion
-				^ indices[bandoToInt(pieza.getBando())][tipoToInt(pieza.getTipo())][num - '1'][letra - 'a'];
+				^ indices[bandoToInt(pieza.getBando())][tipoToInt(pieza
+						.getTipo())][num - '1'][letra - 'a'];
 
 		if (pieza.getTipo() == Tipo.REY) {
 			kingPosition[bandoToInt(pieza.getBando())] = pieza.getCasilla();
 		}
 	}
-	
-	public void borrarPieza (Casilla casilla) {
-			borrarPieza (casilla.getLetra(), casilla.getNumero());
+
+	public void borrarPieza(Casilla casilla) {
+		borrarPieza(casilla.getLetra(), casilla.getNumero());
 	}
 
 	/**
@@ -614,25 +620,30 @@ public class Posicion {
 				if (p.getBando() == Bando.BLANCO) {
 					enroque[0][0] = false;
 					enroque[0][1] = false;
-					kingPosition[bandoToInt(Bando.BLANCO)].setLetra ('\0');
-					kingPosition[bandoToInt(Bando.BLANCO)].setNumero ('\0');
+					kingPosition[bandoToInt(Bando.BLANCO)].setLetra('\0');
+					kingPosition[bandoToInt(Bando.BLANCO)].setNumero('\0');
 				} else {
 					enroque[1][0] = false;
 					enroque[1][1] = false;
-					kingPosition[bandoToInt(Bando.NEGRO)].setLetra ('\0');
-					kingPosition[bandoToInt(Bando.NEGRO)].setNumero ('\0');
+					kingPosition[bandoToInt(Bando.NEGRO)].setLetra('\0');
+					kingPosition[bandoToInt(Bando.NEGRO)].setNumero('\0');
 				}
 			} else if (p.getTipo() == Tipo.TORRE) {
-				if (p.getLetra() == 'a' && p.getNum() == '1' && p.getBando() == Bando.BLANCO)
+				if (p.getLetra() == 'a' && p.getNum() == '1'
+						&& p.getBando() == Bando.BLANCO)
 					enroque[0][1] = false;
-				else if (p.getLetra() == 'h' && p.getNum() == '1' && p.getBando() == Bando.BLANCO)
+				else if (p.getLetra() == 'h' && p.getNum() == '1'
+						&& p.getBando() == Bando.BLANCO)
 					enroque[0][0] = false;
-				else if (p.getLetra() == 'a' && p.getNum() == '8' && p.getBando() == Bando.NEGRO)
+				else if (p.getLetra() == 'a' && p.getNum() == '8'
+						&& p.getBando() == Bando.NEGRO)
 					enroque[1][1] = false;
-				else if (p.getLetra() == 'h' && p.getNum() == '8' && p.getBando() == Bando.NEGRO)
+				else if (p.getLetra() == 'h' && p.getNum() == '8'
+						&& p.getBando() == Bando.NEGRO)
 					enroque[1][0] = false;
 			} else if (p.getTipo() == Tipo.PEON) {
-				if (letra == alPaso && (p.getBando() == Bando.BLANCO && num == '4')
+				if (letra == alPaso
+						&& (p.getBando() == Bando.BLANCO && num == '4')
 						|| (p.getBando() == Bando.NEGRO && num == '5'))
 					alPaso = 0;
 			}
@@ -679,18 +690,20 @@ public class Posicion {
 	 *            letra de la columna.
 	 */
 	public void setAlPaso(char alPaso) {
-		if(alPaso=='\0') {
+		if (alPaso == '\0') {
 			this.alPaso = alPaso;
 			return;
 		}
 		boolean encontrado = false;
 		Pieza p;
-		if(this.turno==Bando.NEGRO) {
+		if (this.turno == Bando.NEGRO) {
 			p = getPieza(alPaso, '4');
-			encontrado = p != null && p.getBando() == Bando.BLANCO && p.getTipo() == Tipo.PEON;
+			encontrado = p != null && p.getBando() == Bando.BLANCO
+					&& p.getTipo() == Tipo.PEON;
 		} else {
 			p = getPieza(alPaso, '5');
-			encontrado = p != null && p.getBando() == Bando.NEGRO && p.getTipo() == Tipo.PEON;
+			encontrado = p != null && p.getBando() == Bando.NEGRO
+					&& p.getTipo() == Tipo.PEON;
 		}
 		if (encontrado)
 			this.alPaso = alPaso;
@@ -747,8 +760,8 @@ public class Posicion {
 	protected void setPiezaInternal(Pieza p, char letra, char num) {
 		tabla[num - '1'][letra - 'a'] = p;
 		if (p.getTipo() == Tipo.REY) {
-			kingPosition[bandoToInt(p.getBando())].setLetra (letra);
-			kingPosition[bandoToInt(p.getBando())].setNumero (num);
+			kingPosition[bandoToInt(p.getBando())].setLetra(letra);
+			kingPosition[bandoToInt(p.getBando())].setNumero(num);
 		}
 	}
 }

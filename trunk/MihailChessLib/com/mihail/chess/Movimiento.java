@@ -4,6 +4,7 @@ import static com.mihail.chess.Logica.Bando;
 
 import com.mihail.chess.Logica.Resultado;
 import com.mihail.chess.Pieza.Tipo;
+
 /**
  * Esta clase define un objeto Movimiento, que guarda informacion sobre el
  * movimiento que se realiza y sobre el estado de la partida en ese momento (qué
@@ -19,24 +20,20 @@ public final class Movimiento {
 	 * Este atributo indica la letra de la casilla origen.
 	 */
 	// public char origenLetra;
-
 	/**
 	 * Este atributo indica el numero de la casilla origen.
 	 */
 	// public char origenNum;
-	
 	private Casilla casillaOrigen;
 
 	/**
 	 * Este atributo indica la letra de la casilla destino.
 	 */
 	// public char destinoLetra;
-
 	/**
 	 * Este atributo indica el numero de la casilla destino.
 	 */
 	// public char destinoNum;
-	
 	private Casilla casillaDestino;
 
 	/**
@@ -62,13 +59,11 @@ public final class Movimiento {
 	 * producido una captura contiene un 0.
 	 */
 	// public char casillaComerLetra;
-
 	/**
 	 * Este atributo indica el numero de la casilla donde se come. Si no se ha
 	 * producido una captura contiene un 0.
 	 */
 	// public char casillaComerNum;
-	
 	private Casilla casillaComer;
 
 	/**

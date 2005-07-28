@@ -16,15 +16,15 @@ public abstract class Analizador {
 	/**
 	 * Sirve para almacenar las partidas que se cargarán.
 	 */
-	protected ArrayList<Partida> listaPartidas = new ArrayList<Partida> ();
+	protected ArrayList<Partida> listaPartidas = new ArrayList<Partida>();
 
 	/**
 	 * Sirve para obtener el numero de partidas que tenemos.
 	 * 
 	 * @return El tamaño de la lista de partidas.
 	 */
-	public int getTamLista () {
-		return listaPartidas.size ();
+	public int getTamLista() {
+		return listaPartidas.size();
 	}
 
 	/**
@@ -34,8 +34,8 @@ public abstract class Analizador {
 	 *            La posicion dentro de la lista de partidas.
 	 * @return La partida en cuestion.
 	 */
-	public Partida getPartida (int pos) {
-		return listaPartidas.get (pos);
+	public Partida getPartida(int pos) {
+		return listaPartidas.get(pos);
 	}
 
 	/**
@@ -44,8 +44,8 @@ public abstract class Analizador {
 	 * @param p
 	 *            La partida en cuestion.
 	 */
-	public void insertarPartida (Partida p) {
-		listaPartidas.add (p);
+	public void insertarPartida(Partida p) {
+		listaPartidas.add(p);
 	}
 
 	/**
@@ -54,11 +54,11 @@ public abstract class Analizador {
 	 * @param archivo
 	 *            El string que representa al archivo donde vamos a guardarlas.
 	 */
-	public abstract void guardarArchivo (String archivo) throws IOException;
+	public abstract void guardarArchivo(String archivo) throws IOException;
 
 	/**
 	 * Analiza e interpreta un fichero con partidas con el objetivo de cargarlas
 	 * a memoria.
 	 */
-	public abstract void analizar () throws ParseException;
+	public abstract void analizar() throws ParseException;
 }

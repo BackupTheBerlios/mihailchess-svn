@@ -6,19 +6,19 @@ package com.mihail.clock;
  * 
  * @author Pedro Suarez Casal
  * @author Iago Porto Diaz
- *  
+ * 
  */
 public class RelojException extends Exception {
 
 	private static final long serialVersionUID = 1L;
 
 	/**
-     * Construye una RelojException con el mensaje de detalle especificado.
-     * 
-     * @param s
-     *            Mensaje que detalla la excepcion.
-     */
-    public RelojException(String s) {
-        super(s);
-    }
+	 * Construye una RelojException con el mensaje de detalle especificado.
+	 * 
+	 * @param s
+	 *            Mensaje que detalla la excepcion.
+	 */
+	public RelojException(String s) {
+		super(s);
+	}
 }
