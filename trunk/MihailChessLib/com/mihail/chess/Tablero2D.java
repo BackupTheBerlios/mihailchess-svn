@@ -83,8 +83,6 @@ public class Tablero2D extends JPanel {
 	// Versiones ajustadas al tamaño correcto de las imagenes
 	private Image[][] piezas = new Image[2][6];
 
-	private Image[] casillas = new Image[2];
-
 	// Imagenes de las piezas tal y como aparecen en el archivo
 	private Image[][] imagenes = new Image[2][6];
 
@@ -162,55 +160,6 @@ public class Tablero2D extends JPanel {
 		redimensionar();
 	}
 
-	private int bandoToInt(Bando b) {
-		if (b == Bando.BLANCO) {
-			return 0;
-		}
-		return 1;
-	}
-
-	/**
-	 * Establece la imagen a usar como textura en la casilla del color indicado.
-	 * 
-	 * @param bando
-	 *            Color de las casillas que queremos cambiar
-	 * @param c
-	 *            Imagen que queremos establecer
-	 */
-	public void setImagenTextura(int bando, Image c) {
-		casillas[bando] = c;
-	}
-
-	/**
-	 * 
-	 */
-	public void setTextura(Textura b) {
-		textura = b;
-	}
-
-	/*
-	 * Funcion de utilidad que se encarga de redimensionar las imagenes al
-	 * tamaño adecuado del tablero
-	 */
-
-	private final void redimensionar() {
-		MediaTracker media = new MediaTracker(this);
-		for (int i = 0; i < 2; i++) {
-			for (int j = 0; j < 6; j++) {
-				piezas[i][j] = imagenes[i][j].getScaledInstance(TAM, TAM,
-						Image.SCALE_SMOOTH);
-				media.addImage(piezas[i][j], 1);
-			}
-		}
-		try {
-			media.waitForID(1);
-		} catch (InterruptedException e) {
-			JOptionPane.showMessageDialog(this,
-					"Redimensionado de Imagenes Interrumpido:\n"
-							+ e.getMessage());
-		}
-	}
-
 	/**
 	 * Se encarga de cambiar el sentido del tablero.
 	 */
@@ -222,79 +171,6 @@ public class Tablero2D extends JPanel {
 
 	public Dimension getPreferredSize() {
 		return (new Dimension(8 * TAM + BORDE * 2, 8 * TAM + BORDE * 2));
-	}
-
-	/*
-	 * Funcion que se encarga de dibujar el borde del tablero
-	 */
-
-	private void dibujarBorde(Graphics g) {
-		g.setColor(Color.BLACK);
-
-		g.fillRect(0, 0, Math.min(getWidth(), getHeight()), Math.min(
-				getWidth(), getHeight()));
-		// char num = '8';
-		// char let = 'a';
-
-		g.setColor(new Color(209, 193, 134));
-		g.setFont(new Font("Arial", Font.BOLD, 12));
-
-		int yF = 8 * TAM + BORDE * 3 / 2 + 6;
-		for (int i = 0; i < 8; i++) {
-			int xF = i * TAM + BORDE + TAM / 2;
-			if (sentido) {
-				g
-						.drawString(new Character((char) (i + 'A')).toString(),
-								xF, yF);
-			} else {
-				g.drawString(new Character((char) (7 - i + 'A')).toString(),
-						xF, yF);
-			}
-		}
-		int xF = BORDE / 2 - 3;
-		for (int i = 0; i < 8; i++) {
-			yF = i * TAM + BORDE + TAM / 2;
-			if (sentido) {
-
-				g.drawString(new Integer(7 - i + 1).toString(), xF, yF);
-
-			} else {
-				g.drawString(new Integer(i + 1).toString(), xF, yF);
-			}
-		}
-
-	}
-
-	/*
-	 * Funcion que proporciona la imagen correspondiente a una pieza definida
-	 * por color y pieza.
-	 */
-
-	protected Image getImage(Bando color, Tipo pieza) {
-		// if (p != null) {
-		switch (pieza) {
-		case PEON:
-			return piezas[bandoToInt(color)][0];
-
-		case CABALLO:
-			return piezas[bandoToInt(color)][1];
-
-		case ALFIL:
-			return piezas[bandoToInt(color)][2];
-
-		case TORRE:
-			return piezas[bandoToInt(color)][3];
-
-		case DAMA:
-			return piezas[bandoToInt(color)][4];
-
-		case REY:
-			return piezas[bandoToInt(color)][5];
-
-		default:
-			return null;
-		}
-
 	}
 
 	public void paintComponent(Graphics g) {
@@ -319,7 +195,6 @@ public class Tablero2D extends JPanel {
 		if (getWidth() < getHeight()) {
 			bordeSUP = (getHeight() - getWidth()) / 2;
 			bordeLAT = 0;
-
 		} else {
 			bordeLAT = (getWidth() - getHeight()) / 2;
 			bordeSUP = 0;
@@ -549,6 +424,97 @@ public class Tablero2D extends JPanel {
 		this.sentido = sentido;
 	}
 
+	/**
+	 * Obtiene el modo de textura que se esta utilizando actualmente.
+	 * 
+	 * @return El modo de textura.
+	 */
+
+	public Textura getTextura() {
+		return textura;
+	}
+	
+	/**
+	 * Establece el modo de textura.
+	 * 
+	 * @param textura El modo de textura.
+	 */
+
+	public void setTextura(Textura textura) {
+		this.textura = textura;
+	}
+	
+	/**
+	 * Obtiene el color de degradado de las casillas de un color.
+	 * 
+	 * @param b El tipo de las casillas, blancas o negras.
+	 * @return El color de degradado.
+	 */
+
+	public Color getColorGradiente(Bando b) {
+		return colorGradiente[bandoToInt(b)];
+	}
+	
+	/**
+	 * Establece el color de degradado de las casillas de un color. Este
+	 * color solo se mostrara si la opcion textura esta establecida a CASILLA_GRADIENTE.
+	 * El degradado se hara con el color establecido como liso.
+	 * 
+	 * @param b El tipo de las casillas, blancas o negras.
+	 * @param colorGradiente El color de degradado.
+	 */
+
+	public void setColorGradiente(Bando b, Color colorGradiente) {
+		this.colorGradiente[bandoToInt(b)] = colorGradiente;
+	}
+
+	/**
+	 * Obtiene el color liso de las casillas de un color.
+	 * 
+	 * @param b El tipo de las casillas, blancas o negras.
+	 * @return El color liso.
+	 */
+	public Color getColorLiso(Bando b) {
+		return colorLiso[bandoToInt(b)];
+	}
+	
+	/**
+	 * Establece el color liso de las casillas de un color. Este color
+	 * solo se mostrara si la opcion textura esta establecida a 
+	 * CASILLA_LISO.
+	 * 
+	 * @param b El tipo de las casillas, blancas o negras.
+	 * @param colorLiso El color liso.
+	 */
+
+	public void setColorLiso(Bando b, Color colorLiso) {
+		this.colorLiso[bandoToInt(b)] = colorLiso;
+	}
+	
+	/**
+	 * Obtiene la textura de las casillas de un color.
+	 * 
+	 * @param b El tipo de las casillas, blancas o negras.
+	 * @return La textura del bando indicado.
+	 */
+
+	public Image getColorTextura(Bando b) {
+		return colorTextura[bandoToInt(b)];
+	}
+	
+	/**
+	 * Establece la textura de las casillas de un color. Esta textura solo
+	 * se mostrara si la opcion textura esta establecida a 
+	 * CASILLA_TEXTURA.
+	 * 
+	 * @param b El tipo de las casillas, blancas o negras.
+	 * @param colorTextura La imagen que queremos establecer como textura.
+	 */
+
+	public void setColorTextura(Bando b, Image colorTextura) {
+		this.colorTextura[bandoToInt(b)] = colorTextura;
+	}
+	
 	/*
 	 * Funcion para repintar la casilla indicada por el punto x, y, que debe ser
 	 * el centro de la casilla. TODO Modificar para que funcione con la esquina
@@ -558,7 +524,7 @@ public class Tablero2D extends JPanel {
 	protected void repintarCasilla(int x, int y) {
 		repaint(x - TAM / 2, y - TAM / 2, TAM, TAM);
 	}
-
+	
 	/**
 	 * Metodo de utilidad para obtener de forma sencilla la casilla
 	 * correspondiente a la que pertenece un pixel en la posicion (x, y).
@@ -580,28 +546,97 @@ public class Tablero2D extends JPanel {
 		}
 		return new Point(posX, posY);
 	}
+	
+	protected Image getImage(Bando color, Tipo pieza) {
+		// if (p != null) {
+		switch (pieza) {
+		case PEON:
+			return piezas[bandoToInt(color)][0];
 
-	public Color getColorGradiente(Bando b) {
-		return colorGradiente[0];
+		case CABALLO:
+			return piezas[bandoToInt(color)][1];
+
+		case ALFIL:
+			return piezas[bandoToInt(color)][2];
+
+		case TORRE:
+			return piezas[bandoToInt(color)][3];
+
+		case DAMA:
+			return piezas[bandoToInt(color)][4];
+
+		case REY:
+			return piezas[bandoToInt(color)][5];
+
+		default:
+			return null;
+		}
+
 	}
+	
+	private void dibujarBorde(Graphics g) {
+		g.setColor(Color.BLACK);
 
-	public void setColorGradiente(Bando b, Color colorGradiente) {
-		this.colorGradiente[0] = colorGradiente;
+		g.fillRect(0, 0, Math.min(getWidth(), getHeight()), Math.min(
+				getWidth(), getHeight()));
+		// char num = '8';
+		// char let = 'a';
+
+		g.setColor(new Color(209, 193, 134));
+		g.setFont(new Font("Arial", Font.BOLD, 12));
+
+		int yF = 8 * TAM + BORDE * 3 / 2 + 6;
+		for (int i = 0; i < 8; i++) {
+			int xF = i * TAM + BORDE + TAM / 2;
+			if (sentido) {
+				g
+						.drawString(new Character((char) (i + 'A')).toString(),
+								xF, yF);
+			} else {
+				g.drawString(new Character((char) (7 - i + 'A')).toString(),
+						xF, yF);
+			}
+		}
+		int xF = BORDE / 2 - 3;
+		for (int i = 0; i < 8; i++) {
+			yF = i * TAM + BORDE + TAM / 2;
+			if (sentido) {
+
+				g.drawString(new Integer(7 - i + 1).toString(), xF, yF);
+
+			} else {
+				g.drawString(new Integer(i + 1).toString(), xF, yF);
+			}
+		}
 	}
-
-	public Color getColorLiso(Bando b) {
-		return colorLiso[0];
+	
+	private int bandoToInt(Bando b) {
+		if (b == Bando.BLANCO) {
+			return 0;
+		}
+		return 1;
 	}
+	
+	/*
+	 * Funcion de utilidad que se encarga de redimensionar las imagenes al
+	 * tamaño adecuado del tablero
+	 */
 
-	public void setColorLiso(Bando b, Color colorLiso) {
-		this.colorLiso[0] = colorLiso;
-	}
-
-	public Image getColorTextura(Bando b) {
-		return colorTextura[0];
-	}
-
-	public void setColorTextura(Bando b, Image colorTextura) {
-		this.colorTextura[0] = colorTextura;
+	private final void redimensionar() {
+		MediaTracker media = new MediaTracker(this);
+		for (int i = 0; i < 2; i++) {
+			for (int j = 0; j < 6; j++) {
+				piezas[i][j] = imagenes[i][j].getScaledInstance(TAM, TAM,
+						Image.SCALE_SMOOTH);
+				media.addImage(piezas[i][j], 1);
+			}
+		}
+		try {
+			media.waitForID(1);
+		} catch (InterruptedException e) {
+			JOptionPane.showMessageDialog(this,
+					"Redimensionado de Imagenes Interrumpido:\n"
+							+ e.getMessage());
+		}
 	}
 }
