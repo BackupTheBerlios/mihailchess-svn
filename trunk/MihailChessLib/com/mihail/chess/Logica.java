@@ -93,6 +93,10 @@ public class Logica {
 	public int getNumTotalMovimientos() {
 		return movimientos.size();
 	}
+	
+	public Posicion getPosicion() {
+		return this.posicion;
+	}
 
 	/**
 	 * Obtiene el resultado de la partida.
