@@ -28,7 +28,7 @@ public class Logica {
 	/**
 	 * Este atributo sirve para guardar la lista de movimientos de una partida.
 	 */
-	private ArrayList<Movimiento> movimientos;
+	private ArbolVariantes movimientos;
 
 	/**
 	 * Este atributo sirve para saber en que posicion de la lista de movimientos
@@ -61,7 +61,7 @@ public class Logica {
 	 *            estandar FEN.
 	 */
 	public Logica(Posicion posInicial) {
-		movimientos = new ArrayList<Movimiento>();
+		movimientos = new ArbolVariantes();
 		posicion = posInicial;
 		hash.insertar(posicion.getClavePosicion());
 	}
@@ -91,7 +91,7 @@ public class Logica {
 	 */
 
 	public int getNumTotalMovimientos() {
-		return movimientos.size();
+		return movimientos.getNumMovimientos();
 	}
 	
 	public Posicion getPosicion() {
@@ -108,7 +108,7 @@ public class Logica {
 	 *         '\0' -> Partida Inacabada o Resultado Desconocido
 	 */
 	public Resultado getResultado() {
-		return movimientos.get(indice - 1).getFinPartida();
+		return movimientos.getLastMovimiento().getFinPartida();
 	}
 
 	/**
@@ -533,7 +533,7 @@ public class Logica {
 		if (Pieza.esBandoContrario(posicion.getTurno(), piezaQueMueve)) {
 			return null;
 		}
-		if (indice != movimientos.size())
+		if (indice != movimientos.getNumHalfPly())
 			return null;
 		// Buscamos la casilla de destino entre las casillas validas de la
 		// pieza.
@@ -644,7 +644,7 @@ public class Logica {
 					mov.setFinPartida(esFinPartida());
 
 					hash.insertar(posicion.getClavePosicion());
-					movimientos.add(mov);
+					movimientos.appendMovimiento(mov);
 					indice++;
 					return mov;
 				} else {
