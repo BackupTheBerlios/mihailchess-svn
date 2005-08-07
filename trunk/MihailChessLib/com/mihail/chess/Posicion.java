@@ -447,6 +447,10 @@ public class Posicion {
 	public Pieza getPieza(char letra, char num) {
 		return tabla[num - '1'][letra - 'a'];
 	}
+	
+	public Pieza getPieza(Casilla c) {
+		return getPieza(c.getLetra(), c.getNumero());
+	}
 
 	/**
 	 * Este metodo nos permite consultar el valor del turno.
@@ -595,6 +599,10 @@ public class Posicion {
 			kingPosition[bandoToInt(pieza.getBando())] = pieza.getCasilla();
 		}
 	}
+	
+	public void setPieza(Pieza pieza, Casilla casilla) {
+		setPieza(pieza, casilla.getLetra(), casilla.getNumero());
+	}
 
 	public void borrarPieza(Casilla casilla) {
 		borrarPieza(casilla.getLetra(), casilla.getNumero());
@@ -651,6 +659,10 @@ public class Posicion {
 					^ indices[bandoToInt(p.getBando())][tipoToInt(p.getTipo())][iNum][iLetra];
 			tabla[num - '1'][letra - 'a'] = null;
 		}
+	}
+	
+	public boolean esVacia(Casilla c) {
+		return esVacia(c.getLetra(), c.getNumero());
 	}
 
 	/**
@@ -753,11 +765,11 @@ public class Posicion {
 	 * @param letra
 	 * @param num
 	 */
-	protected void borrarPiezaInternal(char letra, char num) {
+	void borrarPiezaInternal(char letra, char num) {
 		tabla[num - '1'][letra - 'a'] = null;
 	}
 
-	protected void setPiezaInternal(Pieza p, char letra, char num) {
+	void setPiezaInternal(Pieza p, char letra, char num) {
 		tabla[num - '1'][letra - 'a'] = p;
 		if (p.getTipo() == Tipo.REY) {
 			kingPosition[bandoToInt(p.getBando())].setLetra(letra);

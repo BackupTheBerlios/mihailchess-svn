@@ -93,7 +93,7 @@ public class Logica {
 	public int getNumTotalMovimientos() {
 		return movimientos.getNumMovimientos();
 	}
-	
+
 	public Posicion getPosicion() {
 		return this.posicion;
 	}
@@ -657,6 +657,121 @@ public class Logica {
 	}
 
 	/**
+	 * Avanza por la lista de movimientos de la partida.
+	 * 
+	 * @return El movimiento al que lleguemos en la lista de movimientos.
+	 */
+	public Movimiento avanzar() {
+		Movimiento mov;
+		Pieza piezaQueMueve;
+		if (indice < movimientos.getNumHalfPly()) {
+			mov = movimientos.getMovimiento(indice);
+			piezaQueMueve = posicion.getPieza(mov.getCasillaOrigen());
+			// Si se come al paso
+			if (piezaQueMueve.getTipo() == Tipo.PEON
+					&& Math.abs(mov.getCasillaDestino().getLetra()
+							- mov.getCasillaOrigen().getLetra()) == 1
+					&& posicion.esVacia(mov.getCasillaDestino())) {
+				posicion.borrarPieza(mov.getCasillaComer());
+			}
+			// Si se corona
+			if (mov.getCoronacion() != null) {
+				piezaQueMueve = new Pieza(piezaQueMueve.getBando(), mov
+						.getCoronacion());
+			}
+			// Se hacen los calculos especiales si se trata de un rey
+			if (piezaQueMueve.getTipo() == Tipo.REY) {
+				// Movemos las torres en caso de enroque
+				Casilla origen = mov.getCasillaOrigen();
+				Casilla destino = mov.getCasillaDestino();
+				if ((destino.getLetra() - origen.getLetra()) == 2) {
+					Pieza torre = posicion.getPieza('h', origen.getNumero());
+					posicion.borrarPieza('h', origen.getNumero());
+					posicion.setPieza(torre, 'f', origen.getNumero());
+				} else {
+					if ((destino.getLetra() - origen.getLetra()) == -2) {
+						Pieza torre = posicion
+								.getPieza('a', origen.getNumero());
+						posicion.borrarPieza('a', origen.getNumero());
+						posicion.setPieza(torre, 'd', origen.getNumero());
+					}
+				}
+			}
+			posicion.borrarPieza(mov.getCasillaOrigen());
+			posicion.setPieza(piezaQueMueve, mov.getCasillaDestino());
+			posicion.setContadorTablas(mov.getContadorTablas());
+			boolean[][] enroques = mov.getEnroque();
+			posicion.setEnroqueCorto(Bando.BLANCO, enroques[0][0]);
+			posicion.setEnroqueLargo(Bando.BLANCO, enroques[0][1]);
+			posicion.setEnroqueCorto(Bando.NEGRO, enroques[1][0]);
+			posicion.setEnroqueLargo(Bando.NEGRO, enroques[1][1]);
+			posicion.setAlPaso(mov.getAlPaso());
+			posicion.setTurno();
+			indice++;
+			posicion.setNumeroMovimiento(mov.getNumeroMovimiento());
+			return mov;
+		} else {
+			return null;
+		}
+	}
+
+	/**
+	 * Retrocede por la lista de movimientos de la partida.
+	 * 
+	 * @return El movimiento al que lleguemos en la lista de movimientos.
+	 */
+	public Movimiento retroceder() {
+		Movimiento mov;
+		Pieza piezaQueMueve;
+		if (indice > 0) {
+			indice--;
+			mov = movimientos.getMovimiento(indice);
+			posicion.setNumeroMovimiento(mov.getNumeroMovimiento());
+			piezaQueMueve = posicion.getPieza(mov.getCasillaDestino());
+			if (mov.getCoronacion() != null) {
+				piezaQueMueve = new Pieza(piezaQueMueve.getBando(), mov
+						.getCoronacion());
+			}
+			if (piezaQueMueve.getTipo() == Tipo.REY) {
+				// Movemos las torres en caso de enroque
+				Casilla origen = mov.getCasillaOrigen();
+				Casilla destino = mov.getCasillaDestino();
+				if ((destino.getLetra() - origen.getLetra()) == 2) {
+					Pieza torre = posicion.getPieza('h', origen.getNumero());
+					posicion.borrarPieza('h', origen.getNumero());
+					posicion.setPieza(torre, 'f', origen.getNumero());
+				} else {
+					if ((destino.getLetra() - origen.getLetra()) == -2) {
+						Pieza torre = posicion
+								.getPieza('a', origen.getNumero());
+						posicion.borrarPieza('a', origen.getNumero());
+						posicion.setPieza(torre, 'd', origen.getNumero());
+					}
+				}
+			}
+			posicion.borrarPieza(mov.getCasillaDestino());
+			if (mov.getTipoPiezaComida() != null) {
+				posicion.setPieza(new Pieza(
+						piezaQueMueve.getBando() == Bando.BLANCO ? Bando.BLANCO
+								: Bando.NEGRO, mov.getTipoPieza()), mov
+						.getCasillaComer());
+			}
+			posicion.setPieza(piezaQueMueve, mov.getCasillaOrigen());
+			posicion.setContadorTablas(mov.getContadorTablas());
+			boolean[][] enroques = mov.getEnroque();
+			posicion.setEnroqueCorto(Bando.BLANCO, enroques[0][0]);
+			posicion.setEnroqueLargo(Bando.BLANCO, enroques[0][1]);
+			posicion.setEnroqueCorto(Bando.NEGRO, enroques[1][0]);
+			posicion.setEnroqueLargo(Bando.NEGRO, enroques[1][1]);
+			posicion.setAlPaso(mov.getAlPaso());
+			posicion.setTurno();
+			return mov;
+		} else {
+			return null;
+		}
+	}
+
+	/**
 	 * Este metodo comprueba si se produce alguna situacion en la que termine
 	 * una partida.
 	 * 
@@ -751,4 +866,8 @@ public class Logica {
 		}
 		return devolver;
 	}
+	
+	/**
+	 * TODO moverALG y getFEN ?
+	 */
 }

@@ -70,6 +70,10 @@ public class ArbolVariantes {
 			return n.movimiento;
 		return null;
 	}
+	
+	public Movimiento getMovimiento(int halfPly) {
+		return arbol.get(halfPly).movimiento;
+	}
 
 	/**
 	 * Comprueba si dado un movimiento, existen alternativas.
