@@ -216,4 +216,8 @@ public final class Pieza {
 	public void setCasilla(Casilla casilla) {
 		this.casilla = casilla;
 	}
+	
+	public boolean canMove(Casilla casilla) {
+		return casillasValidas.contains(casilla);
+	}
 }

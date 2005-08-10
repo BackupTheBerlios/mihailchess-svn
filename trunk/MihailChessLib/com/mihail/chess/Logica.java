@@ -866,8 +866,168 @@ public class Logica {
 		}
 		return devolver;
 	}
-	
+
 	/**
-	 * TODO moverALG y getFEN ?
+	 * Interpreta un movimiento en notacion algebraica y lo realiza en la
+	 * Logica. NOTA: Partimos de la base de que el turno corresponde con el
+	 * movimiento que se recibe: no se puede dar el caso de que se reciba un
+	 * movimiento de negras y que el turno pertenezca a blancas o viceversa.
+	 * 
+	 * @param mov
+	 *            String que contiene el movimiento en notacion algebraica.
+	 * @todo Poner las ambigüedades de la dama
+	 * @todo Puede ser que tengamos un problema: cuando una pieza esta clavada
+	 *       con el rey, no hay que marcar la posible ambiguedad. Hay que
+	 *       tenerlo en cuenta.
 	 */
+	public Movimiento moverALG(String mov) {
+		char origenLetra = '\0', origenNum = '\0', destinoLetra = '\0', destinoNum = '\0';
+		char tipoPieza = 'P';
+		Tipo piezaCoronacion = null;
+		int contadorOesEnroque = 0, i;
+		boolean finDestino = false;
+
+		for (i = mov.length() - 1; i >= 0; i--) {
+			switch (mov.charAt(i)) {
+			case '1':
+			case '2':
+			case '3':
+			case '4':
+			case '5':
+			case '6':
+			case '7':
+			case '8':
+				if (!finDestino) {
+					destinoNum = mov.charAt(i);
+				} else {
+					origenNum = mov.charAt(i);
+				}
+				break;
+			case 'a':
+			case 'b':
+			case 'c':
+			case 'd':
+			case 'e':
+			case 'f':
+			case 'g':
+			case 'h':
+				if (!finDestino) {
+					destinoLetra = mov.charAt(i);
+				} else {
+					origenLetra = mov.charAt(i);
+				}
+				finDestino = true;
+				break;
+			case 'B':
+				if (i != 0) {
+					piezaCoronacion = Tipo.ALFIL;
+				} else {
+					tipoPieza = 'A';
+				}
+				break;
+			case 'K':
+				tipoPieza = 'R';
+				break;
+			case 'N':
+				if (i != 0) {
+					piezaCoronacion = Tipo.CABALLO;
+				} else {
+					tipoPieza = 'C';
+				}
+				break;
+			case 'Q':
+				if (i != 0) {
+					piezaCoronacion = Tipo.DAMA;
+				} else {
+					tipoPieza = 'D';
+				}
+				break;
+			case 'R':
+				if (i != 0) {
+					piezaCoronacion = Tipo.TORRE;
+				} else {
+					tipoPieza = 'T';
+				}
+				break;
+			case '0':
+			case 'o':
+			case 'O':
+				contadorOesEnroque++;
+				break;
+			case 'x':
+			case '+':
+			case '!':
+			case '?':
+			case '-':
+			case '=':
+				break;
+			default:
+				System.out.print("Caracter desconocido: " + mov.charAt(i));
+				break;
+			}
+		}
+		if(piezaCoronacion!=null) {
+			// TODO hacer el mostrarDialogoCoronacion;
+			coronar = piezaCoronacion;
+		}
+		// Enroque Corto
+		if (contadorOesEnroque == 2) {
+			origenLetra = 'e';
+			destinoLetra = 'g';
+			if (posicion.getTurno() == Bando.BLANCO) {
+				origenNum = '1';
+				destinoNum = '1';
+			} else { // turno == NEGRO
+				origenNum = '8';
+				destinoNum = '8';
+			}
+		} else if (contadorOesEnroque == 3) {
+			origenLetra = 'e';
+			destinoLetra = 'c';
+			if (posicion.getTurno() == Bando.BLANCO) {
+				origenNum = '1';
+				destinoNum = '1';
+			} else { // turno == NEGRO
+				origenNum = '8';
+				destinoNum = '8';
+			}
+		} else {
+			Casilla c = new Casilla(destinoLetra, destinoNum);
+			if (origenLetra == '\0' && origenNum != '\0') {
+				for (char ii = 'a'; ii <= 'h'; ii++) {
+					Pieza p = posicion.getPieza(ii, origenNum);
+					if (p.canMove(c)) {
+						origenLetra = ii;
+						break;
+					}
+				}
+			} else if (origenLetra != '\0' && origenNum == '\0') {
+				for (char ii = '1'; ii <= '8'; ii++) {
+					Pieza p = posicion.getPieza(origenLetra, ii);
+					if (p.canMove(c)) {
+						origenNum = ii;
+						break;
+					}
+				}
+			} else {
+				for (char ii = '1'; ii <= '8'; ii++) {
+					for (char jj = 'a'; jj <= 'h'; jj++) {
+						Pieza p = posicion.getPieza(jj, ii);
+						if (p.canMove(c)) {
+							origenNum = ii;
+							break;
+						}
+					}
+				}
+			}
+		}
+		if (origenLetra == '\0' || origenNum == '\0' || destinoLetra == '\0'
+				|| destinoNum == '\0') {
+			System.out.println(tipoPieza + " " + origenLetra + " " + origenNum
+					+ " " + destinoLetra + " " + destinoNum);
+			return null;
+		} else {
+			return mover(origenLetra, origenNum, destinoLetra, destinoNum);
+		}
+	}
 }

@@ -3,6 +3,9 @@ package com.mihail.chess;
 import static com.mihail.chess.Logica.Bando;
 import static com.mihail.chess.Pieza.Tipo;
 
+import com.mihail.chess.Logica.Resultado;
+import com.mihail.chess.Pieza.Tipo;
+
 public class Posicion {
 
 	/**
@@ -757,6 +760,97 @@ public class Posicion {
 	 */
 	public Casilla getKingPosition(Bando color) {
 		return kingPosition[bandoToInt(color)];
+	}
+	
+	/**
+	 * Genera la notación algebraica de un movimiento.
+	 * 
+	 * @param mov
+	 *            Objeto movimiento del que se generara la notacion algebraica.
+	 * @return Una cadena con el movimiento expresado en notacion algebraica,
+	 *         (por ejemplo: Nf3, e6, Bd5...)
+	 * @todo Resolver ambiguedades, coronaciones, jaques, mates...
+	 * @todo Esto no esta bien aqui, es mejor dejarlo en Logica....
+	 */
+	private String generarNotacionALG (Movimiento mov) {
+		StringBuffer temp = new StringBuffer ();
+
+		if (mov.getTipoPieza() == Tipo.REY) {
+			if (Math.abs (mov.getCasillaOrigen().getLetra() - mov.getCasillaDestino().getLetra() ) == 2) {
+				if (mov.getCasillaDestino().getLetra() == 'g') {
+					temp.append ("O-O");
+				}
+				else { // mov.destinoLetra == 'c'
+					temp.append ("O-O-O");
+				}
+				return temp.toString ();
+			}
+		}
+		if (mov.getTipoPieza() != Tipo.PEON) {
+			temp.append (tipoToEnglish (mov.getTipoPieza()));
+		}
+		Pieza pieza = getPieza (mov.getCasillaDestino());
+		switch (mov.getTipoPieza()) {
+			case PEON:
+				if (mov.getCasillaComer() != null)
+					temp.append (mov.getCasillaOrigen().getLetra());
+				break;
+			case CABALLO:
+				for(VectorDireccion v: pieza.getDirecciones()) {
+					try {
+						Pieza p = getPieza(mov.getCasillaDestino().add(v));
+						if(p!=null && p.getTipo() == Tipo.CABALLO && p.getBando() == pieza.getBando()) {
+							if(mov.getCasillaOrigen().getLetra() != p.getCasilla().getLetra()) {
+								temp.append(mov.getCasillaOrigen().getLetra());
+								break;
+							} else {
+								temp.append (mov.getCasillaOrigen().getNumero());
+								break;
+							}
+						}
+					} catch(ArrayIndexOutOfBoundsException e) {}
+				}
+				break;
+
+			case ALFIL:
+			case TORRE:
+			case DAMA:
+				for(VectorDireccion v: pieza.getDirecciones()) {
+					try {
+						Casilla destino = mov.getCasillaDestino().add(v);
+						Pieza p;
+						while((p=getPieza(destino))==null) {
+							destino.add(v);
+						}
+						if(p!=null && p.getTipo() == pieza.getTipo() && p.getBando() == pieza.getBando()) {
+							if(mov.getCasillaOrigen().getLetra() != p.getCasilla().getLetra()) {
+								temp.append(mov.getCasillaOrigen().getLetra());
+								break;
+							} else {
+								temp.append (mov.getCasillaOrigen().getNumero());
+								break;
+							}
+						}
+					} catch(ArrayIndexOutOfBoundsException e) {}
+				}
+				break;
+		}
+
+		if (mov.getCasillaComer() != null)
+			temp.append ("x");
+
+		temp.append (mov.getCasillaDestino().toString());
+
+		if (mov.getCoronacion() != null)
+			temp.append ("=" + tipoToEnglish (mov.getCoronacion()));
+
+		if (mov.isJaque())
+			if (mov.getFinPartida() == Resultado.JAQUE_MATE_BLANCO
+					|| mov.getFinPartida() == Resultado.JAQUE_MATE_NEGRO)
+				temp.append ("#");
+			else
+				temp.append ("+");
+		return temp.toString ();
 	}
 
 	/**
