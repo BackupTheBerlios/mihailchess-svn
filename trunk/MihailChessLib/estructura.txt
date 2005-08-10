@@ -1,0 +1,45 @@
+com.mihail.chess:
+
+ArbolVariantes
+Casilla
+DiccionarioPosiciones
+Logica
+Movimiento
+Pieza
+Posicion
+VectorDireccion
+
+Reloj
+RelojException
+
+Partida
+
+com.mihail.util:
+TablaMovimientosModel
+FiltroArchivos
+IPTextField
+Renderers ??
+
+com.mihail.ui:
+Tablero2D
+TableroGrafico
+RelojDigital
+PanelMovimientos
+
+=================================
+Posible solucion a las coronaciones y otros problemas de la logica:
+
+Añadir una nueva clase tipo BoardListener, que se encarga de gestionar las
+acciones que dependen de la interfaz.
+
+Los metodos que tendria esta nueva clase:
+
+promotionEvent: Se llamaria cuando hay coronacion. El escuchador
+cambiaria los valores adecuados de la logica para coronar a lo deseado.
+
+avanzarEvent retrocederEvent (y en spanglish por supuesto): Se ejecutaria
+en los casos que se ordena a la logica avanzar y retroceder en la partida,
+y existen variantes alternativas a la principal. La mision del escuchador
+seria determinar que variante se elige.
+
+Podrian existir mas situaciones que dependen del uso de la logica?
