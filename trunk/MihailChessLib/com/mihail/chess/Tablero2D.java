@@ -241,9 +241,8 @@ public class Tablero2D extends JPanel {
 						continue;
 					}
 
-					g.drawImage(theme.getImagePiece(temp.getBando(), temp
-							.getTipo()), i * TAM, j * TAM, null);
-
+					//g.drawImage(piezas[bandoToInt(temp.getBando())][tipoToInt(temp.getTipo())], i * TAM, j * TAM, null);
+					g.drawImage(piezas[bandoToInt(temp.getBando())][tipoToInt(temp.getTipo())], i * TAM, j * TAM, TAM, TAM, null);
 				}
 			}
 
@@ -413,6 +412,21 @@ public class Tablero2D extends JPanel {
 	public void setTema(BoardTheme theme) {
 		this.theme = theme;
 	}
+	
+	public void setPieza(Pieza pieza, Casilla casilla) {
+		tablero.setPieza(pieza, casilla);
+		repintarCasilla(casilla.getLetra() - 'a', casilla.getNumero()-'1');
+	}
+	
+	public void borrarPieza(Casilla casilla) {
+		tablero.borrarPieza(casilla);
+		repintarCasilla(casilla.getLetra() - 'a', casilla.getNumero()-'1');
+	}
+	
+	public void setFEN(String pos) {
+		tablero.setPosicion(pos);
+		repaint();
+	}
 
 	/*
 	 * Funcion para repintar la casilla indicada por el punto x, y, que debe ser
@@ -493,6 +507,42 @@ public class Tablero2D extends JPanel {
 		}
 		return 1;
 	}
+	
+	private int tipoToInt(Tipo tipo) {
+		switch(tipo) {
+		case PEON:
+			return 0;
+		case CABALLO:
+			return 1;
+		case ALFIL:
+			return 2;
+		case TORRE:
+			return 3;
+		case DAMA:
+			return 4;
+		case REY:
+			return 5;
+		}
+		return -1;
+	}
+	
+	private Tipo intToTipo(int i) {
+		switch(i) {
+		case 0:
+			return Tipo.PEON;
+		case 1:
+			return Tipo.CABALLO;
+		case 2:
+			return Tipo.ALFIL;
+		case 3:
+			return Tipo.TORRE;
+		case 4:
+			return Tipo.DAMA;
+		case 5:
+			return Tipo.REY;
+		}
+		return null;
+	}
 
 	/*
 	 * Funcion de utilidad que se encarga de redimensionar las imagenes al
@@ -503,8 +553,8 @@ public class Tablero2D extends JPanel {
 		MediaTracker media = new MediaTracker(this);
 		for (int i = 0; i < 2; i++) {
 			for (int j = 0; j < 6; j++) {
-				piezas[i][j] = theme.getImagePiece(Bando.BLANCO, Tipo.ALFIL)
-						.getScaledInstance(TAM, TAM, Image.SCALE_SMOOTH);
+				piezas[i][j] = theme.getImagePiece(i==0?Bando.BLANCO:Bando.NEGRO, intToTipo(j))
+						.getScaledInstance(TAM, TAM, Image.SCALE_FAST);
 				media.addImage(piezas[i][j], 1);
 			}
 		}

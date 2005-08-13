@@ -1,9 +1,9 @@
 package com.mihail.chess;
 
 import java.awt.Image;
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Enumeration;
@@ -51,7 +51,7 @@ public class BoardTheme {
 	/*
 	 * Imagenes del tema
 	 */
-	private Image[] pieceImages = new Image[12];
+	private Image[][] pieceImages = new Image[2][6];
 	private Image[] casillasImages = new Image[2];
 	private Image marco;
 	private Image background;
@@ -95,11 +95,11 @@ public class BoardTheme {
 	}
 	
 	public Image getImagePiece(Bando bando, Tipo tipo) {
-		return pieceImages[bandoToInt(bando) * tipoToInt(tipo)];
+		return pieceImages[bandoToInt(bando)][tipoToInt(tipo)];
 	}
 	
 	public Image getImageCasilla(Bando bando) {
-		return casillasImages[bandoToInt(bando)-1];
+		return casillasImages[bandoToInt(bando)];
 	}
 	
 	public Image getMarco() {
@@ -111,7 +111,7 @@ public class BoardTheme {
 	}
 	
 	private int bandoToInt(Bando bando) {
-		return bando == Bando.BLANCO? 1:2;
+		return bando == Bando.BLANCO? 0:1;
 	}
 	
 	private int tipoToInt(Tipo tipo) {
@@ -138,35 +138,36 @@ public class BoardTheme {
 			for(Enumeration<? extends ZipEntry> e = zipFile.entries(); e.hasMoreElements();) {
 				ZipEntry entry = e.nextElement();
 				
-				InputStream is = zipFile.getInputStream(entry);
+				BufferedInputStream is = new BufferedInputStream(zipFile.getInputStream(entry));
 				String entryName = entry.getName();
-				System.out.println(entryName);
-				byte [] data = new byte[is.available()];
-				is.read(data);
+				int size = new Long(entry.getSize()).intValue();
+				byte [] data = new byte[size];
+				System.out.println(entryName + " Size: " + size);
+				System.out.println("Readed data: " + is.read(data, 0, size));
 				if(entryName.equals("reyB.png")) { // Cargar todas las imagenes en funcion de los nombres
-					pieceImages[5] = new ImageIcon(data).getImage();
+					pieceImages[0][5] = new ImageIcon(data).getImage();
 				} else if (entryName.equals("reyN.png")) {
-					pieceImages[11] = new ImageIcon(data).getImage();
+					pieceImages[1][5] = new ImageIcon(data).getImage();
 				} else if (entryName.equals("damaB.png")) {
-					pieceImages[4] = new ImageIcon(data).getImage();
+					pieceImages[0][4] = new ImageIcon(data).getImage();
 				} else if (entryName.equals("damaN.png")) {
-					pieceImages[10] = new ImageIcon(data).getImage();
+					pieceImages[1][4] = new ImageIcon(data).getImage();
 				} else if (entryName.equals("torreB.png")) {
-					pieceImages[3] = new ImageIcon(data).getImage();
+					pieceImages[0][3] = new ImageIcon(data).getImage();
 				} else if (entryName.equals("torreN.png")) {
-					pieceImages[9] = new ImageIcon(data).getImage();
+					pieceImages[1][3]= new ImageIcon(data).getImage();
 				} else if (entryName.equals("caballoB.png")) {
-					pieceImages[1] = new ImageIcon(data).getImage();
+					pieceImages[0][1] = new ImageIcon(data).getImage();
 				} else if (entryName.equals("caballoN.png")) {
-					pieceImages[7] = new ImageIcon(data).getImage();
+					pieceImages[1][1] = new ImageIcon(data).getImage();
 				} else if (entryName.equals("alfilB.png")) {
-					pieceImages[2] = new ImageIcon(data).getImage();
+					pieceImages[0][2] = new ImageIcon(data).getImage();
 				} else if (entryName.equals("alfilN.png")) {
-					pieceImages[8] = new ImageIcon(data).getImage();
+					pieceImages[1][2] = new ImageIcon(data).getImage();
 				} else if (entryName.equals("peonB.png")) {
-					pieceImages[0] = new ImageIcon(data).getImage();
+					pieceImages[0][0] = new ImageIcon(data).getImage();
 				} else if (entryName.equals("peonN.png")) {
-					pieceImages[6] = new ImageIcon(data).getImage();
+					pieceImages[1][0] = new ImageIcon(data).getImage();
 				} else if (entryName.equals("casillaB.png")) {
 					casillasImages[0] = new ImageIcon(data).getImage();
 				} else if (entryName.equals("casillaN.png")) {

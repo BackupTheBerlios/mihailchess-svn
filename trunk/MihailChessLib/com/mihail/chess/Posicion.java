@@ -269,6 +269,7 @@ public class Posicion {
 	 * @param pos
 	 *            Es un String que indica una posicion de juego, siguiendo el
 	 *            estandar FEN.
+	 * @see getFEN()
 	 */
 	public void setPosicion(String pos) {
 		char let = 'a';
