@@ -19,7 +19,8 @@ import com.mihail.chess.Pieza.Tipo;
 /**
  * Representa el tema de imagenes de piezas, texturas de las casillas, textura
  * del borde del tablero y textura de fondo del tablero. Para crear un tema
- * basta pasarle la ruta a un archivo .mcz cuyos contenidos estan especificados
+ * basta pasarle la ruta a un archivo .mcz. Un archivo en este
+ * formato es un archivo comprimido Zip cuyos contenidos estan especificados
  * de la siguiente manera:
  * 
  * Todas las imagenes podran estar en formatos que soporte Java por defecto. En la 
@@ -27,15 +28,18 @@ import com.mihail.chess.Pieza.Tipo;
  * 
  * Las imagenes de las piezas deberan estar formadas por el nombre de la pieza
  * mas la inicial del bando al que pertenecen. Por ejemplo, el peon negro seria
- * 'peonN.png', y el rey blanco 'reyB.png'.
+ * 'peonN.png', y el rey blanco 'reyB.png'. Son imagenes obligatorias.
  * 
- * Las casillas seran 'casillaB.png' y 'casillaN.png'.
+ * Las casillas seran 'casillaB.png' y 'casillaN.png'. Estas imagenes son optativas,
+ * y el tablero puede dibujarse sin ellas con colores lisos.
  * 
- * El borde del tablero 'marco.png'.
+ * El borde del tablero 'marco.png'. Esta imagen es optativa, del mismo modo que la 
+ * anterior.
  * 
- * El fondo del tablero 'fondo.png'.
+ * El fondo del tablero 'fondo.png'. Esta imagen es optativa, del mismo moo que la 
+ * anterior.
  * 
- * Ademas se debera añadir un archivo de texto, de nomre Metadata, en el
+ * Ademas se debera añadir un archivo de texto, de nombre Metadata, en el
  * que se podra indicar cierta informacion como el autor, la fecha de creacion y el
  * nombre del tema.
  * 
@@ -137,11 +141,41 @@ public class BoardTheme {
 				InputStream is = zipFile.getInputStream(entry);
 				String entryName = entry.getName();
 				System.out.println(entryName);
+				byte [] data = new byte[is.available()];
+				is.read(data);
 				if(entryName.equals("reyB.png")) { // Cargar todas las imagenes en funcion de los nombres
-					byte [] data = new byte[is.available()];
-					is.read(data);
 					pieceImages[5] = new ImageIcon(data).getImage();
-				} /* ... TODO ... */
+				} else if (entryName.equals("reyN.png")) {
+					pieceImages[11] = new ImageIcon(data).getImage();
+				} else if (entryName.equals("damaB.png")) {
+					pieceImages[4] = new ImageIcon(data).getImage();
+				} else if (entryName.equals("damaN.png")) {
+					pieceImages[10] = new ImageIcon(data).getImage();
+				} else if (entryName.equals("torreB.png")) {
+					pieceImages[3] = new ImageIcon(data).getImage();
+				} else if (entryName.equals("torreN.png")) {
+					pieceImages[9] = new ImageIcon(data).getImage();
+				} else if (entryName.equals("caballoB.png")) {
+					pieceImages[1] = new ImageIcon(data).getImage();
+				} else if (entryName.equals("caballoN.png")) {
+					pieceImages[7] = new ImageIcon(data).getImage();
+				} else if (entryName.equals("alfilB.png")) {
+					pieceImages[2] = new ImageIcon(data).getImage();
+				} else if (entryName.equals("alfilN.png")) {
+					pieceImages[8] = new ImageIcon(data).getImage();
+				} else if (entryName.equals("peonB.png")) {
+					pieceImages[0] = new ImageIcon(data).getImage();
+				} else if (entryName.equals("peonN.png")) {
+					pieceImages[6] = new ImageIcon(data).getImage();
+				} else if (entryName.equals("casillaB.png")) {
+					casillasImages[0] = new ImageIcon(data).getImage();
+				} else if (entryName.equals("casillaN.png")) {
+					casillasImages[1] = new ImageIcon(data).getImage();
+				} else if (entryName.equals("marco.png")) {
+					marco = new ImageIcon(data).getImage();
+				} else if (entryName.equals("fondo.png")) {
+					background = new ImageIcon(data).getImage();
+				}
 			}
 		} catch (ZipException e) {
 			// TODO Auto-generated catch block

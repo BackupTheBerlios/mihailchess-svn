@@ -28,45 +28,34 @@ import com.mihail.chess.Pieza.Tipo;
  * @author Iago Porto Díaz
  */
 public class Tablero2D extends JPanel {
-	/**
-	 * Indica los diferentes tipos de casillas que el tablero puede dibujar.<br>
-	 * CASILLA_LISO indica una textura formada por un unico color.<br>
-	 * CASILLA_GRADIENTE indica una textura formada por dos colores que hacen un
-	 * gradiente.<br>
-	 * CASILLA_TEXTURA indica una textura que es una imagen.<br>
-	 * 
-	 */
-	public static enum Textura {
-		CASILLA_LISO, CASILLA_GRADIENTE, CASILLA_TEXTURA
-	}
 
 	private static final long serialVersionUID = 1L;
 
-	/**
+	/*
 	 * Tamaño del borde del tablero.
 	 */
 	private int BORDE = 30;
 
-	/**
+	/*
 	 * Tamaño de la casilla.
 	 */
 	private int TAM;
 
-	/**
+	/*
 	 * Tamaño anterior, para comparar si es necesario redimensionar.
 	 * 
 	 * @TODO ¿Es necesario este atributo? Queda chapucero.
 	 */
 	private int TAMant;
 
-	/**
+	/*
 	 * Coordenada 'x' de la casilla pulsada por ultima vez [0, 8]. Sirve para
 	 * indicar al metodo de dibujo que la casilla indicada no se debe dibujar si
 	 * se esta arrastrando la pieza.
 	 */
 	protected int posX;
 
-	/**
+	/*
 	 * Coordenada 'y' de la casilla pulsada por ultima vez [0, 8].
 	 */
 	protected int posY;
@@ -83,9 +72,6 @@ public class Tablero2D extends JPanel {
 	// Versiones ajustadas al tamaño correcto de las imagenes
 	private Image[][] piezas = new Image[2][6];
 
-	// Imagenes de las piezas tal y como aparecen en el archivo
-	private Image[][] imagenes = new Image[2][6];
-
 	// Indica el sentido en el que se esta dibujando el tablero
 	private boolean sentido = true;
 
@@ -97,7 +83,7 @@ public class Tablero2D extends JPanel {
 	// Indica si se esta arrastrando una pieza
 	private boolean arrastrando = false;
 
-	/**
+	/*
 	 * Posicion de la pieza que se esta arrastrando. Se usa en el metodo de
 	 * dibujo para dibujar la pieza piezaArrastrada en el lugar correcto. TODO
 	 * Remodelar para añadir objetos arbitrarios al tablero, entre ellos piezas
@@ -105,57 +91,35 @@ public class Tablero2D extends JPanel {
 	 */
 	private int posPiezaX, posPiezaY;
 
-	/**
+	/*
 	 * Imagen de la pieza qu esta siendo arrastrada.
 	 */
 	private Image piezaArrastrada;
 
-	/**
-	 * Opciones configurables de color del tablero:
+	/*
+	 * Colores que se dibujan las casillas en caso de que el tema no lo
+	 * establezca.
 	 */
-	private Textura textura = Textura.CASILLA_LISO;
-
 	private Color[] colorLiso = new Color[2];
 
-	private Color[] colorGradiente = new Color[2];
+	/*
+	 * Tema que esta usando el tablero para dibujarse.
+	 */
 
-	private Image[] colorTextura = new Image[2];
+	private BoardTheme theme;
 
-	public Tablero2D() {
-		this(60);
+	public Tablero2D(BoardTheme theme) {
+		this(theme, 60);
 	}
 
-	public Tablero2D(int tam) {
+	public Tablero2D(BoardTheme theme, int tam) {
 		super();
 		tablero = new Posicion();
 
 		TAM = tam;
-		imagenes[0][0] = (new ImageIcon(getClass().getResource(
-				"/piezas/modernas/peonB.png"))).getImage();
-		imagenes[0][1] = (new ImageIcon(getClass().getResource(
-				"/piezas/modernas/caballoB.png"))).getImage();
-		imagenes[0][2] = (new ImageIcon(getClass().getResource(
-				"/piezas/modernas/alfilB.png"))).getImage();
-		imagenes[0][3] = (new ImageIcon(getClass().getResource(
-				"/piezas/modernas/torreB.png"))).getImage();
-		imagenes[0][4] = (new ImageIcon(getClass().getResource(
-				"/piezas/modernas/damaB.png"))).getImage();
-		imagenes[0][5] = (new ImageIcon(getClass().getResource(
-				"/piezas/modernas/reyB.png"))).getImage();
-		imagenes[1][0] = (new ImageIcon(getClass().getResource(
-				"/piezas/modernas/peonN.png"))).getImage();
-		imagenes[1][1] = (new ImageIcon(getClass().getResource(
-				"/piezas/modernas/caballoN.png"))).getImage();
-		imagenes[1][2] = (new ImageIcon(getClass().getResource(
-				"/piezas/modernas/alfilN.png"))).getImage();
-		imagenes[1][3] = (new ImageIcon(getClass().getResource(
-				"/piezas/modernas/torreN.png"))).getImage();
-		imagenes[1][4] = (new ImageIcon(getClass().getResource(
-				"/piezas/modernas/damaN.png"))).getImage();
-		imagenes[1][5] = (new ImageIcon(getClass().getResource(
-				"/piezas/modernas/reyN.png"))).getImage();
 
 		// this.setAutoscrolls(true);
+		this.theme = theme;
 
 		redimensionar();
 	}
@@ -189,8 +153,12 @@ public class Tablero2D extends JPanel {
 		// g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
 		// RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 
-		g.setColor(Color.LIGHT_GRAY);
-		g.fillRect(0, 0, getWidth(), getHeight());
+		if(theme.getBackground()==null) {
+			g.setColor(Color.LIGHT_GRAY);
+			g.fillRect(0, 0, getWidth(), getHeight());
+		} else {
+			g.drawImage(theme.getBackground(), 0, 0, this.getWidth(), this.getHeight(), null);
+		}
 
 		if (getWidth() < getHeight()) {
 			bordeSUP = (getHeight() - getWidth()) / 2;
@@ -214,20 +182,14 @@ public class Tablero2D extends JPanel {
 				// casillas blancas o negras
 				// if (activado) {
 				int v = (i + j) % 2;
+				Image textura = theme.getImageCasilla(v == 0 ? Bando.BLANCO
+						: Bando.NEGRO);
+				if (textura != null)
 
-				if (textura == Textura.CASILLA_TEXTURA)
+					g.drawImage(textura, i * TAM, j * TAM, TAM, TAM, null);
 
-					g.drawImage(colorTextura[v], i * TAM, j * TAM, TAM, TAM,
-							null);
-
-				else if (textura == Textura.CASILLA_LISO) {
+				else {
 					g.setColor(colorLiso[v]);
-					g.fillRect(i * TAM, j * TAM, TAM, TAM);
-				} else if (textura == Textura.CASILLA_GRADIENTE) {
-
-					g2d.setPaint(new GradientPaint(new Point(i * TAM, j * TAM),
-							colorLiso[v], new Point(i * TAM + TAM, j * TAM
-									+ TAM), colorGradiente[v]));
 					g.fillRect(i * TAM, j * TAM, TAM, TAM);
 				}
 
@@ -279,8 +241,8 @@ public class Tablero2D extends JPanel {
 						continue;
 					}
 
-					g.drawImage(getImage(temp.getBando(), temp.getTipo()), i
-							* TAM, j * TAM, null);
+					g.drawImage(theme.getImagePiece(temp.getBando(), temp
+							.getTipo()), i * TAM, j * TAM, null);
 
 				}
 			}
@@ -307,15 +269,6 @@ public class Tablero2D extends JPanel {
 
 	public int getBorde() {
 		return BORDE;
-	}
-
-	/**
-	 * @param borde
-	 *            Establece el tamaño del borde.
-	 */
-
-	public void setBorde(int borde) {
-		BORDE = borde;
 	}
 
 	/**
@@ -425,96 +378,42 @@ public class Tablero2D extends JPanel {
 	}
 
 	/**
-	 * Obtiene el modo de textura que se esta utilizando actualmente.
-	 * 
-	 * @return El modo de textura.
-	 */
-
-	public Textura getTextura() {
-		return textura;
-	}
-	
-	/**
-	 * Establece el modo de textura.
-	 * 
-	 * @param textura El modo de textura.
-	 */
-
-	public void setTextura(Textura textura) {
-		this.textura = textura;
-	}
-	
-	/**
-	 * Obtiene el color de degradado de las casillas de un color.
-	 * 
-	 * @param b El tipo de las casillas, blancas o negras.
-	 * @return El color de degradado.
-	 */
-
-	public Color getColorGradiente(Bando b) {
-		return colorGradiente[bandoToInt(b)];
-	}
-	
-	/**
-	 * Establece el color de degradado de las casillas de un color. Este
-	 * color solo se mostrara si la opcion textura esta establecida a CASILLA_GRADIENTE.
-	 * El degradado se hara con el color establecido como liso.
-	 * 
-	 * @param b El tipo de las casillas, blancas o negras.
-	 * @param colorGradiente El color de degradado.
-	 */
-
-	public void setColorGradiente(Bando b, Color colorGradiente) {
-		this.colorGradiente[bandoToInt(b)] = colorGradiente;
-	}
-
-	/**
 	 * Obtiene el color liso de las casillas de un color.
 	 * 
-	 * @param b El tipo de las casillas, blancas o negras.
+	 * @param b
+	 *            El tipo de las casillas, blancas o negras.
 	 * @return El color liso.
 	 */
 	public Color getColorLiso(Bando b) {
 		return colorLiso[bandoToInt(b)];
 	}
-	
+
 	/**
-	 * Establece el color liso de las casillas de un color. Este color
-	 * solo se mostrara si la opcion textura esta establecida a 
-	 * CASILLA_LISO.
+	 * Establece el color liso de las casillas de un color. Este color solo se
+	 * mostrara en caso de que el tema no establezca una textura para las
+	 * casillas.
 	 * 
-	 * @param b El tipo de las casillas, blancas o negras.
-	 * @param colorLiso El color liso.
+	 * @param b
+	 *            El tipo de las casillas, blancas o negras.
+	 * @param colorLiso
+	 *            El color liso.
 	 */
 
 	public void setColorLiso(Bando b, Color colorLiso) {
 		this.colorLiso[bandoToInt(b)] = colorLiso;
 	}
-	
+
 	/**
-	 * Obtiene la textura de las casillas de un color.
+	 * Establece el tema que usa el tablero para dibujarse.
 	 * 
-	 * @param b El tipo de las casillas, blancas o negras.
-	 * @return La textura del bando indicado.
+	 * @param theme
+	 *            Tema a establecer.
 	 */
 
-	public Image getColorTextura(Bando b) {
-		return colorTextura[bandoToInt(b)];
+	public void setTema(BoardTheme theme) {
+		this.theme = theme;
 	}
-	
-	/**
-	 * Establece la textura de las casillas de un color. Esta textura solo
-	 * se mostrara si la opcion textura esta establecida a 
-	 * CASILLA_TEXTURA.
-	 * 
-	 * @param b El tipo de las casillas, blancas o negras.
-	 * @param colorTextura La imagen que queremos establecer como textura.
-	 */
 
-	public void setColorTextura(Bando b, Image colorTextura) {
-		this.colorTextura[bandoToInt(b)] = colorTextura;
-	}
-	
 	/*
 	 * Funcion para repintar la casilla indicada por el punto x, y, que debe ser
 	 * el centro de la casilla. TODO Modificar para que funcione con la esquina
@@ -524,7 +423,7 @@ public class Tablero2D extends JPanel {
 	protected void repintarCasilla(int x, int y) {
 		repaint(x - TAM / 2, y - TAM / 2, TAM, TAM);
 	}
-	
+
 	/**
 	 * Metodo de utilidad para obtener de forma sencilla la casilla
 	 * correspondiente a la que pertenece un pixel en la posicion (x, y).
@@ -546,77 +445,55 @@ public class Tablero2D extends JPanel {
 		}
 		return new Point(posX, posY);
 	}
-	
-	protected Image getImage(Bando color, Tipo pieza) {
-		// if (p != null) {
-		switch (pieza) {
-		case PEON:
-			return piezas[bandoToInt(color)][0];
 
-		case CABALLO:
-			return piezas[bandoToInt(color)][1];
-
-		case ALFIL:
-			return piezas[bandoToInt(color)][2];
-
-		case TORRE:
-			return piezas[bandoToInt(color)][3];
-
-		case DAMA:
-			return piezas[bandoToInt(color)][4];
-
-		case REY:
-			return piezas[bandoToInt(color)][5];
-
-		default:
-			return null;
-		}
-
-	}
-	
 	private void dibujarBorde(Graphics g) {
-		g.setColor(Color.BLACK);
+		Image borde = theme.getMarco();
+		if (borde != null) {
+			g.drawImage(borde, 0, 0, null);
+		} else { // Dibujamos a mano
+			g.setColor(Color.BLACK);
 
-		g.fillRect(0, 0, Math.min(getWidth(), getHeight()), Math.min(
-				getWidth(), getHeight()));
-		// char num = '8';
-		// char let = 'a';
+			g.fillRect(0, 0, Math.min(getWidth(), getHeight()), Math.min(
+					getWidth(), getHeight()));
+			// char num = '8';
+			// char let = 'a';
 
-		g.setColor(new Color(209, 193, 134));
-		g.setFont(new Font("Arial", Font.BOLD, 12));
+			g.setColor(new Color(209, 193, 134));
+			g.setFont(new Font("Arial", Font.BOLD, 12));
 
-		int yF = 8 * TAM + BORDE * 3 / 2 + 6;
-		for (int i = 0; i < 8; i++) {
-			int xF = i * TAM + BORDE + TAM / 2;
-			if (sentido) {
-				g
-						.drawString(new Character((char) (i + 'A')).toString(),
-								xF, yF);
-			} else {
-				g.drawString(new Character((char) (7 - i + 'A')).toString(),
-						xF, yF);
+			int yF = 8 * TAM + BORDE * 3 / 2 + 6;
+			for (int i = 0; i < 8; i++) {
+				int xF = i * TAM + BORDE + TAM / 2;
+				if (sentido) {
+					g.drawString(new Character((char) (i + 'A')).toString(),
+							xF, yF);
+				} else {
+					g.drawString(
+							new Character((char) (7 - i + 'A')).toString(), xF,
+							yF);
+				}
 			}
-		}
-		int xF = BORDE / 2 - 3;
-		for (int i = 0; i < 8; i++) {
-			yF = i * TAM + BORDE + TAM / 2;
-			if (sentido) {
+			int xF = BORDE / 2 - 3;
+			for (int i = 0; i < 8; i++) {
+				yF = i * TAM + BORDE + TAM / 2;
+				if (sentido) {
 
-				g.drawString(new Integer(7 - i + 1).toString(), xF, yF);
+					g.drawString(new Integer(7 - i + 1).toString(), xF, yF);
 
-			} else {
-				g.drawString(new Integer(i + 1).toString(), xF, yF);
+				} else {
+					g.drawString(new Integer(i + 1).toString(), xF, yF);
+				}
 			}
 		}
 	}
-	
+
 	private int bandoToInt(Bando b) {
 		if (b == Bando.BLANCO) {
 			return 0;
 		}
 		return 1;
 	}
-	
+
 	/*
 	 * Funcion de utilidad que se encarga de redimensionar las imagenes al
 	 * tamaño adecuado del tablero
@@ -626,8 +503,8 @@ public class Tablero2D extends JPanel {
 		MediaTracker media = new MediaTracker(this);
 		for (int i = 0; i < 2; i++) {
 			for (int j = 0; j < 6; j++) {
-				piezas[i][j] = imagenes[i][j].getScaledInstance(TAM, TAM,
-						Image.SCALE_SMOOTH);
+				piezas[i][j] = theme.getImagePiece(Bando.BLANCO, Tipo.ALFIL)
+						.getScaledInstance(TAM, TAM, Image.SCALE_SMOOTH);
 				media.addImage(piezas[i][j], 1);
 			}
 		}
