@@ -17,7 +17,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import com.mihail.chess.Board.Side;
-import com.mihail.chess.Piece.Tipo;
+import com.mihail.chess.Piece.Type;
 
 /**
  * Esta clase se encarga de proporcionar una vista básica de la lógica, usada
@@ -242,7 +242,7 @@ public class Board2D extends JPanel {
 					}
 
 					//g.drawImage(piezas[bandoToInt(temp.getBando())][tipoToInt(temp.getTipo())], i * TAM, j * TAM, null);
-					g.drawImage(piezas[bandoToInt(temp.getBando())][tipoToInt(temp.getTipo())], i * TAM, j * TAM, TAM, TAM, null);
+					g.drawImage(piezas[bandoToInt(temp.getSide())][tipoToInt(temp.getType())], i * TAM, j * TAM, TAM, TAM, null);
 				}
 			}
 
@@ -415,12 +415,12 @@ public class Board2D extends JPanel {
 	
 	public void setPieza(Piece pieza, Square casilla) {
 		tablero.setPiece(pieza, casilla);
-		repintarCasilla(casilla.getLetra() - 'a', casilla.getNumero()-'1');
+		repintarCasilla(casilla.getFile() - 'a', casilla.getRank()-'1');
 	}
 	
 	public void borrarPieza(Square casilla) {
 		tablero.removePiece(casilla);
-		repintarCasilla(casilla.getLetra() - 'a', casilla.getNumero()-'1');
+		repintarCasilla(casilla.getFile() - 'a', casilla.getRank()-'1');
 	}
 	
 	public void setFEN(String pos) {
@@ -508,38 +508,38 @@ public class Board2D extends JPanel {
 		return 1;
 	}
 	
-	private int tipoToInt(Tipo tipo) {
+	private int tipoToInt(Type tipo) {
 		switch(tipo) {
-		case PEON:
+		case PAWN:
 			return 0;
-		case CABALLO:
+		case KNIGHT:
 			return 1;
-		case ALFIL:
+		case BISHOP:
 			return 2;
-		case TORRE:
+		case ROOK:
 			return 3;
-		case DAMA:
+		case QUEEN:
 			return 4;
-		case REY:
+		case KING:
 			return 5;
 		}
 		return -1;
 	}
 	
-	private Tipo intToTipo(int i) {
+	private Type intToTipo(int i) {
 		switch(i) {
 		case 0:
-			return Tipo.PEON;
+			return Type.PAWN;
 		case 1:
-			return Tipo.CABALLO;
+			return Type.KNIGHT;
 		case 2:
-			return Tipo.ALFIL;
+			return Type.BISHOP;
 		case 3:
-			return Tipo.TORRE;
+			return Type.ROOK;
 		case 4:
-			return Tipo.DAMA;
+			return Type.QUEEN;
 		case 5:
-			return Tipo.REY;
+			return Type.KING;
 		}
 		return null;
 	}

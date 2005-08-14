@@ -3,7 +3,7 @@ package com.mihail.chess;
 import static com.mihail.chess.Board.Side;
 
 import com.mihail.chess.Board.Result;
-import com.mihail.chess.Piece.Tipo;
+import com.mihail.chess.Piece.Type;
 
 /**
  * Esta clase define un objeto Movimiento, que guarda informacion sobre el
@@ -52,7 +52,7 @@ public final class Movement {
 	 * Este atributo indica el tipo de pieza que es: {P,C,A,T,D,R}
 	 * 
 	 */
-	private Tipo tipoPieza;
+	private Type tipoPieza;
 
 	/**
 	 * Este atributo indica la letra de la casilla donde se come. Si no se ha
@@ -90,7 +90,7 @@ public final class Movement {
 	 * 'D' -> Dama <BR>
 	 * 0 -> No hay coronacion
 	 */
-	private Tipo coronacion;
+	private Type coronacion;
 
 	/**
 	 * Este atributo indica el valor de contadorTablas en el momento que se
@@ -119,7 +119,7 @@ public final class Movement {
 	 * Este atributo indica el tipo de la pieza que se come. Si no se ha
 	 * producido una captura contiene un 0.
 	 */
-	private Tipo tipoPiezaComida;
+	private Type tipoPiezaComida;
 
 	/**
 	 * Este atributo guarda la representacion del movimiento en notacion
@@ -159,11 +159,11 @@ public final class Movement {
 		this.numeroMovimiento = numeroMovimiento;
 	}
 
-	public Tipo getTipoPieza() {
+	public Type getTipoPieza() {
 		return tipoPieza;
 	}
 
-	public void setTipoPieza(Tipo tipoPieza) {
+	public void setTipoPieza(Type tipoPieza) {
 		this.tipoPieza = tipoPieza;
 	}
 
@@ -183,11 +183,11 @@ public final class Movement {
 		this.contadorTablas = contadorTablas;
 	}
 
-	public Tipo getCoronacion() {
+	public Type getCoronacion() {
 		return coronacion;
 	}
 
-	public void setCoronacion(Tipo coronacion) {
+	public void setCoronacion(Type coronacion) {
 		this.coronacion = coronacion;
 	}
 
@@ -231,11 +231,11 @@ public final class Movement {
 		this.notacion = notacion;
 	}
 
-	public Tipo getTipoPiezaComida() {
+	public Type getTipoPiezaComida() {
 		return tipoPiezaComida;
 	}
 
-	public void setTipoPiezaComida(Tipo tipoPiezaComida) {
+	public void setTipoPiezaComida(Type tipoPiezaComida) {
 		this.tipoPiezaComida = tipoPiezaComida;
 	}
 }

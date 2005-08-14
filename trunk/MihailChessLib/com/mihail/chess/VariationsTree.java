@@ -64,14 +64,14 @@ public class VariationsTree {
 	 *            Numero del movimiento
 	 * @return Devuelve el movimiento correspondiente a color y numero
 	 */
-	public Movement getMovimiento(Side color, int numero) {
+	public Movement getMove(Side color, int numero) {
 		NodoArbol n = getNodo(color, numero);
 		if (n != null)
 			return n.movimiento;
 		return null;
 	}
 	
-	public Movement getMovimiento(int halfPly) {
+	public Movement getMove(int halfPly) {
 		return arbol.get(halfPly).movimiento;
 	}
 
@@ -85,7 +85,7 @@ public class VariationsTree {
 	 * @return Un booleano que indica si para ese movimiento existen
 	 *         alternativas.
 	 */
-	public boolean existeVariante(Side color, int numero) {
+	public boolean existsVariation(Side color, int numero) {
 		NodoArbol n = getNodo(color, numero);
 
 		if (n != null && n.variantes != null)
@@ -102,7 +102,7 @@ public class VariationsTree {
 	 *            Numero del movimiento.
 	 * @return El numero de alternativas a un movimiento.
 	 */
-	public int getNumVariantes(Side color, int numero) {
+	public int getVariationsNumber(Side color, int numero) {
 		NodoArbol n = getNodo(color, numero);
 
 		if (n != null) {
@@ -136,7 +136,7 @@ public class VariationsTree {
 	 * @param numero
 	 *            Numero del movimiento.
 	 */
-	public void addVariante(Movement mov, Side color, int numero) {
+	public void addVariation(Movement mov, Side color, int numero) {
 		NodoArbol n = getNodo(color, numero);
 
 		if (n.variantes == null)
@@ -159,7 +159,7 @@ public class VariationsTree {
 	 *            Numero de variante que se quiere obtener.
 	 * @return Devuelve un ArbolVariantes, que es la variante del movimiento.
 	 */
-	public VariationsTree getVariante(Side color, int numero, int num) {
+	public VariationsTree getVariation(Side color, int numero, int num) {
 		NodoArbol n = getNodo(color, numero);
 		if (n != null)
 			return n.variantes.get(num);
@@ -171,7 +171,7 @@ public class VariationsTree {
 	 *         partida. Solo cuenta los turnos jugados, no cuenta un movimiento
 	 *         por negras y otro por blancas.
 	 */
-	public int getNumMovimientos() {
+	public int getFullmoveNumber() {
 		return desplazamiento + ((arbol.size() + 1) / 2);
 	}
 
@@ -182,7 +182,7 @@ public class VariationsTree {
 	 * @return Los medios movimientos desde el comienzo de la partida.
 	 */
 
-	public int getNumHalfPly() {
+	public int getHalfmoveNumber() {
 		return arbol.size();
 	}
 
@@ -192,7 +192,7 @@ public class VariationsTree {
 	 * @return
 	 */
 
-	public Movement getLastMovimiento() {
+	public Movement getLastMove() {
 		return arbol.get(arbol.size() - 1).movimiento;
 	}
 	
@@ -204,8 +204,8 @@ public class VariationsTree {
 	 * @param num
 	 */
 	
-	public void promoteVariant(Side color, int numero, int num) {
-		VariationsTree a = getVariante(color, numero, num);
+	public void promoteVariation(Side color, int numero, int num) {
+		VariationsTree a = getVariation(color, numero, num);
 		int indice = (numero - 1) * 2 + bandoToInt(color);
 		NodoArbol n = getNodo(color, numero);
 		

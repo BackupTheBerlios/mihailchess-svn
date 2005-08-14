@@ -14,7 +14,7 @@ import java.util.zip.ZipFile;
 import javax.swing.ImageIcon;
 
 import com.mihail.chess.Board.Side;
-import com.mihail.chess.Piece.Tipo;
+import com.mihail.chess.Piece.Type;
 
 /**
  * Representa el tema de imagenes de piezas, texturas de las casillas, textura
@@ -94,7 +94,7 @@ public class BoardTheme {
 		}
 	}
 	
-	public Image getImagePiece(Side bando, Tipo tipo) {
+	public Image getImagePiece(Side bando, Type tipo) {
 		return pieceImages[bandoToInt(bando)][tipoToInt(tipo)];
 	}
 	
@@ -114,19 +114,19 @@ public class BoardTheme {
 		return bando == Side.WHITE? 0:1;
 	}
 	
-	private int tipoToInt(Tipo tipo) {
+	private int tipoToInt(Type tipo) {
 		switch(tipo) {
-		case PEON:
+		case PAWN:
 			return 0;
-		case CABALLO:
+		case KNIGHT:
 			return 1;
-		case ALFIL:
+		case BISHOP:
 			return 2;
-		case TORRE:
+		case ROOK:
 			return 3;
-		case DAMA:
+		case QUEEN:
 			return 4;
-		case REY:
+		case KING:
 			return 5;
 		}
 		return -1;

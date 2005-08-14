@@ -42,7 +42,7 @@ public class DirectionVector {
 	 * @return Un booleano si este vector y el recibido siguen la misma
 	 *         direccion.
 	 */
-	public boolean esMismaDireccion(DirectionVector v) {
+	public boolean isSameDirection(DirectionVector v) {
 		int difX, difY;
 
 		if ((x == 0 && v.getX() != 0) || (y == 0 && v.getY() != 0))

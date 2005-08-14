@@ -16,8 +16,8 @@ import static com.mihail.chess.Board.Side;
 
 public final class Piece {
 
-	public static enum Tipo {
-		PEON, CABALLO, ALFIL, TORRE, DAMA, REY
+	public static enum Type {
+		PAWN, KNIGHT, BISHOP, ROOK, QUEEN, KING
 	}
 
 	// Atributos
@@ -37,7 +37,7 @@ public final class Piece {
 	 * 'D' -> dama <BR>
 	 * 'R' -> rey
 	 */
-	private Tipo tipo;
+	private Type tipo;
 
 	private Square casilla;
 
@@ -63,12 +63,12 @@ public final class Piece {
 	 *            Es el tipo de la pieza {P,C,A,T,D,R}
 	 * @see #tipo
 	 */
-	public Piece(Side ban, Tipo claseDePieza) {
+	public Piece(Side ban, Type claseDePieza) {
 		bando = ban;
 		tipo = claseDePieza;
 		casilla = new Square();
 		switch (tipo) {
-		case PEON:
+		case PAWN:
 			direcciones = new DirectionVector[1];
 			if (bando == Side.WHITE)
 				direcciones[0] = new DirectionVector(0, 1);
@@ -76,7 +76,7 @@ public final class Piece {
 				direcciones[0] = new DirectionVector(0, -1);
 			casillasValidas = new ArrayList<Square>(4);
 			break;
-		case TORRE:
+		case ROOK:
 			direcciones = new DirectionVector[4];
 			direcciones[0] = new DirectionVector(1, 0);
 			direcciones[1] = new DirectionVector(-1, 0);
@@ -84,7 +84,7 @@ public final class Piece {
 			direcciones[3] = new DirectionVector(0, -1);
 			casillasValidas = new ArrayList<Square>(13);
 			break;
-		case ALFIL:
+		case BISHOP:
 			direcciones = new DirectionVector[4];
 			direcciones[0] = new DirectionVector(1, 1);
 			direcciones[1] = new DirectionVector(-1, 1);
@@ -92,7 +92,7 @@ public final class Piece {
 			direcciones[3] = new DirectionVector(-1, -1);
 			casillasValidas = new ArrayList<Square>(13);
 			break;
-		case CABALLO:
+		case KNIGHT:
 			direcciones = new DirectionVector[8];
 			direcciones[0] = new DirectionVector(1, 2);
 			direcciones[1] = new DirectionVector(-1, 2);
@@ -105,7 +105,7 @@ public final class Piece {
 			direcciones[7] = new DirectionVector(-2, -1);
 			casillasValidas = new ArrayList<Square>(8);
 			break;
-		case REY:
+		case KING:
 			direcciones = new DirectionVector[8];
 			direcciones[0] = new DirectionVector(1, 0);
 			direcciones[1] = new DirectionVector(-1, 0);
@@ -117,7 +117,7 @@ public final class Piece {
 			direcciones[7] = new DirectionVector(-1, -1);
 			casillasValidas = new ArrayList<Square>(8);
 			break;
-		case DAMA:
+		case QUEEN:
 			direcciones = new DirectionVector[8];
 			direcciones[0] = new DirectionVector(1, 0);
 			direcciones[1] = new DirectionVector(-1, 0);
@@ -137,13 +137,11 @@ public final class Piece {
 	 * 
 	 * @param pieza1
 	 *            Pieza para saber si es de bando contrario a pieza2.
-	 * @param pieza2
-	 *            La otra pieza.
 	 * @return Devuelve true cuando pieza1 y pieza2 sean de bandos contrarios,
 	 *         false cuando sean del mismo bando.
 	 */
-	public final static boolean esBandoContrario(Piece pieza1, Piece pieza2) {
-		return pieza1.bando != pieza2.bando;
+	public final boolean isOppositeSide(Piece pieza1) {
+		return pieza1.bando != this.bando;
 	}
 
 	/**
@@ -157,7 +155,7 @@ public final class Piece {
 	 * @return Devuelve true cuando pieza sea del bando contrario al que le toca
 	 *         mover, false si es del mismo bando
 	 */
-	public final static boolean esBandoContrario(Side turno, Piece pieza) {
+	public final static boolean isOppositeSide(Side turno, Piece pieza) {
 		return turno != pieza.bando;
 	}
 
@@ -169,15 +167,15 @@ public final class Piece {
 	 * @param n
 	 *            Es el numero de destino que queremos añadir
 	 */
-	public void anadirMov(char let, char n) {
+	public void addMove(char let, char n) {
 		this.casillasValidas.add(new Square(let, n));
 	}
 
-	public void anadirMov(Square c) {
+	public void addMove(Square c) {
 		this.casillasValidas.add(c);
 	}
 
-	public Side getBando() {
+	public Side getSide() {
 		return bando;
 	}
 
@@ -185,35 +183,35 @@ public final class Piece {
 		return casillasValidas;
 	}
 
-	public DirectionVector[] getDirecciones() {
+	public DirectionVector[] getDirections() {
 		return direcciones;
 	}
 
-	public Tipo getTipo() {
+	public Type getType() {
 		return tipo;
 	}
 
-	public char getLetra() {
-		return casilla.getLetra();
+	public char getFile() {
+		return casilla.getFile();
 	}
 
-	public void setLetra(char let) {
-		casilla.setLetra(let);
+	public void setFile(char let) {
+		casilla.setFile(let);
 	}
 
-	public char getNum() {
-		return casilla.getNumero();
+	public char getRank() {
+		return casilla.getRank();
 	}
 
-	public void setNum(char num) {
-		casilla.setNumero(num);
+	public void setRank(char num) {
+		casilla.setRank(num);
 	}
 
-	public Square getCasilla() {
+	public Square getSquare() {
 		return casilla;
 	}
 
-	public void setCasilla(Square casilla) {
+	public void setSquare(Square casilla) {
 		this.casilla = casilla;
 	}
 	

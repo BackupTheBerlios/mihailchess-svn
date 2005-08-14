@@ -71,7 +71,7 @@ public class Square {
 	 * @return La letra de la casilla
 	 */
 
-	public char getLetra() {
+	public char getFile() {
 		return letra;
 	}
 	
@@ -81,7 +81,7 @@ public class Square {
 	 * @param letra La letra de la casilla
 	 */
 
-	public void setLetra(char letra) {
+	public void setFile(char letra) {
 		this.letra = letra;
 	}
 	
@@ -91,7 +91,7 @@ public class Square {
 	 * @return El numero de la casilla
 	 */
 
-	public char getNumero() {
+	public char getRank() {
 		return numero;
 	}
 	
@@ -101,7 +101,7 @@ public class Square {
 	 * @param numero El numero de la casilla
 	 */
 
-	public void setNumero(char numero) {
+	public void setRank(char numero) {
 		this.numero = numero;
 	}
 
