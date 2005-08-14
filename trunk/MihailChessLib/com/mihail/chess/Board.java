@@ -63,7 +63,7 @@ public class Board {
 	public Board(Position posInicial) {
 		movimientos = new VariationsTree();
 		posicion = posInicial;
-		hash.insertar(posicion.getPositionKey());
+		hash.insert(posicion.getPositionKey());
 	}
 
 	/**
@@ -561,7 +561,7 @@ public class Board {
 					// Si se come ponemos el contador a 0
 					if (!posicion.isEmpty(destinoLetra, destinoNum)) {
 						posicion.setHalfmoveClock(0);
-						hash.borrarTabla();
+						hash.clearDictionary();
 						mov.setCasillaComer(new Square(destinoLetra,
 								destinoNum));
 						mov.setTipoPiezaComida(posicion.getPieza(destinoLetra,
@@ -599,7 +599,7 @@ public class Board {
 							mov.setCoronacion(coronar);
 						}
 						posicion.setHalfmoveClock(0);
-						hash.borrarTabla();
+						hash.clearDictionary();
 					}
 					// Se hacen los calculos especiales si se trata de un rey
 					if (piezaQueMueve.getType() == Type.KING) {
@@ -641,7 +641,7 @@ public class Board {
 					}
 					mov.setFinPartida(esFinPartida());
 
-					hash.insertar(posicion.getPositionKey());
+					hash.insert(posicion.getPositionKey());
 					movimientos.appendMovimiento(mov);
 					indice++;
 					return mov;
@@ -788,7 +788,7 @@ public class Board {
 			devolver = Result.FIFTY_MOV_DRAW;
 		}
 		// Tablas por repeticion de posiciones
-		if (hash.getRepeticiones(posicion.getPositionKey()) == 3) {
+		if (hash.getRepetitions(posicion.getPositionKey()) == 3) {
 			fin = true;
 			devolver = Result.REPETITION_DRAW;
 		}

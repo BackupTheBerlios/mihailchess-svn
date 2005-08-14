@@ -94,19 +94,19 @@ public class BoardTheme {
 		}
 	}
 	
-	public Image getImagePiece(Side bando, Type tipo) {
+	public Image getPieceImage(Side bando, Type tipo) {
 		return pieceImages[bandoToInt(bando)][tipoToInt(tipo)];
 	}
 	
-	public Image getImageCasilla(Side bando) {
+	public Image getSquareImage(Side bando) {
 		return casillasImages[bandoToInt(bando)];
 	}
 	
-	public Image getMarco() {
+	public Image getBorderImage() {
 		return marco;
 	}
 	
-	public Image getBackground() {
+	public Image getBackgroundImage() {
 		return background;
 	}
 	

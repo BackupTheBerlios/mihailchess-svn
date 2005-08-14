@@ -37,7 +37,7 @@ public final class PositionsDictionary {
 	 * @param clave
 	 *            Clave que queremos insertar dentro de la tabla
 	 */
-	public void insertar(int clave) {
+	public void insert(int clave) {
 		int pos = clave % tam;
 		int i = 0;
 
@@ -55,7 +55,7 @@ public final class PositionsDictionary {
 	/**
 	 * Borra todos los elementos de la tabla.
 	 */
-	public void borrarTabla() {
+	public void clearDictionary() {
 		for (int i = 0; i < tabla.length; i++)
 			tabla[i].clear();
 	}
@@ -67,7 +67,7 @@ public final class PositionsDictionary {
 	 *            La clave asociada con una posicion.
 	 * @return El numero de repeticiones de la clave recibida.
 	 */
-	public int getRepeticiones(int clave) {
+	public int getRepetitions(int clave) {
 		int pos = clave % tam;
 		int i = 0;
 

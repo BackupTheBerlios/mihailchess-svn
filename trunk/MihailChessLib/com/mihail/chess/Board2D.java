@@ -153,11 +153,11 @@ public class Board2D extends JPanel {
 		// g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
 		// RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 
-		if(theme.getBackground()==null) {
+		if(theme.getBackgroundImage()==null) {
 			g.setColor(Color.LIGHT_GRAY);
 			g.fillRect(0, 0, getWidth(), getHeight());
 		} else {
-			g.drawImage(theme.getBackground(), 0, 0, this.getWidth(), this.getHeight(), null);
+			g.drawImage(theme.getBackgroundImage(), 0, 0, this.getWidth(), this.getHeight(), null);
 		}
 
 		if (getWidth() < getHeight()) {
@@ -182,7 +182,7 @@ public class Board2D extends JPanel {
 				// casillas blancas o negras
 				// if (activado) {
 				int v = (i + j) % 2;
-				Image textura = theme.getImageCasilla(v == 0 ? Side.WHITE
+				Image textura = theme.getSquareImage(v == 0 ? Side.WHITE
 						: Side.BLACK);
 				if (textura != null)
 
@@ -461,7 +461,7 @@ public class Board2D extends JPanel {
 	}
 
 	private void dibujarBorde(Graphics g) {
-		Image borde = theme.getMarco();
+		Image borde = theme.getBorderImage();
 		if (borde != null) {
 			g.drawImage(borde, 0, 0, null);
 		} else { // Dibujamos a mano
@@ -553,7 +553,7 @@ public class Board2D extends JPanel {
 		MediaTracker media = new MediaTracker(this);
 		for (int i = 0; i < 2; i++) {
 			for (int j = 0; j < 6; j++) {
-				piezas[i][j] = theme.getImagePiece(i==0?Side.WHITE:Side.BLACK, intToTipo(j))
+				piezas[i][j] = theme.getPieceImage(i==0?Side.WHITE:Side.BLACK, intToTipo(j))
 						.getScaledInstance(TAM, TAM, Image.SCALE_FAST);
 				media.addImage(piezas[i][j], 1);
 			}
