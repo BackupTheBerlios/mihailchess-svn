@@ -11,12 +11,12 @@ import java.util.ArrayList;
  * @author Pedro Suarez Casal
  * @author Iago Porto Diaz
  */
-public abstract class Analizador {
+public abstract class Parser {
 
 	/**
 	 * Sirve para almacenar las partidas que se cargarán.
 	 */
-	protected ArrayList<Partida> listaPartidas = new ArrayList<Partida>();
+	protected ArrayList<Game> listaPartidas = new ArrayList<Game>();
 
 	/**
 	 * Sirve para obtener el numero de partidas que tenemos.
@@ -34,7 +34,7 @@ public abstract class Analizador {
 	 *            La posicion dentro de la lista de partidas.
 	 * @return La partida en cuestion.
 	 */
-	public Partida getPartida(int pos) {
+	public Game getPartida(int pos) {
 		return listaPartidas.get(pos);
 	}
 
@@ -44,7 +44,7 @@ public abstract class Analizador {
 	 * @param p
 	 *            La partida en cuestion.
 	 */
-	public void insertarPartida(Partida p) {
+	public void insertarPartida(Game p) {
 		listaPartidas.add(p);
 	}
 
