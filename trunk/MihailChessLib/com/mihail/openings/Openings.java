@@ -31,7 +31,7 @@ public class Openings {
 	 * @param pos
 	 * @return Nombre de la apertura que se esta jugando en la Posicion pos.
 	 */
-	public String getApertura(Position pos) {
+	public String getOpening(Position pos) {
 		int clave = pos.getPositionKey();
 		if (aperturas.containsKey(clave))
 			return aperturas.get(clave);
