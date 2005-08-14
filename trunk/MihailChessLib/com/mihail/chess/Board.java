@@ -6,16 +6,16 @@ import com.mihail.chess.Piece.Tipo;
 
 public class Board {
 
-	public static enum Bando {
-		BLANCO, NEGRO;
+	public static enum Side {
+		WHITE, BLACK;
 
-		public boolean equals(Bando b) {
+		public boolean equals(Side b) {
 			return this == b;
 		}
 	}
 
-	public static enum Resultado {
-		JAQUE_MATE_BLANCO, JAQUE_MATE_NEGRO, TABLAS_REPETICION, TABLAS_50_MOV, TABLAS_INSUF_MATERIAL, TABLAS_AHOGADO
+	public static enum Result {
+		WHITE_CHECKMATE, BLACK_CHECKMATE, REPETITION_DRAW, FIFTY_MOV_DRAW, INSUF_MATERIAL_DRAW, STALEMATE
 	}
 
 	// public static final int JAQUE_MATE_BLANCO = 6;
@@ -63,14 +63,14 @@ public class Board {
 	public Board(Position posInicial) {
 		movimientos = new VariationsTree();
 		posicion = posInicial;
-		hash.insertar(posicion.getClavePosicion());
+		hash.insertar(posicion.getPositionKey());
 	}
 
 	/**
 	 * Reinicia la posicion del tablero a la posicion inicial.
 	 */
-	public void reiniciarTablero() {
-		posicion.setPosicion(Position.CAD_INICIAL);
+	public void restartBoard() {
+		posicion.setFEN(Position.INITIAL_POSITION_FEN);
 	}
 
 	/**
@@ -80,7 +80,7 @@ public class Board {
 	 *            Caracter que indica el tipo de pieza a coronar (C, A, T, D).
 	 */
 
-	public void setCoronacion(Tipo c) {
+	public void setPromotionPiece(Tipo c) {
 		coronar = c;
 	}
 
@@ -90,11 +90,11 @@ public class Board {
 	 * @return Un entero, el numero en cuestion.
 	 */
 
-	public int getNumTotalMovimientos() {
+	public int getTotalFullmoveNumber() {
 		return movimientos.getNumMovimientos();
 	}
 
-	public Position getPosicion() {
+	public Position getPosition() {
 		return this.posicion;
 	}
 
@@ -107,19 +107,19 @@ public class Board {
 	 *         'T' -> Tablas <BR>
 	 *         '\0' -> Partida Inacabada o Resultado Desconocido
 	 */
-	public Resultado getResultado() {
+	public Result getResult() {
 		return movimientos.getLastMovimiento().getFinPartida();
 	}
 
 	/**
 	 * Calcula los movimientos validos para todas las piezas del tablero.
 	 */
-	public void calcularMovimientos() {
+	public void calculateMoves() {
 		for (char i = 'a'; i <= 'h'; i++) {
 			for (char j = '1'; j <= '8'; j++) {
 				Piece p = posicion.getPieza(i, j);
 				if (p != null) {
-					if (!Piece.esBandoContrario(posicion.getTurno(), p)) {
+					if (!Piece.esBandoContrario(posicion.getTurn(), p)) {
 						calcularMovimientos(p);
 					}
 				}
@@ -140,18 +140,18 @@ public class Board {
 		case PEON:
 			// Peon
 			// Peon blanco
-			if (pieza.getBando() == Bando.BLANCO) {
+			if (pieza.getBando() == Side.WHITE) {
 				// Movimiento hacia delante
 				// Hacemos dos iteraciones, una para el caso de que avance
 				// una casilla, otra para el caso de que avance dos
-				if (posicion.esVacia(pieza.getLetra(),
+				if (posicion.isEmpty(pieza.getLetra(),
 						(char) (pieza.getNum() + 1))) {
 					if (esLegal(pieza.getLetra(), pieza.getNum(), pieza
 							.getLetra(), (char) (pieza.getNum() + 1))) {
 						pieza.anadirMov(pieza.getLetra(), (char) (pieza
 								.getNum() + 1));
 						if (pieza.getNum() == '2'
-								&& posicion.esVacia(pieza.getLetra(),
+								&& posicion.isEmpty(pieza.getLetra(),
 										(char) (pieza.getNum() + 2))) {
 							if (esLegal(pieza.getLetra(), pieza.getNum(), pieza
 									.getLetra(), (char) (pieza.getNum() + 2))) {
@@ -161,17 +161,17 @@ public class Board {
 						}
 					}
 				}
-				if (posicion.getAlPaso() != '\0'
+				if (posicion.getEnPassant() != '\0'
 						&& pieza.getNum() == '5'
-						&& Math.abs(pieza.getLetra() - posicion.getAlPaso()) == 1) {
-					pieza.anadirMov(posicion.getAlPaso(), (char) (pieza
+						&& Math.abs(pieza.getLetra() - posicion.getEnPassant()) == 1) {
+					pieza.anadirMov(posicion.getEnPassant(), (char) (pieza
 							.getNum() + 1));
 				}
 				// Movimientos para comer
 				try {
 					Piece p = posicion.getPieza((char) (pieza.getLetra() + 1),
 							(char) (pieza.getNum() + 1));
-					if (p != null && p.getBando() == Bando.NEGRO) {
+					if (p != null && p.getBando() == Side.BLACK) {
 						if (esLegal(pieza.getLetra(), pieza.getNum(),
 								(char) (pieza.getLetra() + 1), (char) (pieza
 										.getNum() + 1))) {
@@ -184,7 +184,7 @@ public class Board {
 				try {
 					Piece p = posicion.getPieza((char) (pieza.getLetra() + 1),
 							(char) (pieza.getNum() - 1));
-					if (p != null && p.getBando() == Bando.NEGRO) {
+					if (p != null && p.getBando() == Side.BLACK) {
 						if (esLegal(pieza.getLetra(), pieza.getNum(),
 								(char) (pieza.getLetra() - 1), (char) (pieza
 										.getNum() + 1))) {
@@ -197,14 +197,14 @@ public class Board {
 			}
 			// Peon negro
 			else {
-				if (posicion.esVacia(pieza.getLetra(),
+				if (posicion.isEmpty(pieza.getLetra(),
 						(char) (pieza.getNum() - 1))) {
 					if (esLegal(pieza.getLetra(), pieza.getNum(), pieza
 							.getLetra(), (char) (pieza.getNum() - 1))) {
 						pieza.anadirMov(pieza.getLetra(), (char) (pieza
 								.getNum() - 1));
 						if (pieza.getNum() == '7'
-								&& posicion.esVacia(pieza.getLetra(),
+								&& posicion.isEmpty(pieza.getLetra(),
 										(char) (pieza.getNum() - 2))) {
 							if (esLegal(pieza.getLetra(), pieza.getNum(), pieza
 									.getLetra(), (char) (pieza.getNum() - 2))) {
@@ -214,16 +214,16 @@ public class Board {
 						}
 					}
 				}
-				if (posicion.getAlPaso() != '\0'
+				if (posicion.getEnPassant() != '\0'
 						&& pieza.getNum() == '4'
-						&& Math.abs(pieza.getLetra() - posicion.getAlPaso()) == 1) {
-					pieza.anadirMov(posicion.getAlPaso(), (char) (pieza
+						&& Math.abs(pieza.getLetra() - posicion.getEnPassant()) == 1) {
+					pieza.anadirMov(posicion.getEnPassant(), (char) (pieza
 							.getNum() - 1));
 				}
 				try {
 					Piece p = posicion.getPieza((char) (pieza.getLetra() - 1),
 							(char) (pieza.getNum() + 1));
-					if (p != null && p.getBando() == Bando.NEGRO) {
+					if (p != null && p.getBando() == Side.BLACK) {
 						if (esLegal(pieza.getLetra(), pieza.getNum(),
 								(char) (pieza.getLetra() + 1), (char) (pieza
 										.getNum() - 1))) {
@@ -236,7 +236,7 @@ public class Board {
 				try {
 					Piece p = posicion.getPieza((char) (pieza.getLetra() - 1),
 							(char) (pieza.getNum() - 1));
-					if (p != null && p.getBando() == Bando.NEGRO) {
+					if (p != null && p.getBando() == Side.BLACK) {
 						if (esLegal(pieza.getLetra(), pieza.getNum(),
 								(char) (pieza.getLetra() - 1), (char) (pieza
 										.getNum() - 1))) {
@@ -309,29 +309,29 @@ public class Board {
 				}
 			}
 
-			if (posicion.getEnroqueCorto(posicion.getTurno())
-					&& !esCasillaAtacada(posicion.getKingPosition(posicion
-							.getTurno()))
-					&& posicion.esVacia((char) (pieza.getLetra() + 1), pieza
+			if (posicion.getKingsideCastling(posicion.getTurn())
+					&& !isAttackedSquare(posicion.getKingPosition(posicion
+							.getTurn()))
+					&& posicion.isEmpty((char) (pieza.getLetra() + 1), pieza
 							.getNum())
-					&& !esCasillaAtacada((char) (pieza.getLetra() + 1), (pieza
+					&& !isAttackedSquare((char) (pieza.getLetra() + 1), (pieza
 							.getNum()))
-					&& posicion.esVacia((char) (pieza.getLetra() + 2), pieza
+					&& posicion.isEmpty((char) (pieza.getLetra() + 2), pieza
 							.getNum())
-					&& !esCasillaAtacada((char) (pieza.getLetra() + 2), (pieza
+					&& !isAttackedSquare((char) (pieza.getLetra() + 2), (pieza
 							.getNum()))) {
 				pieza.anadirMov((char) (pieza.getLetra() + 2), pieza.getNum());
 			}
-			if (posicion.getEnroqueLargo(posicion.getTurno())
-					&& !esCasillaAtacada(posicion.getKingPosition(posicion
-							.getTurno()))
-					&& posicion.esVacia((char) (pieza.getLetra() - 1), pieza
+			if (posicion.getQueensideCastling(posicion.getTurn())
+					&& !isAttackedSquare(posicion.getKingPosition(posicion
+							.getTurn()))
+					&& posicion.isEmpty((char) (pieza.getLetra() - 1), pieza
 							.getNum())
-					&& !esCasillaAtacada((char) (pieza.getLetra() - 1), (pieza
+					&& !isAttackedSquare((char) (pieza.getLetra() - 1), (pieza
 							.getNum()))
-					&& posicion.esVacia((char) (pieza.getLetra() - 2), pieza
+					&& posicion.isEmpty((char) (pieza.getLetra() - 2), pieza
 							.getNum())
-					&& !esCasillaAtacada((char) (pieza.getLetra() - 2), (pieza
+					&& !isAttackedSquare((char) (pieza.getLetra() - 2), (pieza
 							.getNum()))) {
 				pieza.anadirMov((char) (pieza.getLetra() - 2), pieza.getNum());
 			}
@@ -347,8 +347,8 @@ public class Board {
 	 *            Casilla que queremos comprobar si esta siendo atacada
 	 * @return Devuelve un booleano indicando si es una casilla atacada o no
 	 */
-	public boolean esCasillaAtacada(Square c) {
-		return esCasillaAtacada(c.getLetra(), c.getNumero());
+	public boolean isAttackedSquare(Square c) {
+		return isAttackedSquare(c.getLetra(), c.getNumero());
 	}
 
 	/**
@@ -369,7 +369,7 @@ public class Board {
 	 *            atacada
 	 * @return Devuelve un booleano indicando si es una casilla atacada o no
 	 */
-	public boolean esCasillaAtacada(char letra, char num) {
+	public boolean isAttackedSquare(char letra, char num) {
 		// Primero miro las casillas
 		// a salto de caballo. Despues, las verticales, horizontales y
 		// diagonales.
@@ -389,7 +389,7 @@ public class Board {
 				Piece p = posicion.getPieza((char) (letra + v.getX()),
 						(char) (num + v.getY()));
 				if (p != null) {
-					if (Piece.esBandoContrario(posicion.getTurno(), p)
+					if (Piece.esBandoContrario(posicion.getTurn(), p)
 							&& p.getTipo() == Tipo.CABALLO) {
 						return true;
 					}
@@ -413,7 +413,7 @@ public class Board {
 					numDest = (char) (numDest + v.getY());
 					p = posicion.getPieza(letDest, numDest);
 				}
-				if (Piece.esBandoContrario(posicion.getTurno(), p)
+				if (Piece.esBandoContrario(posicion.getTurn(), p)
 						&& (p.getTipo() == Tipo.DAMA
 								|| p.getTipo() == Tipo.TORRE || (num + v.getY() == numDest
 								&& letra + v.getX() == letDest && p.getTipo() == Tipo.REY))) {
@@ -436,11 +436,11 @@ public class Board {
 					numDest = (char) (numDest + v.getY());
 					p = posicion.getPieza(letDest, numDest);
 				}
-				if (Piece.esBandoContrario(posicion.getTurno(), p)
+				if (Piece.esBandoContrario(posicion.getTurn(), p)
 						&& (p.getTipo() == Tipo.DAMA
 								|| p.getTipo() == Tipo.ALFIL || (num + v.getY() == numDest
 								&& letra + v.getX() == letDest && (p.getTipo() == Tipo.REY || (p
-								.getTipo() == Tipo.PEON && p.getBando() == Bando.NEGRO))))) {
+								.getTipo() == Tipo.PEON && p.getBando() == Side.BLACK))))) {
 					return true;
 				}
 			} catch (ArrayIndexOutOfBoundsException e) {
@@ -460,11 +460,11 @@ public class Board {
 					numDest = (char) (numDest + v.getY());
 					p = posicion.getPieza(letDest, numDest);
 				}
-				if (Piece.esBandoContrario(posicion.getTurno(), p)
+				if (Piece.esBandoContrario(posicion.getTurn(), p)
 						&& (p.getTipo() == Tipo.DAMA
 								|| p.getTipo() == Tipo.ALFIL || (num + v.getY() == numDest
 								&& letra + v.getX() == letDest && (p.getTipo() == Tipo.REY || (p
-								.getTipo() == Tipo.PEON && p.getBando() == Bando.BLANCO))))) {
+								.getTipo() == Tipo.PEON && p.getBando() == Side.WHITE))))) {
 					return true;
 				}
 			} catch (ArrayIndexOutOfBoundsException e) {
@@ -495,8 +495,8 @@ public class Board {
 		Piece temp = posicion.getPieza(letDest, numDest);
 		posicion.borrarPiezaInternal(letOrig, numOrig);
 		posicion.setPiezaInternal(movida, letDest, numDest);
-		resultado = esCasillaAtacada(posicion.getKingPosition(posicion
-				.getTurno()));
+		resultado = isAttackedSquare(posicion.getKingPosition(posicion
+				.getTurn()));
 		posicion.borrarPiezaInternal(letDest, numDest);
 		posicion.setPiezaInternal(movida, letOrig, numOrig);
 		if (temp != null)
@@ -518,7 +518,7 @@ public class Board {
 	 *            Es el numero de la casilla de destino
 	 * @return Devuelve un objeto Movimiento o null si no esta permitido.
 	 */
-	public Movement mover(char origenLetra, char origenNum,
+	public Movement move(char origenLetra, char origenNum,
 			char destinoLetra, char destinoNum) {
 		Piece piezaQueMueve;
 		int i;
@@ -530,7 +530,7 @@ public class Board {
 			return null;
 		}
 
-		if (Piece.esBandoContrario(posicion.getTurno(), piezaQueMueve)) {
+		if (Piece.esBandoContrario(posicion.getTurn(), piezaQueMueve)) {
 			return null;
 		}
 		if (indice != movimientos.getNumHalfPly())
@@ -556,39 +556,39 @@ public class Board {
 					mov
 							.setCasillaDestino(new Square(destinoLetra,
 									destinoNum));
-					mov.setNumeroMovimiento(posicion.getNumeroMovimiento());
-					mov.setBando(posicion.getTurno());
+					mov.setNumeroMovimiento(posicion.getFullmoveNumber());
+					mov.setBando(posicion.getTurn());
 					mov.setTipoPieza(piezaQueMueve.getTipo());
 
 					// Si se come ponemos el contador a 0
-					if (!posicion.esVacia(destinoLetra, destinoNum)) {
-						posicion.setContadorTablas(0);
+					if (!posicion.isEmpty(destinoLetra, destinoNum)) {
+						posicion.setHalfmoveClock(0);
 						hash.borrarTabla();
 						mov.setCasillaComer(new Square(destinoLetra,
 								destinoNum));
 						mov.setTipoPiezaComida(posicion.getPieza(destinoLetra,
 								destinoNum).getTipo());
-						posicion.borrarPieza(mov.getCasillaComer());
+						posicion.removePiece(mov.getCasillaComer());
 					}
 
 					// Se hacen los calculos especiales si se trata de un peon
 					if (piezaQueMueve.getTipo() == Tipo.PEON) {
 						// Se borra la pieza correspondiente si se come al paso
 						if (Math.abs(destinoLetra - origenLetra) == 1
-								&& posicion.esVacia(destinoLetra, destinoNum)) {
+								&& posicion.isEmpty(destinoLetra, destinoNum)) {
 							mov.setTipoPiezaComida(posicion.getPieza(
 									destinoLetra, origenNum).getTipo());
 							mov.setCasillaComer(new Square(destinoLetra,
 									origenNum));
-							posicion.borrarPieza(mov.getCasillaComer());
+							posicion.removePiece(mov.getCasillaComer());
 						}
 						// Se establece la variable alPaso a su valor
 						// correspondiente
 						if (Math.abs(destinoNum - origenNum) == 2) {
-							posicion.setAlPaso(origenLetra);
-							mov.setAlPaso(posicion.getAlPaso());
+							posicion.setEnPassant(origenLetra);
+							mov.setAlPaso(posicion.getEnPassant());
 						} else {
-							posicion.setAlPaso('\0');
+							posicion.setEnPassant('\0');
 						}
 						// Coronacion
 						if (destinoNum == '1' || destinoNum == '8') {
@@ -600,7 +600,7 @@ public class Board {
 
 							mov.setCoronacion(coronar);
 						}
-						posicion.setContadorTablas(0);
+						posicion.setHalfmoveClock(0);
 						hash.borrarTabla();
 					}
 					// Se hacen los calculos especiales si se trata de un rey
@@ -608,42 +608,42 @@ public class Board {
 						// Movemos las torres en caso de enroque
 						if ((destinoLetra - origenLetra) == 2) {
 							Piece torre = posicion.getPieza('h', origenNum);
-							posicion.borrarPieza('h', origenNum);
-							posicion.setPieza(torre, 'f', origenNum);
+							posicion.removePiece('h', origenNum);
+							posicion.setPiece(torre, 'f', origenNum);
 						} else {
 							if ((destinoLetra - origenLetra) == -2) {
 								Piece torre = posicion.getPieza('a', origenNum);
-								posicion.borrarPieza('a', origenNum);
-								posicion.setPieza(torre, 'd', origenNum);
+								posicion.removePiece('a', origenNum);
+								posicion.setPiece(torre, 'd', origenNum);
 							}
 						}
 					}
 
-					mov.setContadorTablas(posicion.getContadorTablas());
+					mov.setContadorTablas(posicion.getHalfmoveClock());
 					boolean[][] enroque = new boolean[2][2];
-					enroque[0][0] = posicion.getEnroqueCorto(Bando.BLANCO);
-					enroque[0][1] = posicion.getEnroqueLargo(Bando.BLANCO);
-					enroque[1][0] = posicion.getEnroqueCorto(Bando.NEGRO);
-					enroque[1][1] = posicion.getEnroqueLargo(Bando.NEGRO);
+					enroque[0][0] = posicion.getKingsideCastling(Side.WHITE);
+					enroque[0][1] = posicion.getQueensideCastling(Side.WHITE);
+					enroque[1][0] = posicion.getKingsideCastling(Side.BLACK);
+					enroque[1][1] = posicion.getQueensideCastling(Side.BLACK);
 					mov.setEnroque(enroque);
-					if (posicion.getTurno() == Bando.NEGRO)
-						posicion.addNumeroMovimiento();
-					posicion.setTurno();
+					if (posicion.getTurn() == Side.BLACK)
+						posicion.addFullmoveNumber();
+					posicion.setTurn();
 
-					posicion.borrarPieza(origenLetra, origenNum);
-					posicion.setPieza(piezaQueMueve, destinoLetra, destinoNum);
-					posicion.addContadorTablas();
-					calcularMovimientos();
+					posicion.removePiece(origenLetra, origenNum);
+					posicion.setPiece(piezaQueMueve, destinoLetra, destinoNum);
+					posicion.addHalfmoveClock();
+					calculateMoves();
 
-					if (esCasillaAtacada(posicion.getKingPosition(posicion
-							.getTurno()))) {
+					if (isAttackedSquare(posicion.getKingPosition(posicion
+							.getTurn()))) {
 						mov.setJaque(true);
 					} else {
 						mov.setJaque(false);
 					}
 					mov.setFinPartida(esFinPartida());
 
-					hash.insertar(posicion.getClavePosicion());
+					hash.insertar(posicion.getPositionKey());
 					movimientos.appendMovimiento(mov);
 					indice++;
 					return mov;
@@ -661,7 +661,7 @@ public class Board {
 	 * 
 	 * @return El movimiento al que lleguemos en la lista de movimientos.
 	 */
-	public Movement avanzar() {
+	public Movement goBack() {
 		Movement mov;
 		Piece piezaQueMueve;
 		if (indice < movimientos.getNumHalfPly()) {
@@ -671,8 +671,8 @@ public class Board {
 			if (piezaQueMueve.getTipo() == Tipo.PEON
 					&& Math.abs(mov.getCasillaDestino().getLetra()
 							- mov.getCasillaOrigen().getLetra()) == 1
-					&& posicion.esVacia(mov.getCasillaDestino())) {
-				posicion.borrarPieza(mov.getCasillaComer());
+					&& posicion.isEmpty(mov.getCasillaDestino())) {
+				posicion.removePiece(mov.getCasillaComer());
 			}
 			// Si se corona
 			if (mov.getCoronacion() != null) {
@@ -686,29 +686,29 @@ public class Board {
 				Square destino = mov.getCasillaDestino();
 				if ((destino.getLetra() - origen.getLetra()) == 2) {
 					Piece torre = posicion.getPieza('h', origen.getNumero());
-					posicion.borrarPieza('h', origen.getNumero());
-					posicion.setPieza(torre, 'f', origen.getNumero());
+					posicion.removePiece('h', origen.getNumero());
+					posicion.setPiece(torre, 'f', origen.getNumero());
 				} else {
 					if ((destino.getLetra() - origen.getLetra()) == -2) {
 						Piece torre = posicion
 								.getPieza('a', origen.getNumero());
-						posicion.borrarPieza('a', origen.getNumero());
-						posicion.setPieza(torre, 'd', origen.getNumero());
+						posicion.removePiece('a', origen.getNumero());
+						posicion.setPiece(torre, 'd', origen.getNumero());
 					}
 				}
 			}
-			posicion.borrarPieza(mov.getCasillaOrigen());
-			posicion.setPieza(piezaQueMueve, mov.getCasillaDestino());
-			posicion.setContadorTablas(mov.getContadorTablas());
+			posicion.removePiece(mov.getCasillaOrigen());
+			posicion.setPiece(piezaQueMueve, mov.getCasillaDestino());
+			posicion.setHalfmoveClock(mov.getContadorTablas());
 			boolean[][] enroques = mov.getEnroque();
-			posicion.setEnroqueCorto(Bando.BLANCO, enroques[0][0]);
-			posicion.setEnroqueLargo(Bando.BLANCO, enroques[0][1]);
-			posicion.setEnroqueCorto(Bando.NEGRO, enroques[1][0]);
-			posicion.setEnroqueLargo(Bando.NEGRO, enroques[1][1]);
-			posicion.setAlPaso(mov.getAlPaso());
-			posicion.setTurno();
+			posicion.setKingsideCastling(Side.WHITE, enroques[0][0]);
+			posicion.setQueensideCastling(Side.WHITE, enroques[0][1]);
+			posicion.setKingsideCastling(Side.BLACK, enroques[1][0]);
+			posicion.setQueensideCastling(Side.BLACK, enroques[1][1]);
+			posicion.setEnPassant(mov.getAlPaso());
+			posicion.setTurn();
 			indice++;
-			posicion.setNumeroMovimiento(mov.getNumeroMovimiento());
+			posicion.setFullmoveNumber(mov.getNumeroMovimiento());
 			return mov;
 		} else {
 			return null;
@@ -720,13 +720,13 @@ public class Board {
 	 * 
 	 * @return El movimiento al que lleguemos en la lista de movimientos.
 	 */
-	public Movement retroceder() {
+	public Movement goForward() {
 		Movement mov;
 		Piece piezaQueMueve;
 		if (indice > 0) {
 			indice--;
 			mov = movimientos.getMovimiento(indice);
-			posicion.setNumeroMovimiento(mov.getNumeroMovimiento());
+			posicion.setFullmoveNumber(mov.getNumeroMovimiento());
 			piezaQueMueve = posicion.getPieza(mov.getCasillaDestino());
 			if (mov.getCoronacion() != null) {
 				piezaQueMueve = new Piece(piezaQueMueve.getBando(), mov
@@ -738,33 +738,33 @@ public class Board {
 				Square destino = mov.getCasillaDestino();
 				if ((destino.getLetra() - origen.getLetra()) == 2) {
 					Piece torre = posicion.getPieza('h', origen.getNumero());
-					posicion.borrarPieza('h', origen.getNumero());
-					posicion.setPieza(torre, 'f', origen.getNumero());
+					posicion.removePiece('h', origen.getNumero());
+					posicion.setPiece(torre, 'f', origen.getNumero());
 				} else {
 					if ((destino.getLetra() - origen.getLetra()) == -2) {
 						Piece torre = posicion
 								.getPieza('a', origen.getNumero());
-						posicion.borrarPieza('a', origen.getNumero());
-						posicion.setPieza(torre, 'd', origen.getNumero());
+						posicion.removePiece('a', origen.getNumero());
+						posicion.setPiece(torre, 'd', origen.getNumero());
 					}
 				}
 			}
-			posicion.borrarPieza(mov.getCasillaDestino());
+			posicion.removePiece(mov.getCasillaDestino());
 			if (mov.getTipoPiezaComida() != null) {
-				posicion.setPieza(new Piece(
-						piezaQueMueve.getBando() == Bando.BLANCO ? Bando.BLANCO
-								: Bando.NEGRO, mov.getTipoPieza()), mov
+				posicion.setPiece(new Piece(
+						piezaQueMueve.getBando() == Side.WHITE ? Side.WHITE
+								: Side.BLACK, mov.getTipoPieza()), mov
 						.getCasillaComer());
 			}
-			posicion.setPieza(piezaQueMueve, mov.getCasillaOrigen());
-			posicion.setContadorTablas(mov.getContadorTablas());
+			posicion.setPiece(piezaQueMueve, mov.getCasillaOrigen());
+			posicion.setHalfmoveClock(mov.getContadorTablas());
 			boolean[][] enroques = mov.getEnroque();
-			posicion.setEnroqueCorto(Bando.BLANCO, enroques[0][0]);
-			posicion.setEnroqueLargo(Bando.BLANCO, enroques[0][1]);
-			posicion.setEnroqueCorto(Bando.NEGRO, enroques[1][0]);
-			posicion.setEnroqueLargo(Bando.NEGRO, enroques[1][1]);
-			posicion.setAlPaso(mov.getAlPaso());
-			posicion.setTurno();
+			posicion.setKingsideCastling(Side.WHITE, enroques[0][0]);
+			posicion.setQueensideCastling(Side.WHITE, enroques[0][1]);
+			posicion.setKingsideCastling(Side.BLACK, enroques[1][0]);
+			posicion.setQueensideCastling(Side.BLACK, enroques[1][1]);
+			posicion.setEnPassant(mov.getAlPaso());
+			posicion.setTurn();
 			return mov;
 		} else {
 			return null;
@@ -779,20 +779,20 @@ public class Board {
 	 *         han dado jaque mate, 'N' si las negras han dado jaque mate o 'T'
 	 *         si se produce una situacion de tablas.
 	 */
-	private Resultado esFinPartida() {
+	private Result esFinPartida() {
 		Piece pieza;
-		Resultado devolver = null;
+		Result devolver = null;
 		boolean fin = false, fin2 = false, posibleMatInsuf = false;
 		char i, j;
 		// Tablas por 50 movimientos
-		if (posicion.getContadorTablas() == 50) {
+		if (posicion.getHalfmoveClock() == 50) {
 			fin = true;
-			devolver = Resultado.TABLAS_50_MOV;
+			devolver = Result.FIFTY_MOV_DRAW;
 		}
 		// Tablas por repeticion de posiciones
-		if (hash.getRepeticiones(posicion.getClavePosicion()) == 3) {
+		if (hash.getRepeticiones(posicion.getPositionKey()) == 3) {
 			fin = true;
-			devolver = Resultado.TABLAS_REPETICION;
+			devolver = Result.REPETITION_DRAW;
 		}
 		// Tablas por material insuficiente
 		i = 'a';
@@ -828,7 +828,7 @@ public class Board {
 		}
 		if (!fin2) {
 			fin = true;
-			devolver = Resultado.TABLAS_INSUF_MATERIAL;
+			devolver = Result.INSUF_MATERIAL_DRAW;
 		}
 		// Miramos si hay movimientos posibles
 		i = 'a';
@@ -837,7 +837,7 @@ public class Board {
 			while (j <= '8' && !fin) {
 				pieza = posicion.getPieza(i, j);
 				if ((pieza != null)
-						&& (!Piece.esBandoContrario(posicion.getTurno(), pieza))
+						&& (!Piece.esBandoContrario(posicion.getTurn(), pieza))
 						&& (!pieza.getCasillasValidas().isEmpty())) {
 					fin = true;
 				}
@@ -848,20 +848,20 @@ public class Board {
 		}
 		if (!fin) {
 			// Negras dan jaque mate
-			if (posicion.getTurno() == Bando.BLANCO)
-				if (esCasillaAtacada(posicion.getKingPosition(Bando.BLANCO))) {
-					devolver = Resultado.JAQUE_MATE_NEGRO;
+			if (posicion.getTurn() == Side.WHITE)
+				if (isAttackedSquare(posicion.getKingPosition(Side.WHITE))) {
+					devolver = Result.BLACK_CHECKMATE;
 				} else {
-					devolver = Resultado.TABLAS_AHOGADO;
+					devolver = Result.STALEMATE;
 				}
 			else
 			// Blancas dan jaque mate
-			if (esCasillaAtacada(posicion.getKingPosition(Bando.NEGRO))) {
-				devolver = Resultado.JAQUE_MATE_BLANCO;
+			if (isAttackedSquare(posicion.getKingPosition(Side.BLACK))) {
+				devolver = Result.WHITE_CHECKMATE;
 			}
 			// Tablas por ahogado
 			else {
-				devolver = Resultado.TABLAS_AHOGADO;
+				devolver = Result.STALEMATE;
 			}
 		}
 		return devolver;
@@ -880,7 +880,7 @@ public class Board {
 	 *       con el rey, no hay que marcar la posible ambiguedad. Hay que
 	 *       tenerlo en cuenta.
 	 */
-	public Movement moverALG(String mov) {
+	public Movement moveALG(String mov) {
 		char origenLetra = '\0', origenNum = '\0', destinoLetra = '\0', destinoNum = '\0';
 		char tipoPieza = 'P';
 		Tipo piezaCoronacion = null;
@@ -974,7 +974,7 @@ public class Board {
 		if (contadorOesEnroque == 2) {
 			origenLetra = 'e';
 			destinoLetra = 'g';
-			if (posicion.getTurno() == Bando.BLANCO) {
+			if (posicion.getTurn() == Side.WHITE) {
 				origenNum = '1';
 				destinoNum = '1';
 			} else { // turno == NEGRO
@@ -984,7 +984,7 @@ public class Board {
 		} else if (contadorOesEnroque == 3) {
 			origenLetra = 'e';
 			destinoLetra = 'c';
-			if (posicion.getTurno() == Bando.BLANCO) {
+			if (posicion.getTurn() == Side.WHITE) {
 				origenNum = '1';
 				destinoNum = '1';
 			} else { // turno == NEGRO
@@ -1027,7 +1027,7 @@ public class Board {
 					+ " " + destinoLetra + " " + destinoNum);
 			return null;
 		} else {
-			return mover(origenLetra, origenNum, destinoLetra, destinoNum);
+			return move(origenLetra, origenNum, destinoLetra, destinoNum);
 		}
 	}
 }

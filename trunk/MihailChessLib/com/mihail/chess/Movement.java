@@ -1,8 +1,8 @@
 package com.mihail.chess;
 
-import static com.mihail.chess.Board.Bando;
+import static com.mihail.chess.Board.Side;
 
-import com.mihail.chess.Board.Resultado;
+import com.mihail.chess.Board.Result;
 import com.mihail.chess.Piece.Tipo;
 
 /**
@@ -46,7 +46,7 @@ public final class Movement {
 	/**
 	 * Bando que mueve.
 	 */
-	private Bando bando;
+	private Side bando;
 
 	/**
 	 * Este atributo indica el tipo de pieza que es: {P,C,A,T,D,R}
@@ -79,7 +79,7 @@ public final class Movement {
 	 * 'T' -> Tablas <BR>
 	 * 0 -> No ha terminado la partida
 	 */
-	private Resultado finPartida;
+	private Result finPartida;
 
 	/**
 	 * Este atributo indica si se ha producido una coronacion y a que pieza se
@@ -143,11 +143,11 @@ public final class Movement {
 		this.casillaOrigen = casillaOrigen;
 	}
 
-	public Bando getBando() {
+	public Side getBando() {
 		return bando;
 	}
 
-	public void setBando(Bando bando) {
+	public void setBando(Side bando) {
 		this.bando = bando;
 	}
 
@@ -199,11 +199,11 @@ public final class Movement {
 		this.enroque = enroque;
 	}
 
-	public Resultado getFinPartida() {
+	public Result getFinPartida() {
 		return finPartida;
 	}
 
-	public void setFinPartida(Resultado finPartida) {
+	public void setFinPartida(Result finPartida) {
 		this.finPartida = finPartida;
 	}
 

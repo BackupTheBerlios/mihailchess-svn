@@ -4,7 +4,7 @@ import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.mihail.chess.Board.Bando;
+import com.mihail.chess.Board.Side;
 
 /**
  * @author Wotan
@@ -64,7 +64,7 @@ public class VariationsTree {
 	 *            Numero del movimiento
 	 * @return Devuelve el movimiento correspondiente a color y numero
 	 */
-	public Movement getMovimiento(Bando color, int numero) {
+	public Movement getMovimiento(Side color, int numero) {
 		NodoArbol n = getNodo(color, numero);
 		if (n != null)
 			return n.movimiento;
@@ -85,7 +85,7 @@ public class VariationsTree {
 	 * @return Un booleano que indica si para ese movimiento existen
 	 *         alternativas.
 	 */
-	public boolean existeVariante(Bando color, int numero) {
+	public boolean existeVariante(Side color, int numero) {
 		NodoArbol n = getNodo(color, numero);
 
 		if (n != null && n.variantes != null)
@@ -102,7 +102,7 @@ public class VariationsTree {
 	 *            Numero del movimiento.
 	 * @return El numero de alternativas a un movimiento.
 	 */
-	public int getNumVariantes(Bando color, int numero) {
+	public int getNumVariantes(Side color, int numero) {
 		NodoArbol n = getNodo(color, numero);
 
 		if (n != null) {
@@ -112,14 +112,14 @@ public class VariationsTree {
 		return 0;
 	}
 
-	private int bandoToInt(Bando b) {
-		if (b == Bando.BLANCO)
+	private int bandoToInt(Side b) {
+		if (b == Side.WHITE)
 			return 0;
 		return 1;
 	}
 
 	// Funcion de utilidad.
-	private NodoArbol getNodo(Bando color, int numero) {
+	private NodoArbol getNodo(Side color, int numero) {
 		int indice = (numero - 1) * 2 + bandoToInt(color);
 		if (indice < arbol.size())
 			return arbol.get(indice);
@@ -136,14 +136,14 @@ public class VariationsTree {
 	 * @param numero
 	 *            Numero del movimiento.
 	 */
-	public void addVariante(Movement mov, Bando color, int numero) {
+	public void addVariante(Movement mov, Side color, int numero) {
 		NodoArbol n = getNodo(color, numero);
 
 		if (n.variantes == null)
 			n.variantes = new ArrayList<VariationsTree>();
 
 		VariationsTree a = new VariationsTree(numero);
-		if (color == Bando.NEGRO) // Cada arbol de variantes debe empezar con un movimiento de blancas
+		if (color == Side.BLACK) // Cada arbol de variantes debe empezar con un movimiento de blancas
 			a.appendMovimiento(new Movement());
 		a.appendMovimiento(mov);
 
@@ -159,7 +159,7 @@ public class VariationsTree {
 	 *            Numero de variante que se quiere obtener.
 	 * @return Devuelve un ArbolVariantes, que es la variante del movimiento.
 	 */
-	public VariationsTree getVariante(Bando color, int numero, int num) {
+	public VariationsTree getVariante(Side color, int numero, int num) {
 		NodoArbol n = getNodo(color, numero);
 		if (n != null)
 			return n.variantes.get(num);
@@ -204,7 +204,7 @@ public class VariationsTree {
 	 * @param num
 	 */
 	
-	public void promoteVariant(Bando color, int numero, int num) {
+	public void promoteVariant(Side color, int numero, int num) {
 		VariationsTree a = getVariante(color, numero, num);
 		int indice = (numero - 1) * 2 + bandoToInt(color);
 		NodoArbol n = getNodo(color, numero);

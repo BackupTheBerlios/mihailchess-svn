@@ -2,7 +2,7 @@ package com.mihail.chess;
 
 import java.util.*;
 
-import static com.mihail.chess.Board.Bando;
+import static com.mihail.chess.Board.Side;
 
 /**
  * Esta clase define un objeto Pieza y sus caracteristicas: bando, tipo de pieza
@@ -26,7 +26,7 @@ public final class Piece {
 	 * Este atributo indica el bando de la pieza (blanco o negro): true -> bando
 	 * blanco false -> bando negro
 	 */
-	private Bando bando;
+	private Side bando;
 
 	/**
 	 * Este atributo indica el tipo de pieza que es: <BR>
@@ -63,14 +63,14 @@ public final class Piece {
 	 *            Es el tipo de la pieza {P,C,A,T,D,R}
 	 * @see #tipo
 	 */
-	public Piece(Bando ban, Tipo claseDePieza) {
+	public Piece(Side ban, Tipo claseDePieza) {
 		bando = ban;
 		tipo = claseDePieza;
 		casilla = new Square();
 		switch (tipo) {
 		case PEON:
 			direcciones = new DirectionVector[1];
-			if (bando == Bando.BLANCO)
+			if (bando == Side.WHITE)
 				direcciones[0] = new DirectionVector(0, 1);
 			else
 				direcciones[0] = new DirectionVector(0, -1);
@@ -157,7 +157,7 @@ public final class Piece {
 	 * @return Devuelve true cuando pieza sea del bando contrario al que le toca
 	 *         mover, false si es del mismo bando
 	 */
-	public final static boolean esBandoContrario(Bando turno, Piece pieza) {
+	public final static boolean esBandoContrario(Side turno, Piece pieza) {
 		return turno != pieza.bando;
 	}
 
@@ -177,7 +177,7 @@ public final class Piece {
 		this.casillasValidas.add(c);
 	}
 
-	public Bando getBando() {
+	public Side getBando() {
 		return bando;
 	}
 

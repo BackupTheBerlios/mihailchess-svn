@@ -13,7 +13,7 @@ import java.util.zip.ZipFile;
 
 import javax.swing.ImageIcon;
 
-import com.mihail.chess.Board.Bando;
+import com.mihail.chess.Board.Side;
 import com.mihail.chess.Piece.Tipo;
 
 /**
@@ -94,11 +94,11 @@ public class BoardTheme {
 		}
 	}
 	
-	public Image getImagePiece(Bando bando, Tipo tipo) {
+	public Image getImagePiece(Side bando, Tipo tipo) {
 		return pieceImages[bandoToInt(bando)][tipoToInt(tipo)];
 	}
 	
-	public Image getImageCasilla(Bando bando) {
+	public Image getImageCasilla(Side bando) {
 		return casillasImages[bandoToInt(bando)];
 	}
 	
@@ -110,8 +110,8 @@ public class BoardTheme {
 		return background;
 	}
 	
-	private int bandoToInt(Bando bando) {
-		return bando == Bando.BLANCO? 0:1;
+	private int bandoToInt(Side bando) {
+		return bando == Side.WHITE? 0:1;
 	}
 	
 	private int tipoToInt(Tipo tipo) {

@@ -16,7 +16,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
-import com.mihail.chess.Board.Bando;
+import com.mihail.chess.Board.Side;
 import com.mihail.chess.Piece.Tipo;
 
 /**
@@ -182,8 +182,8 @@ public class Board2D extends JPanel {
 				// casillas blancas o negras
 				// if (activado) {
 				int v = (i + j) % 2;
-				Image textura = theme.getImageCasilla(v == 0 ? Bando.BLANCO
-						: Bando.NEGRO);
+				Image textura = theme.getImageCasilla(v == 0 ? Side.WHITE
+						: Side.BLACK);
 				if (textura != null)
 
 					g.drawImage(textura, i * TAM, j * TAM, TAM, TAM, null);
@@ -383,7 +383,7 @@ public class Board2D extends JPanel {
 	 *            El tipo de las casillas, blancas o negras.
 	 * @return El color liso.
 	 */
-	public Color getColorLiso(Bando b) {
+	public Color getColorLiso(Side b) {
 		return colorLiso[bandoToInt(b)];
 	}
 
@@ -398,7 +398,7 @@ public class Board2D extends JPanel {
 	 *            El color liso.
 	 */
 
-	public void setColorLiso(Bando b, Color colorLiso) {
+	public void setColorLiso(Side b, Color colorLiso) {
 		this.colorLiso[bandoToInt(b)] = colorLiso;
 	}
 
@@ -414,17 +414,17 @@ public class Board2D extends JPanel {
 	}
 	
 	public void setPieza(Piece pieza, Square casilla) {
-		tablero.setPieza(pieza, casilla);
+		tablero.setPiece(pieza, casilla);
 		repintarCasilla(casilla.getLetra() - 'a', casilla.getNumero()-'1');
 	}
 	
 	public void borrarPieza(Square casilla) {
-		tablero.borrarPieza(casilla);
+		tablero.removePiece(casilla);
 		repintarCasilla(casilla.getLetra() - 'a', casilla.getNumero()-'1');
 	}
 	
 	public void setFEN(String pos) {
-		tablero.setPosicion(pos);
+		tablero.setFEN(pos);
 		repaint();
 	}
 
@@ -501,8 +501,8 @@ public class Board2D extends JPanel {
 		}
 	}
 
-	private int bandoToInt(Bando b) {
-		if (b == Bando.BLANCO) {
+	private int bandoToInt(Side b) {
+		if (b == Side.WHITE) {
 			return 0;
 		}
 		return 1;
@@ -553,7 +553,7 @@ public class Board2D extends JPanel {
 		MediaTracker media = new MediaTracker(this);
 		for (int i = 0; i < 2; i++) {
 			for (int j = 0; j < 6; j++) {
-				piezas[i][j] = theme.getImagePiece(i==0?Bando.BLANCO:Bando.NEGRO, intToTipo(j))
+				piezas[i][j] = theme.getImagePiece(i==0?Side.WHITE:Side.BLACK, intToTipo(j))
 						.getScaledInstance(TAM, TAM, Image.SCALE_FAST);
 				media.addImage(piezas[i][j], 1);
 			}
