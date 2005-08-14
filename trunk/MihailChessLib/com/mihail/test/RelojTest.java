@@ -11,11 +11,11 @@ public class RelojTest implements Observer {
 	public void update(Observable arg0, Object arg1) {
 		if (arg0 instanceof Clock) {
 			Clock r = (Clock) arg0;
-			if (r.getDecimas() == 0) {
-				System.out.println(r.getHoras() + ":" + r.getMinutos() + ":"
-						+ r.getSegundos() + "." + r.getDecimas());
+			if (r.getTenths() == 0) {
+				System.out.println(r.getHours() + ":" + r.getMinutes() + ":"
+						+ r.getSeconds() + "." + r.getTenths());
 			}
-			if (r.isFinTiempo())
+			if (r.isTimeFinished())
 				System.out.println("FIN TIEMPO");
 		}
 	}
@@ -30,7 +30,7 @@ public class RelojTest implements Observer {
 		relojTest = new RelojTest();
 
 		reloj.addObserver(relojTest);
-		reloj.comenzar();
-		reloj.setParado(false);
+		reloj.start();
+		reloj.setStopped(false);
 	}
 }

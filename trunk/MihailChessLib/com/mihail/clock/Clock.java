@@ -74,7 +74,7 @@ public class Clock extends Observable {
 			throw new ClockException("Recarga fuera de rango");
 	}
 
-	public void comenzar() {
+	public void start() {
 		if (tiempo == null) {
 			tiempo = new Timer();
 		}
@@ -120,11 +120,11 @@ public class Clock extends Observable {
 		}
 	}
 
-	public void setParado(boolean b) {
+	public void setStopped(boolean b) {
 		parado = b;
 	}
 
-	public void setTiempo(int h, int m, int s, int d) throws ClockException {
+	public void setTime(int h, int m, int s, int d) throws ClockException {
 		horas = h;
 		if (h < 0)
 			throw new ClockException("Horas fuera de rango");
@@ -139,7 +139,7 @@ public class Clock extends Observable {
 		decimas = d;
 	}
 
-	public void recargar() {
+	public void recharge() {
 		int simul, resto;
 		simul = segundos + recarga;
 		horas += simul / 3600;
@@ -148,27 +148,27 @@ public class Clock extends Observable {
 		segundos = resto % 60;
 	}
 
-	public boolean isFinTiempo() {
+	public boolean isTimeFinished() {
 		return horas < 0;
 	}
 
-	public void setRecarga(int segs) {
+	public void setRecharge(int segs) {
 		recarga = segs;
 	}
 
-	public int getHoras() {
+	public int getHours() {
 		return horas;
 	}
 
-	public int getMinutos() {
+	public int getMinutes() {
 		return minutos;
 	}
 
-	public int getSegundos() {
+	public int getSeconds() {
 		return segundos;
 	}
 
-	public int getDecimas() {
+	public int getTenths() {
 		return decimas;
 	}
 }
