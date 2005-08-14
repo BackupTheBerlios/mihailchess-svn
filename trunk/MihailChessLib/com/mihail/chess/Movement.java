@@ -1,9 +1,9 @@
 package com.mihail.chess;
 
-import static com.mihail.chess.Logica.Bando;
+import static com.mihail.chess.Board.Bando;
 
-import com.mihail.chess.Logica.Resultado;
-import com.mihail.chess.Pieza.Tipo;
+import com.mihail.chess.Board.Resultado;
+import com.mihail.chess.Piece.Tipo;
 
 /**
  * Esta clase define un objeto Movimiento, que guarda informacion sobre el
@@ -14,7 +14,7 @@ import com.mihail.chess.Pieza.Tipo;
  * @author Iago Porto Diaz
  */
 
-public final class Movimiento {
+public final class Movement {
 
 	/**
 	 * Este atributo indica la letra de la casilla origen.
@@ -24,7 +24,7 @@ public final class Movimiento {
 	 * Este atributo indica el numero de la casilla origen.
 	 */
 	// public char origenNum;
-	private Casilla casillaOrigen;
+	private Square casillaOrigen;
 
 	/**
 	 * Este atributo indica la letra de la casilla destino.
@@ -34,7 +34,7 @@ public final class Movimiento {
 	 * Este atributo indica el numero de la casilla destino.
 	 */
 	// public char destinoNum;
-	private Casilla casillaDestino;
+	private Square casillaDestino;
 
 	/**
 	 * Numero de movimiento en la partida. Es el mismo numero para blancas que
@@ -64,7 +64,7 @@ public final class Movimiento {
 	 * producido una captura contiene un 0.
 	 */
 	// public char casillaComerNum;
-	private Casilla casillaComer;
+	private Square casillaComer;
 
 	/**
 	 * Este atributo indica si el movimiento produce un jaque.
@@ -127,19 +127,19 @@ public final class Movimiento {
 	 */
 	private String notacion;
 
-	public Casilla getCasillaDestino() {
+	public Square getCasillaDestino() {
 		return casillaDestino;
 	}
 
-	public void setCasillaDestino(Casilla casillaDestino) {
+	public void setCasillaDestino(Square casillaDestino) {
 		this.casillaDestino = casillaDestino;
 	}
 
-	public Casilla getCasillaOrigen() {
+	public Square getCasillaOrigen() {
 		return casillaOrigen;
 	}
 
-	public void setCasillaOrigen(Casilla casillaOrigen) {
+	public void setCasillaOrigen(Square casillaOrigen) {
 		this.casillaOrigen = casillaOrigen;
 	}
 
@@ -167,11 +167,11 @@ public final class Movimiento {
 		this.tipoPieza = tipoPieza;
 	}
 
-	public Casilla getCasillaComer() {
+	public Square getCasillaComer() {
 		return casillaComer;
 	}
 
-	public void setCasillaComer(Casilla casillaComer) {
+	public void setCasillaComer(Square casillaComer) {
 		this.casillaComer = casillaComer;
 	}
 

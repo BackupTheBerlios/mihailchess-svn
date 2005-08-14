@@ -11,14 +11,14 @@ import java.io.IOException;
  * @author Martin Rademacher mano@radebatz.net
  * @versionServidor $Id: PGNParser.jj,v 1.4 2002/06/15 09:00:47 radebatz Exp $
  */
-public final class PGNParser extends Analizador implements PGNParserConstants {
+public final class PGNParser extends Parser implements PGNParserConstants {
 	public static final int NEXT_TOKEN = 1;
 
 	public static final int SKIP_TOKEN = 0;
 
 	public static final int EOF = -1;
 
-	Partida partida = new Partida();
+	Game partida = new Game();
 
 	public void analizar() throws ParseException {
 		while (parse() != -1) {
@@ -415,7 +415,7 @@ public final class PGNParser extends Analizador implements PGNParserConstants {
 		 * token.setTerminator(imageOf(gg)); return token;
 		 */
 		listaPartidas.add(partida);
-		partida = new Partida();
+		partida = new Game();
 	}
 
 	/**
@@ -1039,12 +1039,12 @@ public final class PGNParser extends Analizador implements PGNParserConstants {
 		java.io.FileWriter f = new java.io.FileWriter(archivo);
 
 		for (int i = 0; i < listaPartidas.size(); i++) {
-			Partida p = listaPartidas.get(i);
+			Game p = listaPartidas.get(i);
 			PGNParser.guardarPartida(archivo, p);
 		}
 	}
 
-	public static void guardarPartida(String archivo, Partida p)
+	public static void guardarPartida(String archivo, Game p)
 			throws IOException {
 		java.io.FileWriter f = new java.io.FileWriter(archivo, true);
 

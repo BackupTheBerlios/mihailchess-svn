@@ -13,7 +13,7 @@ import java.util.*;
  * @author Pedro Suarez Casal
  * @author Iago Porto Diaz
  */
-public final class DiccionarioAperturas {
+public final class OpeningsDictionary {
 
 	/**
 	 * Tamaño de la Tabla Hash. Se elige 2017 porque es el numero primo mas
@@ -53,7 +53,7 @@ public final class DiccionarioAperturas {
 	 * Crea una nueva instancia de la clase y crea la Tabla Hash con capacidad
 	 * CAPACIDAD.
 	 */
-	public DiccionarioAperturas(Locale id) {
+	public OpeningsDictionary(Locale id) {
 		tabla = new HashMap<Integer, String>(CAPACIDAD);
 		// Segun el idioma que se use en el programa, se cargan las aperturas en
 		// ingles o en castellano.

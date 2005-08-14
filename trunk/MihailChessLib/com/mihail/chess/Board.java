@@ -2,9 +2,9 @@ package com.mihail.chess;
 
 import java.util.ArrayList;
 
-import com.mihail.chess.Pieza.Tipo;
+import com.mihail.chess.Piece.Tipo;
 
-public class Logica {
+public class Board {
 
 	public static enum Bando {
 		BLANCO, NEGRO;
@@ -28,7 +28,7 @@ public class Logica {
 	/**
 	 * Este atributo sirve para guardar la lista de movimientos de una partida.
 	 */
-	private ArbolVariantes movimientos;
+	private VariationsTree movimientos;
 
 	/**
 	 * Este atributo sirve para saber en que posicion de la lista de movimientos
@@ -45,12 +45,12 @@ public class Logica {
 	/**
 	 * Tabla hash usada para comprobar posiciones repetidas.
 	 */
-	private DiccionarioPosiciones hash = new DiccionarioPosiciones(51);
+	private PositionsDictionary hash = new PositionsDictionary(51);
 
 	/**
 	 * Posicion actual en juego
 	 */
-	private Posicion posicion;
+	private Position posicion;
 
 	/**
 	 * Crea una nueva instancia de la clase y crea las piezas, colocandolas en
@@ -60,8 +60,8 @@ public class Logica {
 	 *            Es un String que indica una posicion de juego, siguiendo el
 	 *            estandar FEN.
 	 */
-	public Logica(Posicion posInicial) {
-		movimientos = new ArbolVariantes();
+	public Board(Position posInicial) {
+		movimientos = new VariationsTree();
 		posicion = posInicial;
 		hash.insertar(posicion.getClavePosicion());
 	}
@@ -70,7 +70,7 @@ public class Logica {
 	 * Reinicia la posicion del tablero a la posicion inicial.
 	 */
 	public void reiniciarTablero() {
-		posicion.setPosicion(Posicion.CAD_INICIAL);
+		posicion.setPosicion(Position.CAD_INICIAL);
 	}
 
 	/**
@@ -94,7 +94,7 @@ public class Logica {
 		return movimientos.getNumMovimientos();
 	}
 
-	public Posicion getPosicion() {
+	public Position getPosicion() {
 		return this.posicion;
 	}
 
@@ -117,9 +117,9 @@ public class Logica {
 	public void calcularMovimientos() {
 		for (char i = 'a'; i <= 'h'; i++) {
 			for (char j = '1'; j <= '8'; j++) {
-				Pieza p = posicion.getPieza(i, j);
+				Piece p = posicion.getPieza(i, j);
 				if (p != null) {
-					if (!Pieza.esBandoContrario(posicion.getTurno(), p)) {
+					if (!Piece.esBandoContrario(posicion.getTurno(), p)) {
 						calcularMovimientos(p);
 					}
 				}
@@ -134,7 +134,7 @@ public class Logica {
 	 * @param pieza
 	 *            Pieza de la que queremos calcular sus movimientos legales
 	 */
-	private void calcularMovimientos(Pieza pieza) {
+	private void calcularMovimientos(Piece pieza) {
 		pieza.getCasillasValidas().clear();
 		switch (pieza.getTipo()) {
 		case PEON:
@@ -169,7 +169,7 @@ public class Logica {
 				}
 				// Movimientos para comer
 				try {
-					Pieza p = posicion.getPieza((char) (pieza.getLetra() + 1),
+					Piece p = posicion.getPieza((char) (pieza.getLetra() + 1),
 							(char) (pieza.getNum() + 1));
 					if (p != null && p.getBando() == Bando.NEGRO) {
 						if (esLegal(pieza.getLetra(), pieza.getNum(),
@@ -182,7 +182,7 @@ public class Logica {
 				} catch (ArrayIndexOutOfBoundsException e) {
 				}
 				try {
-					Pieza p = posicion.getPieza((char) (pieza.getLetra() + 1),
+					Piece p = posicion.getPieza((char) (pieza.getLetra() + 1),
 							(char) (pieza.getNum() - 1));
 					if (p != null && p.getBando() == Bando.NEGRO) {
 						if (esLegal(pieza.getLetra(), pieza.getNum(),
@@ -221,7 +221,7 @@ public class Logica {
 							.getNum() - 1));
 				}
 				try {
-					Pieza p = posicion.getPieza((char) (pieza.getLetra() - 1),
+					Piece p = posicion.getPieza((char) (pieza.getLetra() - 1),
 							(char) (pieza.getNum() + 1));
 					if (p != null && p.getBando() == Bando.NEGRO) {
 						if (esLegal(pieza.getLetra(), pieza.getNum(),
@@ -234,7 +234,7 @@ public class Logica {
 				} catch (ArrayIndexOutOfBoundsException e) {
 				}
 				try {
-					Pieza p = posicion.getPieza((char) (pieza.getLetra() - 1),
+					Piece p = posicion.getPieza((char) (pieza.getLetra() - 1),
 							(char) (pieza.getNum() - 1));
 					if (p != null && p.getBando() == Bando.NEGRO) {
 						if (esLegal(pieza.getLetra(), pieza.getNum(),
@@ -249,15 +249,15 @@ public class Logica {
 			}
 			break;
 		case CABALLO:
-			for (VectorDireccion v : pieza.getDirecciones()) {
-				Casilla destino = pieza.getCasilla().add(v);
+			for (DirectionVector v : pieza.getDirecciones()) {
+				Square destino = pieza.getCasilla().add(v);
 				try {
 					if (esLegal(pieza.getLetra(), pieza.getNum(), destino
 							.getLetra(), destino.getNumero())) {
-						Pieza p = posicion.getPieza(destino.getLetra(), destino
+						Piece p = posicion.getPieza(destino.getLetra(), destino
 								.getNumero());
 						if (p == null
-								|| (p != null && Pieza.esBandoContrario(pieza,
+								|| (p != null && Piece.esBandoContrario(pieza,
 										p)))
 							pieza.anadirMov(destino);
 					}
@@ -269,10 +269,10 @@ public class Logica {
 		case DAMA:
 		case ALFIL:
 		case TORRE:
-			for (VectorDireccion v : pieza.getDirecciones()) {
+			for (DirectionVector v : pieza.getDirecciones()) {
 				try {
-					Casilla destino = pieza.getCasilla().add(v);
-					Pieza p = posicion.getPieza(destino.getLetra(), destino
+					Square destino = pieza.getCasilla().add(v);
+					Piece p = posicion.getPieza(destino.getLetra(), destino
 							.getNumero());
 					while (p == null) {
 						p = posicion.getPieza(destino.getLetra(), destino
@@ -280,7 +280,7 @@ public class Logica {
 						if (esLegal(pieza.getLetra(), pieza.getNum(), destino
 								.getLetra(), destino.getNumero())) {
 							if (p == null
-									|| (p != null && Pieza.esBandoContrario(
+									|| (p != null && Piece.esBandoContrario(
 											pieza, p))) {
 								pieza.anadirMov(destino);
 							}
@@ -293,15 +293,15 @@ public class Logica {
 
 			break;
 		case REY:
-			for (VectorDireccion v : pieza.getDirecciones()) {
-				Casilla destino = pieza.getCasilla().add(v);
+			for (DirectionVector v : pieza.getDirecciones()) {
+				Square destino = pieza.getCasilla().add(v);
 				try {
 					if (esLegal(pieza.getLetra(), pieza.getNum(), destino
 							.getLetra(), destino.getNumero())) {
-						Pieza p = posicion.getPieza(destino.getLetra(), destino
+						Piece p = posicion.getPieza(destino.getLetra(), destino
 								.getNumero());
 						if (p == null
-								|| (p != null && Pieza.esBandoContrario(pieza,
+								|| (p != null && Piece.esBandoContrario(pieza,
 										p)))
 							pieza.anadirMov(destino);
 					}
@@ -347,7 +347,7 @@ public class Logica {
 	 *            Casilla que queremos comprobar si esta siendo atacada
 	 * @return Devuelve un booleano indicando si es una casilla atacada o no
 	 */
-	public boolean esCasillaAtacada(Casilla c) {
+	public boolean esCasillaAtacada(Square c) {
 		return esCasillaAtacada(c.getLetra(), c.getNumero());
 	}
 
@@ -375,21 +375,21 @@ public class Logica {
 		// diagonales.
 
 		// Casillas a salto de caballo
-		ArrayList<VectorDireccion> dir = new ArrayList<VectorDireccion>();
-		dir.add(new VectorDireccion(1, 2));
-		dir.add(new VectorDireccion(-1, 2));
-		dir.add(new VectorDireccion(2, 1));
-		dir.add(new VectorDireccion(2, -1));
-		dir.add(new VectorDireccion(1, -2));
-		dir.add(new VectorDireccion(-1, -2));
-		dir.add(new VectorDireccion(-2, 1));
-		dir.add(new VectorDireccion(-2, -1));
-		for (VectorDireccion v : dir) {
+		ArrayList<DirectionVector> dir = new ArrayList<DirectionVector>();
+		dir.add(new DirectionVector(1, 2));
+		dir.add(new DirectionVector(-1, 2));
+		dir.add(new DirectionVector(2, 1));
+		dir.add(new DirectionVector(2, -1));
+		dir.add(new DirectionVector(1, -2));
+		dir.add(new DirectionVector(-1, -2));
+		dir.add(new DirectionVector(-2, 1));
+		dir.add(new DirectionVector(-2, -1));
+		for (DirectionVector v : dir) {
 			try {
-				Pieza p = posicion.getPieza((char) (letra + v.getX()),
+				Piece p = posicion.getPieza((char) (letra + v.getX()),
 						(char) (num + v.getY()));
 				if (p != null) {
-					if (Pieza.esBandoContrario(posicion.getTurno(), p)
+					if (Piece.esBandoContrario(posicion.getTurno(), p)
 							&& p.getTipo() == Tipo.CABALLO) {
 						return true;
 					}
@@ -398,22 +398,22 @@ public class Logica {
 			}
 		}
 		dir.clear();
-		dir.add(new VectorDireccion(1, 0));
-		dir.add(new VectorDireccion(-1, 0));
-		dir.add(new VectorDireccion(0, 1));
-		dir.add(new VectorDireccion(0, -1));
+		dir.add(new DirectionVector(1, 0));
+		dir.add(new DirectionVector(-1, 0));
+		dir.add(new DirectionVector(0, 1));
+		dir.add(new DirectionVector(0, -1));
 
-		for (VectorDireccion v : dir) {
+		for (DirectionVector v : dir) {
 			try {
 				char letDest = (char) (letra + v.getX()), numDest = (char) (num + v
 						.getY());
-				Pieza p = posicion.getPieza(letDest, numDest);
+				Piece p = posicion.getPieza(letDest, numDest);
 				while (p == null) {
 					letDest = (char) (letDest + v.getX());
 					numDest = (char) (numDest + v.getY());
 					p = posicion.getPieza(letDest, numDest);
 				}
-				if (Pieza.esBandoContrario(posicion.getTurno(), p)
+				if (Piece.esBandoContrario(posicion.getTurno(), p)
 						&& (p.getTipo() == Tipo.DAMA
 								|| p.getTipo() == Tipo.TORRE || (num + v.getY() == numDest
 								&& letra + v.getX() == letDest && p.getTipo() == Tipo.REY))) {
@@ -423,20 +423,20 @@ public class Logica {
 			}
 		}
 		dir.clear();
-		dir.add(new VectorDireccion(1, 1));
-		dir.add(new VectorDireccion(-1, 1));
+		dir.add(new DirectionVector(1, 1));
+		dir.add(new DirectionVector(-1, 1));
 
-		for (VectorDireccion v : dir) {
+		for (DirectionVector v : dir) {
 			try {
 				char letDest = (char) (letra + v.getX()), numDest = (char) (num + v
 						.getY());
-				Pieza p = posicion.getPieza(letDest, numDest);
+				Piece p = posicion.getPieza(letDest, numDest);
 				while (p == null) {
 					letDest = (char) (letDest + v.getX());
 					numDest = (char) (numDest + v.getY());
 					p = posicion.getPieza(letDest, numDest);
 				}
-				if (Pieza.esBandoContrario(posicion.getTurno(), p)
+				if (Piece.esBandoContrario(posicion.getTurno(), p)
 						&& (p.getTipo() == Tipo.DAMA
 								|| p.getTipo() == Tipo.ALFIL || (num + v.getY() == numDest
 								&& letra + v.getX() == letDest && (p.getTipo() == Tipo.REY || (p
@@ -447,20 +447,20 @@ public class Logica {
 			}
 		}
 		dir.clear();
-		dir.add(new VectorDireccion(1, -1));
-		dir.add(new VectorDireccion(-1, -1));
+		dir.add(new DirectionVector(1, -1));
+		dir.add(new DirectionVector(-1, -1));
 
-		for (VectorDireccion v : dir) {
+		for (DirectionVector v : dir) {
 			try {
 				char letDest = (char) (letra + v.getX()), numDest = (char) (num + v
 						.getY());
-				Pieza p = posicion.getPieza(letDest, numDest);
+				Piece p = posicion.getPieza(letDest, numDest);
 				while (p == null) {
 					letDest = (char) (letDest + v.getX());
 					numDest = (char) (numDest + v.getY());
 					p = posicion.getPieza(letDest, numDest);
 				}
-				if (Pieza.esBandoContrario(posicion.getTurno(), p)
+				if (Piece.esBandoContrario(posicion.getTurno(), p)
 						&& (p.getTipo() == Tipo.DAMA
 								|| p.getTipo() == Tipo.ALFIL || (num + v.getY() == numDest
 								&& letra + v.getX() == letDest && (p.getTipo() == Tipo.REY || (p
@@ -491,8 +491,8 @@ public class Logica {
 	private boolean esLegal(char letOrig, char numOrig, char letDest,
 			char numDest) {
 		boolean resultado;
-		Pieza movida = posicion.getPieza(letOrig, numOrig);
-		Pieza temp = posicion.getPieza(letDest, numDest);
+		Piece movida = posicion.getPieza(letOrig, numOrig);
+		Piece temp = posicion.getPieza(letDest, numDest);
 		posicion.borrarPiezaInternal(letOrig, numOrig);
 		posicion.setPiezaInternal(movida, letDest, numDest);
 		resultado = esCasillaAtacada(posicion.getKingPosition(posicion
@@ -518,11 +518,11 @@ public class Logica {
 	 *            Es el numero de la casilla de destino
 	 * @return Devuelve un objeto Movimiento o null si no esta permitido.
 	 */
-	public Movimiento mover(char origenLetra, char origenNum,
+	public Movement mover(char origenLetra, char origenNum,
 			char destinoLetra, char destinoNum) {
-		Pieza piezaQueMueve;
+		Piece piezaQueMueve;
 		int i;
-		Movimiento mov;
+		Movement mov;
 		piezaQueMueve = posicion.getPieza(origenLetra, origenNum);
 
 		// Comprobamos que en la casilla de origen hay una pieza
@@ -530,7 +530,7 @@ public class Logica {
 			return null;
 		}
 
-		if (Pieza.esBandoContrario(posicion.getTurno(), piezaQueMueve)) {
+		if (Piece.esBandoContrario(posicion.getTurno(), piezaQueMueve)) {
 			return null;
 		}
 		if (indice != movimientos.getNumHalfPly())
@@ -551,10 +551,10 @@ public class Logica {
 				// valido
 				if (destinoNum == piezaQueMueve.getCasillasValidas().get(i)
 						.getLetra()) {
-					mov = new Movimiento();
-					mov.setCasillaOrigen(new Casilla(origenLetra, origenNum));
+					mov = new Movement();
+					mov.setCasillaOrigen(new Square(origenLetra, origenNum));
 					mov
-							.setCasillaDestino(new Casilla(destinoLetra,
+							.setCasillaDestino(new Square(destinoLetra,
 									destinoNum));
 					mov.setNumeroMovimiento(posicion.getNumeroMovimiento());
 					mov.setBando(posicion.getTurno());
@@ -564,7 +564,7 @@ public class Logica {
 					if (!posicion.esVacia(destinoLetra, destinoNum)) {
 						posicion.setContadorTablas(0);
 						hash.borrarTabla();
-						mov.setCasillaComer(new Casilla(destinoLetra,
+						mov.setCasillaComer(new Square(destinoLetra,
 								destinoNum));
 						mov.setTipoPiezaComida(posicion.getPieza(destinoLetra,
 								destinoNum).getTipo());
@@ -578,7 +578,7 @@ public class Logica {
 								&& posicion.esVacia(destinoLetra, destinoNum)) {
 							mov.setTipoPiezaComida(posicion.getPieza(
 									destinoLetra, origenNum).getTipo());
-							mov.setCasillaComer(new Casilla(destinoLetra,
+							mov.setCasillaComer(new Square(destinoLetra,
 									origenNum));
 							posicion.borrarPieza(mov.getCasillaComer());
 						}
@@ -595,7 +595,7 @@ public class Logica {
 							// if (mostrarDialogoCoronacion) {
 							// mostrarDialogoCoronacion ();
 							// }
-							piezaQueMueve = new Pieza(piezaQueMueve.getBando(),
+							piezaQueMueve = new Piece(piezaQueMueve.getBando(),
 									coronar);
 
 							mov.setCoronacion(coronar);
@@ -607,12 +607,12 @@ public class Logica {
 					if (piezaQueMueve.getTipo() == Tipo.REY) {
 						// Movemos las torres en caso de enroque
 						if ((destinoLetra - origenLetra) == 2) {
-							Pieza torre = posicion.getPieza('h', origenNum);
+							Piece torre = posicion.getPieza('h', origenNum);
 							posicion.borrarPieza('h', origenNum);
 							posicion.setPieza(torre, 'f', origenNum);
 						} else {
 							if ((destinoLetra - origenLetra) == -2) {
-								Pieza torre = posicion.getPieza('a', origenNum);
+								Piece torre = posicion.getPieza('a', origenNum);
 								posicion.borrarPieza('a', origenNum);
 								posicion.setPieza(torre, 'd', origenNum);
 							}
@@ -661,9 +661,9 @@ public class Logica {
 	 * 
 	 * @return El movimiento al que lleguemos en la lista de movimientos.
 	 */
-	public Movimiento avanzar() {
-		Movimiento mov;
-		Pieza piezaQueMueve;
+	public Movement avanzar() {
+		Movement mov;
+		Piece piezaQueMueve;
 		if (indice < movimientos.getNumHalfPly()) {
 			mov = movimientos.getMovimiento(indice);
 			piezaQueMueve = posicion.getPieza(mov.getCasillaOrigen());
@@ -676,21 +676,21 @@ public class Logica {
 			}
 			// Si se corona
 			if (mov.getCoronacion() != null) {
-				piezaQueMueve = new Pieza(piezaQueMueve.getBando(), mov
+				piezaQueMueve = new Piece(piezaQueMueve.getBando(), mov
 						.getCoronacion());
 			}
 			// Se hacen los calculos especiales si se trata de un rey
 			if (piezaQueMueve.getTipo() == Tipo.REY) {
 				// Movemos las torres en caso de enroque
-				Casilla origen = mov.getCasillaOrigen();
-				Casilla destino = mov.getCasillaDestino();
+				Square origen = mov.getCasillaOrigen();
+				Square destino = mov.getCasillaDestino();
 				if ((destino.getLetra() - origen.getLetra()) == 2) {
-					Pieza torre = posicion.getPieza('h', origen.getNumero());
+					Piece torre = posicion.getPieza('h', origen.getNumero());
 					posicion.borrarPieza('h', origen.getNumero());
 					posicion.setPieza(torre, 'f', origen.getNumero());
 				} else {
 					if ((destino.getLetra() - origen.getLetra()) == -2) {
-						Pieza torre = posicion
+						Piece torre = posicion
 								.getPieza('a', origen.getNumero());
 						posicion.borrarPieza('a', origen.getNumero());
 						posicion.setPieza(torre, 'd', origen.getNumero());
@@ -720,29 +720,29 @@ public class Logica {
 	 * 
 	 * @return El movimiento al que lleguemos en la lista de movimientos.
 	 */
-	public Movimiento retroceder() {
-		Movimiento mov;
-		Pieza piezaQueMueve;
+	public Movement retroceder() {
+		Movement mov;
+		Piece piezaQueMueve;
 		if (indice > 0) {
 			indice--;
 			mov = movimientos.getMovimiento(indice);
 			posicion.setNumeroMovimiento(mov.getNumeroMovimiento());
 			piezaQueMueve = posicion.getPieza(mov.getCasillaDestino());
 			if (mov.getCoronacion() != null) {
-				piezaQueMueve = new Pieza(piezaQueMueve.getBando(), mov
+				piezaQueMueve = new Piece(piezaQueMueve.getBando(), mov
 						.getCoronacion());
 			}
 			if (piezaQueMueve.getTipo() == Tipo.REY) {
 				// Movemos las torres en caso de enroque
-				Casilla origen = mov.getCasillaOrigen();
-				Casilla destino = mov.getCasillaDestino();
+				Square origen = mov.getCasillaOrigen();
+				Square destino = mov.getCasillaDestino();
 				if ((destino.getLetra() - origen.getLetra()) == 2) {
-					Pieza torre = posicion.getPieza('h', origen.getNumero());
+					Piece torre = posicion.getPieza('h', origen.getNumero());
 					posicion.borrarPieza('h', origen.getNumero());
 					posicion.setPieza(torre, 'f', origen.getNumero());
 				} else {
 					if ((destino.getLetra() - origen.getLetra()) == -2) {
-						Pieza torre = posicion
+						Piece torre = posicion
 								.getPieza('a', origen.getNumero());
 						posicion.borrarPieza('a', origen.getNumero());
 						posicion.setPieza(torre, 'd', origen.getNumero());
@@ -751,7 +751,7 @@ public class Logica {
 			}
 			posicion.borrarPieza(mov.getCasillaDestino());
 			if (mov.getTipoPiezaComida() != null) {
-				posicion.setPieza(new Pieza(
+				posicion.setPieza(new Piece(
 						piezaQueMueve.getBando() == Bando.BLANCO ? Bando.BLANCO
 								: Bando.NEGRO, mov.getTipoPieza()), mov
 						.getCasillaComer());
@@ -780,7 +780,7 @@ public class Logica {
 	 *         si se produce una situacion de tablas.
 	 */
 	private Resultado esFinPartida() {
-		Pieza pieza;
+		Piece pieza;
 		Resultado devolver = null;
 		boolean fin = false, fin2 = false, posibleMatInsuf = false;
 		char i, j;
@@ -837,7 +837,7 @@ public class Logica {
 			while (j <= '8' && !fin) {
 				pieza = posicion.getPieza(i, j);
 				if ((pieza != null)
-						&& (!Pieza.esBandoContrario(posicion.getTurno(), pieza))
+						&& (!Piece.esBandoContrario(posicion.getTurno(), pieza))
 						&& (!pieza.getCasillasValidas().isEmpty())) {
 					fin = true;
 				}
@@ -880,7 +880,7 @@ public class Logica {
 	 *       con el rey, no hay que marcar la posible ambiguedad. Hay que
 	 *       tenerlo en cuenta.
 	 */
-	public Movimiento moverALG(String mov) {
+	public Movement moverALG(String mov) {
 		char origenLetra = '\0', origenNum = '\0', destinoLetra = '\0', destinoNum = '\0';
 		char tipoPieza = 'P';
 		Tipo piezaCoronacion = null;
@@ -992,10 +992,10 @@ public class Logica {
 				destinoNum = '8';
 			}
 		} else {
-			Casilla c = new Casilla(destinoLetra, destinoNum);
+			Square c = new Square(destinoLetra, destinoNum);
 			if (origenLetra == '\0' && origenNum != '\0') {
 				for (char ii = 'a'; ii <= 'h'; ii++) {
-					Pieza p = posicion.getPieza(ii, origenNum);
+					Piece p = posicion.getPieza(ii, origenNum);
 					if (p.canMove(c)) {
 						origenLetra = ii;
 						break;
@@ -1003,7 +1003,7 @@ public class Logica {
 				}
 			} else if (origenLetra != '\0' && origenNum == '\0') {
 				for (char ii = '1'; ii <= '8'; ii++) {
-					Pieza p = posicion.getPieza(origenLetra, ii);
+					Piece p = posicion.getPieza(origenLetra, ii);
 					if (p.canMove(c)) {
 						origenNum = ii;
 						break;
@@ -1012,7 +1012,7 @@ public class Logica {
 			} else {
 				for (char ii = '1'; ii <= '8'; ii++) {
 					for (char jj = 'a'; jj <= 'h'; jj++) {
-						Pieza p = posicion.getPieza(jj, ii);
+						Piece p = posicion.getPieza(jj, ii);
 						if (p.canMove(c)) {
 							origenNum = ii;
 							break;

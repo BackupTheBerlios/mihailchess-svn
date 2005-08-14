@@ -1,12 +1,12 @@
 package com.mihail.chess;
 
-import static com.mihail.chess.Logica.Bando;
-import static com.mihail.chess.Pieza.Tipo;
+import static com.mihail.chess.Board.Bando;
+import static com.mihail.chess.Piece.Tipo;
 
-import com.mihail.chess.Logica.Resultado;
-import com.mihail.chess.Pieza.Tipo;
+import com.mihail.chess.Board.Resultado;
+import com.mihail.chess.Piece.Tipo;
 
-public class Posicion {
+public class Position {
 
 	/**
 	 * Constante que representa al bando blanco.
@@ -28,7 +28,7 @@ public class Posicion {
 	 * representa con un objeto: directamente se almacena un objeto Pieza o null
 	 * si la casilla esta vacia.
 	 */
-	private Pieza[][] tabla = new Pieza[8][8];
+	private Piece[][] tabla = new Piece[8][8];
 
 	/**
 	 * Este atributo indica a quien le toca mover. Vale BLANCO cuando mueven
@@ -85,9 +85,9 @@ public class Posicion {
 	 * letraPosRey[NEGRO] -> Rey Negro <BR>
 	 */
 
-	private Casilla[] kingPosition = new Casilla[2];
+	private Square[] kingPosition = new Square[2];
 
-	public Posicion() {
+	public Position() {
 		for (int i = 0; i < 2; i++) {
 			for (int j = 0; j < 6; j++) {
 				for (int k = 0; k < 8; k++) {
@@ -105,8 +105,8 @@ public class Posicion {
 			}
 		}
 		turno = Bando.BLANCO;
-		kingPosition[0] = new Casilla();
-		kingPosition[1] = new Casilla();
+		kingPosition[0] = new Square();
+		kingPosition[1] = new Square();
 		enroque[0][0] = false;
 		enroque[0][1] = false;
 		enroque[1][0] = false;
@@ -117,7 +117,7 @@ public class Posicion {
 		numeroMovimiento = 1;
 	}
 
-	public Posicion(String posicion) {
+	public Position(String posicion) {
 		this();
 		setPosicion(posicion);
 	}
@@ -214,7 +214,7 @@ public class Posicion {
 		int cont = 0;
 		for (int i = 7; i >= 0; i--) {
 			for (int j = 0; j < 8; j++) {
-				Pieza p = getPieza((char) ('a' + j), (char) ('1' + i));
+				Piece p = getPieza((char) ('a' + j), (char) ('1' + i));
 				if (p == null)
 					cont++;
 				else {
@@ -287,51 +287,51 @@ public class Posicion {
 		for (int i = 0; i < FEN[0].length(); i++) {
 			switch (FEN[0].charAt(i)) {
 			case 'P':
-				setPieza(new Pieza(Bando.BLANCO, Tipo.PEON), let, num);
+				setPieza(new Piece(Bando.BLANCO, Tipo.PEON), let, num);
 				let++;
 				break;
 			case 'p':
-				setPieza(new Pieza(Bando.NEGRO, Tipo.PEON), let, num);
+				setPieza(new Piece(Bando.NEGRO, Tipo.PEON), let, num);
 				let++;
 				break;
 			case 'N':
-				setPieza(new Pieza(Bando.BLANCO, Tipo.CABALLO), let, num);
+				setPieza(new Piece(Bando.BLANCO, Tipo.CABALLO), let, num);
 				let++;
 				break;
 			case 'n':
-				setPieza(new Pieza(Bando.NEGRO, Tipo.CABALLO), let, num);
+				setPieza(new Piece(Bando.NEGRO, Tipo.CABALLO), let, num);
 				let++;
 				break;
 			case 'B':
-				setPieza(new Pieza(Bando.BLANCO, Tipo.ALFIL), let, num);
+				setPieza(new Piece(Bando.BLANCO, Tipo.ALFIL), let, num);
 				let++;
 				break;
 			case 'b':
-				setPieza(new Pieza(Bando.NEGRO, Tipo.ALFIL), let, num);
+				setPieza(new Piece(Bando.NEGRO, Tipo.ALFIL), let, num);
 				let++;
 				break;
 			case 'R':
-				setPieza(new Pieza(Bando.BLANCO, Tipo.TORRE), let, num);
+				setPieza(new Piece(Bando.BLANCO, Tipo.TORRE), let, num);
 				let++;
 				break;
 			case 'r':
-				setPieza(new Pieza(Bando.NEGRO, Tipo.TORRE), let, num);
+				setPieza(new Piece(Bando.NEGRO, Tipo.TORRE), let, num);
 				let++;
 				break;
 			case 'Q':
-				setPieza(new Pieza(Bando.BLANCO, Tipo.DAMA), let, num);
+				setPieza(new Piece(Bando.BLANCO, Tipo.DAMA), let, num);
 				let++;
 				break;
 			case 'q':
-				setPieza(new Pieza(Bando.NEGRO, Tipo.DAMA), let, num);
+				setPieza(new Piece(Bando.NEGRO, Tipo.DAMA), let, num);
 				let++;
 				break;
 			case 'K':
-				setPieza(new Pieza(Bando.BLANCO, Tipo.REY), let, num);
+				setPieza(new Piece(Bando.BLANCO, Tipo.REY), let, num);
 				let++;
 				break;
 			case 'k':
-				setPieza(new Pieza(Bando.NEGRO, Tipo.REY), let, num);
+				setPieza(new Piece(Bando.NEGRO, Tipo.REY), let, num);
 				let++;
 				break;
 			case '/':
@@ -448,11 +448,11 @@ public class Posicion {
 	 * @return Devuelve la pieza que se encuentra en la casilla (letra, num),
 	 *         null si la casilla esta vacia.
 	 */
-	public Pieza getPieza(char letra, char num) {
+	public Piece getPieza(char letra, char num) {
 		return tabla[num - '1'][letra - 'a'];
 	}
 	
-	public Pieza getPieza(Casilla c) {
+	public Piece getPieza(Square c) {
 		return getPieza(c.getLetra(), c.getNumero());
 	}
 
@@ -506,7 +506,7 @@ public class Posicion {
 			return true;
 		}
 		if (b == Bando.BLANCO) {
-			Pieza p = getPieza('h', '1');
+			Piece p = getPieza('h', '1');
 			if (p != null
 					&& kingPosition[bandoToInt(Bando.BLANCO)].getLetra() == 'e'
 					&& kingPosition[bandoToInt(Bando.BLANCO)].getNumero() == '1'
@@ -517,7 +517,7 @@ public class Posicion {
 			} else
 				return false;
 		} else if (b == Bando.NEGRO) {
-			Pieza p = getPieza('h', '8');
+			Piece p = getPieza('h', '8');
 			if (p != null
 					&& kingPosition[bandoToInt(Bando.NEGRO)].getLetra() == 'e'
 					&& kingPosition[bandoToInt(Bando.NEGRO)].getNumero() == '8'
@@ -548,7 +548,7 @@ public class Posicion {
 			return true;
 		}
 		if (b == Bando.BLANCO) {
-			Pieza p = getPieza('a', '1');
+			Piece p = getPieza('a', '1');
 			if (p != null
 					&& kingPosition[bandoToInt(Bando.BLANCO)].getLetra() == 'e'
 					&& kingPosition[0].getNumero() == '1'
@@ -559,7 +559,7 @@ public class Posicion {
 			} else
 				return false;
 		} else if (b == Bando.NEGRO) {
-			Pieza p = getPieza('a', '8');
+			Piece p = getPieza('a', '8');
 			if (p != null
 					&& kingPosition[bandoToInt(Bando.NEGRO)].getLetra() == 'e'
 					&& kingPosition[bandoToInt(Bando.NEGRO)].getNumero() == '8'
@@ -591,7 +591,7 @@ public class Posicion {
 	 * @param num
 	 *            Es el numero de la casilla
 	 */
-	public void setPieza(Pieza pieza, char letra, char num) {
+	public void setPieza(Piece pieza, char letra, char num) {
 		pieza.setLetra(letra);
 		pieza.setNum(num);
 		tabla[num - '1'][letra - 'a'] = pieza;
@@ -604,11 +604,11 @@ public class Posicion {
 		}
 	}
 	
-	public void setPieza(Pieza pieza, Casilla casilla) {
+	public void setPieza(Piece pieza, Square casilla) {
 		setPieza(pieza, casilla.getLetra(), casilla.getNumero());
 	}
 
-	public void borrarPieza(Casilla casilla) {
+	public void borrarPieza(Square casilla) {
 		borrarPieza(casilla.getLetra(), casilla.getNumero());
 	}
 
@@ -624,7 +624,7 @@ public class Posicion {
 	 */
 	public void borrarPieza(char letra, char num) {
 		int iNum = num - '1', iLetra = letra - 'a';
-		Pieza p = tabla[iNum][iLetra];
+		Piece p = tabla[iNum][iLetra];
 		// Se actualiza el estado de los enroques en caso de que se borre un rey
 		// o una torre
 		if (p != null) {
@@ -665,7 +665,7 @@ public class Posicion {
 		}
 	}
 	
-	public boolean esVacia(Casilla c) {
+	public boolean esVacia(Square c) {
 		return esVacia(c.getLetra(), c.getNumero());
 	}
 
@@ -711,7 +711,7 @@ public class Posicion {
 			return;
 		}
 		boolean encontrado = false;
-		Pieza p;
+		Piece p;
 		if (this.turno == Bando.NEGRO) {
 			p = getPieza(alPaso, '4');
 			encontrado = p != null && p.getBando() == Bando.BLANCO
@@ -759,7 +759,7 @@ public class Posicion {
 	/**
 	 * @return Returns the kingPosition.
 	 */
-	public Casilla getKingPosition(Bando color) {
+	public Square getKingPosition(Bando color) {
 		return kingPosition[bandoToInt(color)];
 	}
 	
@@ -773,7 +773,7 @@ public class Posicion {
 	 * @todo Resolver ambiguedades, coronaciones, jaques, mates...
 	 * @todo Esto no esta bien aqui, es mejor dejarlo en Logica....
 	 */
-	private String generarNotacionALG (Movimiento mov) {
+	private String generarNotacionALG (Movement mov) {
 		StringBuffer temp = new StringBuffer ();
 
 		if (mov.getTipoPieza() == Tipo.REY) {
@@ -790,16 +790,16 @@ public class Posicion {
 		if (mov.getTipoPieza() != Tipo.PEON) {
 			temp.append (tipoToEnglish (mov.getTipoPieza()));
 		}
-		Pieza pieza = getPieza (mov.getCasillaDestino());
+		Piece pieza = getPieza (mov.getCasillaDestino());
 		switch (mov.getTipoPieza()) {
 			case PEON:
 				if (mov.getCasillaComer() != null)
 					temp.append (mov.getCasillaOrigen().getLetra());
 				break;
 			case CABALLO:
-				for(VectorDireccion v: pieza.getDirecciones()) {
+				for(DirectionVector v: pieza.getDirecciones()) {
 					try {
-						Pieza p = getPieza(mov.getCasillaDestino().add(v));
+						Piece p = getPieza(mov.getCasillaDestino().add(v));
 						if(p!=null && p.getTipo() == Tipo.CABALLO && p.getBando() == pieza.getBando()) {
 							if(mov.getCasillaOrigen().getLetra() != p.getCasilla().getLetra()) {
 								temp.append(mov.getCasillaOrigen().getLetra());
@@ -816,10 +816,10 @@ public class Posicion {
 			case ALFIL:
 			case TORRE:
 			case DAMA:
-				for(VectorDireccion v: pieza.getDirecciones()) {
+				for(DirectionVector v: pieza.getDirecciones()) {
 					try {
-						Casilla destino = mov.getCasillaDestino().add(v);
-						Pieza p;
+						Square destino = mov.getCasillaDestino().add(v);
+						Piece p;
 						while((p=getPieza(destino))==null) {
 							destino.add(v);
 						}
@@ -864,7 +864,7 @@ public class Posicion {
 		tabla[num - '1'][letra - 'a'] = null;
 	}
 
-	void setPiezaInternal(Pieza p, char letra, char num) {
+	void setPiezaInternal(Piece p, char letra, char num) {
 		tabla[num - '1'][letra - 'a'] = p;
 		if (p.getTipo() == Tipo.REY) {
 			kingPosition[bandoToInt(p.getBando())].setLetra(letra);

@@ -15,7 +15,7 @@ package com.mihail.chess;
  * la pieza puede saltar a otras.
  */
 
-public class VectorDireccion {
+public class DirectionVector {
 	private int x, y;
 
 	/**
@@ -28,7 +28,7 @@ public class VectorDireccion {
 	 *            Desplazamiento permitido en sentido vertical, es decir, a
 	 *            traves de las columnas
 	 */
-	public VectorDireccion(int x_, int y_) {
+	public DirectionVector(int x_, int y_) {
 		x = x_;
 		y = y_;
 	}
@@ -42,7 +42,7 @@ public class VectorDireccion {
 	 * @return Un booleano si este vector y el recibido siguen la misma
 	 *         direccion.
 	 */
-	public boolean esMismaDireccion(VectorDireccion v) {
+	public boolean esMismaDireccion(DirectionVector v) {
 		int difX, difY;
 
 		if ((x == 0 && v.getX() != 0) || (y == 0 && v.getY() != 0))

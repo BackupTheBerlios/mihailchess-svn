@@ -9,12 +9,12 @@
  */
 package com.mihail.test;
 
-import com.mihail.chess.Pieza;
-import com.mihail.chess.Posicion;
+import com.mihail.chess.Piece;
+import com.mihail.chess.Position;
 import junit.framework.TestCase;
 
-import static com.mihail.chess.Logica.Bando;
-import static com.mihail.chess.Pieza.Tipo;
+import static com.mihail.chess.Board.Bando;
+import static com.mihail.chess.Piece.Tipo;
 
 public class PositionTest extends TestCase {
 
@@ -22,7 +22,7 @@ public class PositionTest extends TestCase {
 	 * Test method for 'com.mihail.chess.Position.Position()'
 	 */
 	public void testPosition() {
-		Posicion p = new Posicion();
+		Position p = new Position();
 		assertEquals("8/8/8/8/8/8/8/8 w - - 0 1", p.getFEN());
 	}
 
@@ -30,22 +30,22 @@ public class PositionTest extends TestCase {
 	 * Test method for 'com.mihail.chess.Position.getFEN()'
 	 */
 	public void testGetFEN() {
-		Posicion p = new Posicion();
-		p.setPosicion(Posicion.CAD_INICIAL);
+		Position p = new Position();
+		p.setPosicion(Position.CAD_INICIAL);
 		assertEquals(
 				"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1", p
 						.getFEN());
 	}
 
 	public void testSetPosicion() {
-		Posicion p = new Posicion();
+		Position p = new Position();
 	}
 
 	/*
 	 * Test method for 'com.mihail.chess.Position.setTurno()'
 	 */
 	public void testSetTurno() {
-		Posicion p = new Posicion();
+		Position p = new Position();
 		Bando turno = p.getTurno();
 		p.setTurno();
 		p.setTurno();
@@ -56,7 +56,7 @@ public class PositionTest extends TestCase {
 	 * Test method for 'com.mihail.chess.Position.setTurno(int)'
 	 */
 	public void testSetTurnoInt() {
-		Posicion p = new Posicion();
+		Position p = new Position();
 		p.setTurno(Bando.BLANCO);
 		assertEquals(Bando.BLANCO, p.getTurno());
 		p.setTurno(Bando.NEGRO);
@@ -67,18 +67,18 @@ public class PositionTest extends TestCase {
 	 * Test method for 'com.mihail.chess.Position.setEnroqueCorto(int, boolean)'
 	 */
 	public void testSetEnroqueCorto() {
-		Posicion p = new Posicion();
-		p.setPieza(new Pieza(Bando.BLANCO, Tipo.REY), 'e', '1');
+		Position p = new Position();
+		p.setPieza(new Piece(Bando.BLANCO, Tipo.REY), 'e', '1');
 		p.setEnroqueCorto(Bando.BLANCO, true);
 		assertFalse(p.getEnroqueCorto(Bando.BLANCO));
-		p.setPieza(new Pieza(Bando.BLANCO, Tipo.TORRE), 'h', '1');
+		p.setPieza(new Piece(Bando.BLANCO, Tipo.TORRE), 'h', '1');
 		p.setEnroqueCorto(Bando.BLANCO, true);
 		assertTrue(p.getEnroqueCorto(Bando.BLANCO));
 
-		p.setPieza(new Pieza(Bando.NEGRO, Tipo.REY), 'e', '8');
+		p.setPieza(new Piece(Bando.NEGRO, Tipo.REY), 'e', '8');
 		p.setEnroqueCorto(Bando.NEGRO, true);
 		assertFalse(p.getEnroqueCorto(Bando.NEGRO));
-		p.setPieza(new Pieza(Bando.NEGRO, Tipo.TORRE), 'h', '8');
+		p.setPieza(new Piece(Bando.NEGRO, Tipo.TORRE), 'h', '8');
 		p.setEnroqueCorto(Bando.NEGRO, true);
 		assertTrue(p.getEnroqueCorto(Bando.NEGRO));
 	}
@@ -87,18 +87,18 @@ public class PositionTest extends TestCase {
 	 * Test method for 'com.mihail.chess.Position.setEnroqueLargo(int, boolean)'
 	 */
 	public void testSetEnroqueLargo() {
-		Posicion p = new Posicion();
-		p.setPieza(new Pieza(Bando.BLANCO, Tipo.REY), 'e', '1');
+		Position p = new Position();
+		p.setPieza(new Piece(Bando.BLANCO, Tipo.REY), 'e', '1');
 		p.setEnroqueLargo(Bando.BLANCO, true);
 		assertEquals(false, p.getEnroqueLargo(Bando.BLANCO));
-		p.setPieza(new Pieza(Bando.BLANCO, Tipo.TORRE), 'a', '1');
+		p.setPieza(new Piece(Bando.BLANCO, Tipo.TORRE), 'a', '1');
 		p.setEnroqueLargo(Bando.BLANCO, true);
 		assertTrue(p.getEnroqueLargo(Bando.BLANCO));
 
-		p.setPieza(new Pieza(Bando.NEGRO, Tipo.REY), 'e', '8');
+		p.setPieza(new Piece(Bando.NEGRO, Tipo.REY), 'e', '8');
 		p.setEnroqueLargo(Bando.NEGRO, true);
 		assertFalse(p.getEnroqueLargo(Bando.NEGRO));
-		p.setPieza(new Pieza(Bando.NEGRO, Tipo.TORRE), 'a', '8');
+		p.setPieza(new Piece(Bando.NEGRO, Tipo.TORRE), 'a', '8');
 		p.setEnroqueLargo(Bando.NEGRO, true);
 		assertTrue(p.getEnroqueLargo(Bando.NEGRO));
 	}
@@ -114,7 +114,7 @@ public class PositionTest extends TestCase {
 	 * Test method for 'com.mihail.chess.Position.borrarPieza(char, char)'
 	 */
 	public void testBorrarPieza() {
-		Posicion p = new Posicion("8/8/8/7p/8/8/8/8 w - h 0 1");
+		Position p = new Position("8/8/8/7p/8/8/8/8 w - h 0 1");
 		// Al borrar la pieza, alPaso deberia resetearse, ya que no hay peon en
 		// esa columna
 		p.borrarPieza('h', '5');
@@ -153,11 +153,11 @@ public class PositionTest extends TestCase {
 	 * Test method for 'com.mihail.chess.Position.getClavePosicion()'
 	 */
 	public void testGetClavePosicion() {
-		Posicion p = new Posicion();
-		p.setPieza(new Pieza(Bando.BLANCO, Tipo.CABALLO), 'd', '4');
+		Position p = new Position();
+		p.setPieza(new Piece(Bando.BLANCO, Tipo.CABALLO), 'd', '4');
 		int clave = p.getClavePosicion();
 		p.borrarPieza('d', '4');
-		p.setPieza(new Pieza(Bando.BLANCO, Tipo.CABALLO), 'd', '4');
+		p.setPieza(new Piece(Bando.BLANCO, Tipo.CABALLO), 'd', '4');
 		assertEquals(clave, p.getClavePosicion());
 	}
 
@@ -165,18 +165,18 @@ public class PositionTest extends TestCase {
 	 * Test method for 'com.mihail.chess.Position.setAlPaso(char)'
 	 */
 	public void testSetAlPaso() {
-		Posicion p = new Posicion();
+		Position p = new Position();
 		// Comprobamos que no se pone siempre alPaso
-		p.setPieza(new Pieza(Bando.BLANCO, Tipo.PEON), 'a', '1');
+		p.setPieza(new Piece(Bando.BLANCO, Tipo.PEON), 'a', '1');
 		p.setAlPaso('a');
 		assertEquals(p.getAlPaso(), 0);
 		// Comprobamos que al poner un peon negro en una casilla de alPaso, la
 		// funcion deja
-		p.setPieza(new Pieza(Bando.NEGRO, Tipo.PEON), 'h', '5');
+		p.setPieza(new Piece(Bando.NEGRO, Tipo.PEON), 'h', '5');
 		p.setAlPaso('h');
 		assertEquals(p.getAlPaso(), 'h');
 		// Probamos lo mismo pero con un peon blanco
-		p.setPieza(new Pieza(Bando.BLANCO, Tipo.PEON), 'h', '4');
+		p.setPieza(new Piece(Bando.BLANCO, Tipo.PEON), 'h', '4');
 		p.setTurno(Bando.NEGRO);
 		p.setAlPaso('h');
 		assertEquals(p.getAlPaso(), 'h');

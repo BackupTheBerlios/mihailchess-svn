@@ -13,8 +13,8 @@ import java.util.zip.ZipFile;
 
 import javax.swing.ImageIcon;
 
-import com.mihail.chess.Logica.Bando;
-import com.mihail.chess.Pieza.Tipo;
+import com.mihail.chess.Board.Bando;
+import com.mihail.chess.Piece.Tipo;
 
 /**
  * Representa el tema de imagenes de piezas, texturas de las casillas, textura

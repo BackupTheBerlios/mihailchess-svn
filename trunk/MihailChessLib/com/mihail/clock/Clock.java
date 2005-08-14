@@ -33,7 +33,7 @@ import java.util.Timer;
  * @see java.util.Observer
  * @see java.util.Timer
  */
-public class Reloj extends Observable {
+public class Clock extends Observable {
 	protected int horas, minutos, segundos, decimas;
 
 	protected int recarga;
@@ -42,36 +42,36 @@ public class Reloj extends Observable {
 
 	protected static Timer tiempo = null;
 
-	public Reloj(int h, int m, int s) throws RelojException {
+	public Clock(int h, int m, int s) throws ClockException {
 		parado = true;
 		horas = h;
 		minutos = m;
 		segundos = s;
 		if (h < 0)
-			throw new RelojException("Horas fuera de rango");
+			throw new ClockException("Horas fuera de rango");
 		if (m < 0 || m > 59)
-			throw new RelojException("Minutos fuera de rango");
+			throw new ClockException("Minutos fuera de rango");
 		if (s < 0 || s > 59)
-			throw new RelojException("Segundos fuera de rango");
+			throw new ClockException("Segundos fuera de rango");
 		decimas = 0;
 		recarga = 0;
 	}
 
-	public Reloj(int h, int m, int s, int rec) throws RelojException {
+	public Clock(int h, int m, int s, int rec) throws ClockException {
 		parado = true;
 		horas = h;
 		minutos = m;
 		segundos = s;
 		if (h < 0)
-			throw new RelojException("Horas fuera de rango");
+			throw new ClockException("Horas fuera de rango");
 		if (m < 0 || m > 59)
-			throw new RelojException("Minutos fuera de rango");
+			throw new ClockException("Minutos fuera de rango");
 		if (s < 0 || s > 59)
-			throw new RelojException("Segundos fuera de rango");
+			throw new ClockException("Segundos fuera de rango");
 		decimas = 0;
 		recarga = rec;
 		if (rec < 0)
-			throw new RelojException("Recarga fuera de rango");
+			throw new ClockException("Recarga fuera de rango");
 	}
 
 	public void comenzar() {
@@ -124,16 +124,16 @@ public class Reloj extends Observable {
 		parado = b;
 	}
 
-	public void setTiempo(int h, int m, int s, int d) throws RelojException {
+	public void setTiempo(int h, int m, int s, int d) throws ClockException {
 		horas = h;
 		if (h < 0)
-			throw new RelojException("Horas fuera de rango");
+			throw new ClockException("Horas fuera de rango");
 		if (m < 0 || m > 59)
-			throw new RelojException("Minutos fuera de rango");
+			throw new ClockException("Minutos fuera de rango");
 		else
 			minutos = m;
 		if (s < 0 || s > 59)
-			throw new RelojException("Segundos fuera de rango");
+			throw new ClockException("Segundos fuera de rango");
 		else
 			segundos = s;
 		decimas = d;

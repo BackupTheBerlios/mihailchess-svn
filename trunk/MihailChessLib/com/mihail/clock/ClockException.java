@@ -8,7 +8,7 @@ package com.mihail.clock;
  * @author Iago Porto Diaz
  * 
  */
-public class RelojException extends Exception {
+public class ClockException extends Exception {
 
 	private static final long serialVersionUID = 1L;
 
@@ -18,7 +18,7 @@ public class RelojException extends Exception {
 	 * @param s
 	 *            Mensaje que detalla la excepcion.
 	 */
-	public RelojException(String s) {
+	public ClockException(String s) {
 		super(s);
 	}
 }

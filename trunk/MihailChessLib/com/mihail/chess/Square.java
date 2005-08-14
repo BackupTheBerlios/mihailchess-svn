@@ -16,7 +16,7 @@ package com.mihail.chess;
  *
  */
 
-public class Casilla {
+public class Square {
 
 	private char letra;
 
@@ -27,7 +27,7 @@ public class Casilla {
 	 *
 	 */
 	
-	public Casilla() {
+	public Square() {
 		this.letra = 0;
 		this.numero = 0;
 	}
@@ -39,14 +39,14 @@ public class Casilla {
 	 * @param numero Numera de la casilla
 	 */
 
-	public Casilla(char letra, char numero) {
+	public Square(char letra, char numero) {
 		this.letra = letra;
 		this.numero = numero;
 	}
 
 	public boolean equals(Object o) {
-		if (o instanceof Casilla) {
-			Casilla c = (Casilla) o;
+		if (o instanceof Square) {
+			Square c = (Square) o;
 			return c.letra == letra && c.numero == numero;
 		}
 		return false;
@@ -60,8 +60,8 @@ public class Casilla {
 	 * @return Otra casilla resultado de sumar a la casilla actual el vector recibido.
 	 */
 
-	public Casilla add(VectorDireccion v) {
-		return new Casilla((char) (this.letra + v.getX()),
+	public Square add(DirectionVector v) {
+		return new Square((char) (this.letra + v.getX()),
 				(char) (this.numero + v.getY()));
 	}
 	

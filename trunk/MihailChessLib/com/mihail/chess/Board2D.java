@@ -16,8 +16,8 @@ import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
-import com.mihail.chess.Logica.Bando;
-import com.mihail.chess.Pieza.Tipo;
+import com.mihail.chess.Board.Bando;
+import com.mihail.chess.Piece.Tipo;
 
 /**
  * Esta clase se encarga de proporcionar una vista básica de la lógica, usada
@@ -27,7 +27,7 @@ import com.mihail.chess.Pieza.Tipo;
  * @author Pedro Suárez Casal
  * @author Iago Porto Díaz
  */
-public class Tablero2D extends JPanel {
+public class Board2D extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 
@@ -67,7 +67,7 @@ public class Tablero2D extends JPanel {
 
 	// Logica interna del tablero
 
-	protected Posicion tablero;
+	protected Position tablero;
 
 	// Versiones ajustadas al tamaño correcto de las imagenes
 	private Image[][] piezas = new Image[2][6];
@@ -108,13 +108,13 @@ public class Tablero2D extends JPanel {
 
 	private BoardTheme theme;
 
-	public Tablero2D(BoardTheme theme) {
+	public Board2D(BoardTheme theme) {
 		this(theme, 60);
 	}
 
-	public Tablero2D(BoardTheme theme, int tam) {
+	public Board2D(BoardTheme theme, int tam) {
 		super();
-		tablero = new Posicion();
+		tablero = new Position();
 
 		TAM = tam;
 
@@ -138,7 +138,7 @@ public class Tablero2D extends JPanel {
 	}
 
 	public void paintComponent(Graphics g) {
-		Pieza temp;
+		Piece temp;
 		// Actualizamos el tamaño de la casilla en caso de que redimensionen el
 		// tablero
 		int TAMtotal = Math.min(getWidth(), getHeight());
@@ -413,12 +413,12 @@ public class Tablero2D extends JPanel {
 		this.theme = theme;
 	}
 	
-	public void setPieza(Pieza pieza, Casilla casilla) {
+	public void setPieza(Piece pieza, Square casilla) {
 		tablero.setPieza(pieza, casilla);
 		repintarCasilla(casilla.getLetra() - 'a', casilla.getNumero()-'1');
 	}
 	
-	public void borrarPieza(Casilla casilla) {
+	public void borrarPieza(Square casilla) {
 		tablero.borrarPieza(casilla);
 		repintarCasilla(casilla.getLetra() - 'a', casilla.getNumero()-'1');
 	}

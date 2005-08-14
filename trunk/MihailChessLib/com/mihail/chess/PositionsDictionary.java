@@ -11,7 +11,7 @@ import java.util.ArrayList;
  * @author Pedro Suárez Casal
  * @author Iago Porto Díaz
  */
-public final class DiccionarioPosiciones {
+public final class PositionsDictionary {
 	private ArrayList[] tabla;
 
 	private int tam;
@@ -21,7 +21,7 @@ public final class DiccionarioPosiciones {
 	 * tabla con un tamaño proximo a 40-50, para situarse en el peor caso de
 	 * repeticiones, y aumentar el rendimiento de la tabla.
 	 */
-	public DiccionarioPosiciones(int t) {
+	public PositionsDictionary(int t) {
 		tabla = new ArrayList[t];
 		for (int i = 0; i < tabla.length; i++)
 			tabla[i] = new ArrayList();
