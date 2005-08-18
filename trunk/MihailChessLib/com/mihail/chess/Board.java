@@ -554,8 +554,6 @@ public class Board {
 					mov
 							.setCasillaDestino(new Square(destinoLetra,
 									destinoNum));
-					mov.setNumeroMovimiento(posicion.getFullmoveNumber());
-					mov.setBando(posicion.getTurn());
 					mov.setTipoPieza(piezaQueMueve.getType());
 
 					// Si se come ponemos el contador a 0
@@ -584,7 +582,7 @@ public class Board {
 						// correspondiente
 						if (Math.abs(destinoNum - origenNum) == 2) {
 							posicion.setEnPassant(origenLetra);
-							mov.setAlPaso(posicion.getEnPassant());
+							mov.getFinalBoardStatus().setEnPassant(posicion.getEnPassant());
 						} else {
 							posicion.setEnPassant('\0');
 						}
@@ -617,13 +615,7 @@ public class Board {
 						}
 					}
 
-					mov.setContadorTablas(posicion.getHalfmoveClock());
-					boolean[][] enroque = new boolean[2][2];
-					enroque[0][0] = posicion.getKingsideCastling(Side.WHITE);
-					enroque[0][1] = posicion.getQueensideCastling(Side.WHITE);
-					enroque[1][0] = posicion.getKingsideCastling(Side.BLACK);
-					enroque[1][1] = posicion.getQueensideCastling(Side.BLACK);
-					mov.setEnroque(enroque);
+					mov.getFinalBoardStatus().setStatus(posicion.status);
 					if (posicion.getTurn() == Side.BLACK)
 						posicion.addFullmoveNumber();
 					posicion.setTurn();
@@ -697,16 +689,11 @@ public class Board {
 			}
 			posicion.removePiece(mov.getCasillaOrigen());
 			posicion.setPiece(piezaQueMueve, mov.getCasillaDestino());
-			posicion.setHalfmoveClock(mov.getContadorTablas());
-			boolean[][] enroques = mov.getEnroque();
-			posicion.setKingsideCastling(Side.WHITE, enroques[0][0]);
-			posicion.setQueensideCastling(Side.WHITE, enroques[0][1]);
-			posicion.setKingsideCastling(Side.BLACK, enroques[1][0]);
-			posicion.setQueensideCastling(Side.BLACK, enroques[1][1]);
-			posicion.setEnPassant(mov.getAlPaso());
+
+			posicion.status.setStatus(mov.getFinalBoardStatus());
+
 			posicion.setTurn();
 			indice++;
-			posicion.setFullmoveNumber(mov.getNumeroMovimiento());
 			return mov;
 		} else {
 			return null;
@@ -724,7 +711,6 @@ public class Board {
 		if (indice > 0) {
 			indice--;
 			mov = movimientos.getMove(indice);
-			posicion.setFullmoveNumber(mov.getNumeroMovimiento());
 			piezaQueMueve = posicion.getPieza(mov.getCasillaDestino());
 			if (mov.getCoronacion() != null) {
 				piezaQueMueve = new Piece(piezaQueMueve.getSide(), mov
@@ -755,13 +741,9 @@ public class Board {
 						.getCasillaComer());
 			}
 			posicion.setPiece(piezaQueMueve, mov.getCasillaOrigen());
-			posicion.setHalfmoveClock(mov.getContadorTablas());
-			boolean[][] enroques = mov.getEnroque();
-			posicion.setKingsideCastling(Side.WHITE, enroques[0][0]);
-			posicion.setQueensideCastling(Side.WHITE, enroques[0][1]);
-			posicion.setKingsideCastling(Side.BLACK, enroques[1][0]);
-			posicion.setQueensideCastling(Side.BLACK, enroques[1][1]);
-			posicion.setEnPassant(mov.getAlPaso());
+			
+			posicion.status.setStatus(mov.getFinalBoardStatus());
+			
 			posicion.setTurn();
 			return mov;
 		} else {

@@ -4,6 +4,7 @@ import static com.mihail.chess.Board.Side;
 import static com.mihail.chess.Piece.Type;
 
 import com.mihail.chess.Board.Result;
+import com.mihail.chess.Board.Side;
 import com.mihail.chess.Piece.Type;
 
 public class Position {
@@ -31,42 +32,6 @@ public class Position {
 	private Piece[][] tabla = new Piece[8][8];
 
 	/**
-	 * Este atributo indica a quien le toca mover. Vale BLANCO cuando mueven
-	 * blancas y NEGRO cuando mueven negras.
-	 */
-	private Side turno;
-
-	/**
-	 * Este atributo indica el numero de movimiento por el que va la partida.
-	 * Por ejemplo: en '1. e4 c5', tanto e4 como c5 compartirian el 1 como
-	 * numero de movimiento.
-	 */
-	private int numeroMovimiento;
-
-	/**
-	 * Este atributo indica que enroques estan disponibles para que bandos. Es
-	 * un array 2x2, en donde: <BR>
-	 * enroque[0][0] -> Blancas, enroque corto <BR>
-	 * enroque[0][1] -> Blancas, enroque largo <BR>
-	 * enroque[1][0] -> Negras, enroque corto <BR>
-	 * enroque[1][1] -> Negras, enroque largo
-	 */
-	private boolean[][] enroque = new boolean[2][2];
-
-	/**
-	 * Este atributo contiene 0 en todos los casos salvo si se ha movido un peon
-	 * dos casillas. En ese caso contendra la letra de la columna del peon. Es
-	 * necesario para la captura al paso.
-	 */
-	private char alPaso;
-
-	/**
-	 * Este atributo sirve para contar movimientos a la hora de declarar las
-	 * tablas por la regla de los 50 movimientos.
-	 */
-	private int contadorTablas;
-
-	/**
 	 * Vamos almacenando la clave resultante para calcular la siguiente posicion
 	 * a partir de ella.
 	 */
@@ -86,6 +51,8 @@ public class Position {
 	 */
 
 	private Square[] kingPosition = new Square[2];
+	
+	BoardStatus status;
 
 	public Position() {
 		for (int i = 0; i < 2; i++) {
@@ -104,17 +71,14 @@ public class Position {
 				}
 			}
 		}
-		turno = Side.WHITE;
+		status = new BoardStatus();
+		status.setTurn(Side.WHITE);
 		kingPosition[0] = new Square();
 		kingPosition[1] = new Square();
-		enroque[0][0] = false;
-		enroque[0][1] = false;
-		enroque[1][0] = false;
-		enroque[1][1] = false;
-		alPaso = 0;
+		status.setEnPassant('\0');
 		clavePosicion = 0;
-		contadorTablas = 0;
-		numeroMovimiento = 1;
+		status.setHalfmoveClock(0);
+		status.setFullmoveNumber(1);
 	}
 
 	public Position(String posicion) {
@@ -235,31 +199,33 @@ public class Position {
 			cont = 0;
 		}
 
-		if (turno == Side.WHITE)
+		if (status.getTurn() == Side.WHITE)
 			cad += " w";
 		else
 			cad += " b";
 
 		cad += " ";
-		if (!enroque[0][0] && !enroque[0][1] && !enroque[1][0]
-				&& !enroque[1][1])
+		if (!status.getKingsideCastling(Side.WHITE) &&
+			!status.getQueensideCastling(Side.WHITE) &&
+			!status.getKingsideCastling(Side.BLACK) &&
+			!status.getQueensideCastling(Side.BLACK))
 			cad += "-";
 		else {
-			if (enroque[0][0])
+			if (status.getKingsideCastling(Side.WHITE))
 				cad += "K";
-			if (enroque[0][1])
+			if (status.getQueensideCastling(Side.WHITE))
 				cad += "Q";
-			if (enroque[1][0])
+			if (status.getKingsideCastling(Side.BLACK))
 				cad += "k";
-			if (enroque[1][1])
+			if (status.getQueensideCastling(Side.BLACK))
 				cad += "q";
 		}
-		if (alPaso != '\0')
-			cad += (" " + alPaso);
+		if (status.getEnPassant() != '\0')
+			cad += (" " + status.getEnPassant());
 		else
 			cad += (" -");
-		cad += (" " + contadorTablas);
-		cad += (" " + numeroMovimiento);
+		cad += (" " + status.getFullmoveNumber());
+		cad += (" " + status.getHalfmoveClock());
 		return cad;
 	}
 
@@ -279,6 +245,7 @@ public class Position {
 				tabla[i][j] = null;
 			}
 		}
+		status = new BoardStatus();
 		/*
 		 * hash.borrarTabla (); movimientos.clear (); indice = 0;
 		 */
@@ -352,15 +319,11 @@ public class Position {
 			}
 		}
 		if (FEN[1].charAt(0) == 'w') {
-			setTurn(Side.WHITE);
+			status.setTurn(Side.WHITE);
 		} else {
-			setTurn(Side.BLACK);
+			status.setTurn(Side.BLACK);
 		}
-		for (int i = 0; i <= 1; i++) {
-			for (int j = 0; j <= 1; j++) {
-				enroque[i][j] = false;
-			}
-		}
+
 		if (FEN[2].charAt(0) != '-') {
 			for (int i = 0; i < FEN[2].length(); i++) {
 				switch (FEN[2].charAt(i)) {
@@ -385,46 +348,8 @@ public class Position {
 		} else {
 			setEnPassant(FEN[3].charAt(0));
 		}
-		setHalfmoveClock((new Integer(FEN[4])).intValue());
-		setFullmoveNumber((new Integer(FEN[5])).intValue());
-	}
-
-	/**
-	 * Permite saber si el enroque corto esta disponible para un bando.
-	 * 
-	 * @param c
-	 *            Bando del que se quiere obtener la informacion.
-	 * @return True si el enroque corto puede realizarse, false en caso
-	 *         contrario.
-	 */
-	public boolean getKingsideCastling(Side c) {
-		switch (c) {
-		case WHITE:
-			return enroque[0][0];
-		case BLACK:
-			return enroque[1][0];
-		}
-		throw new AssertionError("El Bando solo puede ser BLANCO o NEGRO: "
-				+ this);
-	}
-
-	/**
-	 * Permite saber si el enroque largo esta disponible para un bando.
-	 * 
-	 * @param c
-	 *            Bando del que se quiere obtener la informacion.
-	 * @return True si el enroque largo puede realizarse, false en caso
-	 *         contrario.
-	 */
-	public boolean getQueensideCastling(Side c) {
-		switch (c) {
-		case WHITE:
-			return enroque[0][1];
-		case BLACK:
-			return enroque[1][1];
-		}
-		throw new AssertionError("El Bando solo puede ser BLANCO o NEGRO: "
-				+ this);
+		status.setHalfmoveClock((new Integer(FEN[4])).intValue());
+		status.setFullmoveNumber((new Integer(FEN[5])).intValue());
 	}
 
 	/**
@@ -447,52 +372,20 @@ public class Position {
 	}
 
 	/**
-	 * Este metodo nos permite consultar el valor del turno.
-	 * 
-	 * @return Devuelve el valor del turno (0 -> blancas, 1 -> negras)
-	 */
-	public Side getTurn() {
-		return turno;
-	}
-
-	/**
 	 * Este metodo alterna el turno. Si le tocaba a blancas le toca a negras y
 	 * viceversa.
 	 */
 	public void setTurn() {
-		if (turno == Side.WHITE) {
-			turno = Side.BLACK;
+		if (status.getTurn() == Side.WHITE) {
+			status.setTurn(Side.BLACK);
 		} else {
-			turno = Side.WHITE;
+			status.setTurn(Side.WHITE);
 		}
 	}
-
-	/**
-	 * Este metodo permite dar el turno a cualquiera de los dos bandos.
-	 * 
-	 * @param t
-	 *            BLANCO -> blancas <BR>
-	 *            NEGRO -> negras
-	 */
-	public void setTurn(Side t) {
-		turno = t;
-	}
-
+	
 	public boolean setKingsideCastling(Side b, boolean c) {
 		if (!c) {
-			int x;
-			switch (b) {
-			case WHITE:
-				x = 0;
-				break;
-			case BLACK:
-				x = 1;
-				break;
-			default:
-				throw new AssertionError(
-						"El Bando solo puede ser BLANCO o NEGRO: " + this);
-			}
-			enroque[x][0] = c;
+			status.setKingsideCastling(b, false);
 			return true;
 		}
 		if (b == Side.WHITE) {
@@ -502,7 +395,7 @@ public class Position {
 					&& kingPosition[bandoToInt(Side.WHITE)].getRank() == '1'
 					&& p.getSide() == Side.WHITE
 					&& p.getType() == Type.ROOK) {
-				enroque[0][0] = c;
+				status.setKingsideCastling(Side.WHITE, c);
 				return true;
 			} else
 				return false;
@@ -512,29 +405,29 @@ public class Position {
 					&& kingPosition[bandoToInt(Side.BLACK)].getFile() == 'e'
 					&& kingPosition[bandoToInt(Side.BLACK)].getRank() == '8'
 					&& p.getSide() == Side.BLACK && p.getType() == Type.ROOK) {
-				enroque[1][0] = c;
+				status.setKingsideCastling(Side.BLACK, c);
 				return true;
 			} else
 				return false;
 		}
 		return false;
 	}
+	
+	/**
+	 * Permite saber si el enroque corto esta disponible para un bando.
+	 * 
+	 * @param c
+	 *            Bando del que se quiere obtener la informacion.
+	 * @return True si el enroque corto puede realizarse, false en caso
+	 *         contrario.
+	 */
+	public boolean getKingsideCastling(Side c) {
+		return status.getKingsideCastling(c);
+	}
 
 	public boolean setQueensideCastling(Side b, boolean c) {
 		if (!c) {
-			int x;
-			switch (b) {
-			case WHITE:
-				x = 0;
-				break;
-			case BLACK:
-				x = 1;
-				break;
-			default:
-				throw new AssertionError(
-						"El Bando solo puede ser BLANCO o NEGRO: " + this);
-			}
-			enroque[x][1] = c;
+			status.setQueensideCastling(b, false);
 			return true;
 		}
 		if (b == Side.WHITE) {
@@ -544,7 +437,7 @@ public class Position {
 					&& kingPosition[0].getRank() == '1'
 					&& p.getSide() == Side.WHITE
 					&& p.getType() == Type.ROOK) {
-				enroque[0][1] = c;
+				status.setQueensideCastling(Side.WHITE, c);
 				return true;
 			} else
 				return false;
@@ -554,19 +447,24 @@ public class Position {
 					&& kingPosition[bandoToInt(Side.BLACK)].getFile() == 'e'
 					&& kingPosition[bandoToInt(Side.BLACK)].getRank() == '8'
 					&& p.getSide() == Side.BLACK && p.getType() == Type.ROOK) {
-				enroque[1][1] = c;
+				status.setQueensideCastling(Side.BLACK, c);
 				return true;
 			} else
 				return false;
 		}
 		return false;
 	}
-
+	
 	/**
-	 * @return Devuelve numeroMovimiento.
+	 * Permite saber si el enroque largo esta disponible para un bando.
+	 * 
+	 * @param c
+	 *            Bando del que se quiere obtener la informacion.
+	 * @return True si el enroque largo puede realizarse, false en caso
+	 *         contrario.
 	 */
-	public int getFullmoveNumber() {
-		return numeroMovimiento;
+	public boolean getQueensideCastling(Side c) {
+		return status.getQueensideCastling(c);
 	}
 
 	/**
@@ -620,34 +518,34 @@ public class Position {
 		if (p != null) {
 			if (p.getType() == Type.KING) {
 				if (p.getSide() == Side.WHITE) {
-					enroque[0][0] = false;
-					enroque[0][1] = false;
+					status.setKingsideCastling(Side.WHITE, false);
+					status.setQueensideCastling(Side.WHITE, false);
 					kingPosition[bandoToInt(Side.WHITE)].setFile('\0');
 					kingPosition[bandoToInt(Side.WHITE)].setRank('\0');
 				} else {
-					enroque[1][0] = false;
-					enroque[1][1] = false;
+					status.setKingsideCastling(Side.BLACK, false);
+					status.setQueensideCastling(Side.BLACK, false);
 					kingPosition[bandoToInt(Side.BLACK)].setFile('\0');
 					kingPosition[bandoToInt(Side.BLACK)].setRank('\0');
 				}
 			} else if (p.getType() == Type.ROOK) {
 				if (p.getFile() == 'a' && p.getRank() == '1'
 						&& p.getSide() == Side.WHITE)
-					enroque[0][1] = false;
+					status.setQueensideCastling(Side.WHITE, false);
 				else if (p.getFile() == 'h' && p.getRank() == '1'
 						&& p.getSide() == Side.WHITE)
-					enroque[0][0] = false;
+					status.setKingsideCastling(Side.WHITE, false);
 				else if (p.getFile() == 'a' && p.getRank() == '8'
 						&& p.getSide() == Side.BLACK)
-					enroque[1][1] = false;
+					status.setQueensideCastling(Side.BLACK, false);
 				else if (p.getFile() == 'h' && p.getRank() == '8'
 						&& p.getSide() == Side.BLACK)
-					enroque[1][0] = false;
+					status.setKingsideCastling(Side.BLACK, false);
 			} else if (p.getType() == Type.PAWN) {
-				if (letra == alPaso
+				if (letra == status.getEnPassant()
 						&& (p.getSide() == Side.WHITE && num == '4')
 						|| (p.getSide() == Side.BLACK && num == '5'))
-					alPaso = 0;
+					status.setEnPassant('\0');
 			}
 			clavePosicion = clavePosicion
 					^ indices[bandoToInt(p.getSide())][tipoToInt(p.getType())][iNum][iLetra];
@@ -677,14 +575,7 @@ public class Position {
 	public int getPositionKey() {
 		return clavePosicion;
 	}
-
-	/**
-	 * @return Returns the alPaso.
-	 */
-	public char getEnPassant() {
-		return alPaso;
-	}
-
+	
 	/**
 	 * Establece la columna en la que un peon puede ser comido al paso. Es
 	 * decir, si un peon avanza dos casillas, entonces esa es la columna alPaso.
@@ -697,12 +588,12 @@ public class Position {
 	 */
 	public void setEnPassant(char alPaso) {
 		if (alPaso == '\0') {
-			this.alPaso = alPaso;
+			this.status.setEnPassant(alPaso);
 			return;
 		}
 		boolean encontrado = false;
 		Piece p;
-		if (this.turno == Side.BLACK) {
+		if (this.status.getTurn() == Side.BLACK) {
 			p = getPieza(alPaso, '4');
 			encontrado = p != null && p.getSide() == Side.WHITE
 					&& p.getType() == Type.PAWN;
@@ -712,38 +603,15 @@ public class Position {
 					&& p.getType() == Type.PAWN;
 		}
 		if (encontrado)
-			this.alPaso = alPaso;
-	}
-
-	/**
-	 * @return Returns the contadorTablas.
-	 */
-	public int getHalfmoveClock() {
-		return contadorTablas;
-	}
-
-	/**
-	 * @param contadorTablas
-	 *            The contadorTablas to set.
-	 */
-	public void setHalfmoveClock(int contadorTablas) {
-		this.contadorTablas = contadorTablas;
-	}
-
-	public void addHalfmoveClock() {
-		this.contadorTablas++;
-	}
-
-	/**
-	 * @param numeroMovimiento
-	 *            The numeroMovimiento to set.
-	 */
-	public void setFullmoveNumber(int numeroMovimiento) {
-		this.numeroMovimiento = numeroMovimiento;
+			this.status.setEnPassant(alPaso);
 	}
 
 	public void addFullmoveNumber() {
-		this.numeroMovimiento++;
+		this.status.setFullmoveNumber(this.status.getFullmoveNumber()+1);
+	}
+	
+	public void addHalfmoveClock() {
+		this.status.setHalfmoveClock(this.status.getHalfmoveClock()+1);
 	}
 
 	/**
@@ -842,6 +710,60 @@ public class Position {
 			else
 				temp.append ("+");
 		return temp.toString ();
+	}
+	
+	/**
+	 * Este metodo nos permite consultar el valor del turno.
+	 * 
+	 * @return Devuelve el valor del turno (0 -> blancas, 1 -> negras)
+	 */
+	public Side getTurn() {
+		return status.getTurn();
+	}
+	
+
+	/**
+	 * Este metodo permite dar el turno a cualquiera de los dos bandos.
+	 * 
+	 * @param t
+	 *            BLANCO -> blancas <BR>
+	 *            NEGRO -> negras
+	 */
+	public void setTurn(Side t) {
+		status.setTurn(t);
+	}
+	
+	/**
+	 * @return Devuelve numeroMovimiento.
+	 */
+	public int getFullmoveNumber() {
+		return status.getFullmoveNumber();
+	}
+	
+	public void setFullmoveNumber(int num) {
+		status.setFullmoveNumber(num);
+	}
+	
+	/**
+	 * @return Returns the alPaso.
+	 */
+	public char getEnPassant() {
+		return status.getEnPassant();
+	}
+	
+	/**
+	 * @return Returns the contadorTablas.
+	 */
+	public int getHalfmoveClock() {
+		return status.getHalfmoveClock();
+	}
+
+	/**
+	 * @param contadorTablas
+	 *            The contadorTablas to set.
+	 */
+	public void setHalfmoveClock(int contadorTablas) {
+		status.setHalfmoveClock(contadorTablas);
 	}
 
 	/**

@@ -37,18 +37,6 @@ public final class Move {
 	private Square casillaDestino;
 
 	/**
-	 * Numero de movimiento en la partida. Es el mismo numero para blancas que
-	 * para negras. Por ejemplo: en '1. e4 c5', tanto e4 como c5 compartirian el
-	 * 1 como numero de movimiento.
-	 */
-	private int numeroMovimiento;
-
-	/**
-	 * Bando que mueve.
-	 */
-	private Side bando;
-
-	/**
 	 * Este atributo indica el tipo de pieza que es: {P,C,A,T,D,R}
 	 * 
 	 */
@@ -65,11 +53,6 @@ public final class Move {
 	 */
 	// public char casillaComerNum;
 	private Square casillaComer;
-
-	/**
-	 * Este atributo indica si el movimiento produce un jaque.
-	 */
-	private boolean jaque;
 
 	/**
 	 * Este atributo indica si el movimiento termina la partida y quien es el
@@ -93,29 +76,6 @@ public final class Move {
 	private Type coronacion;
 
 	/**
-	 * Este atributo indica el valor de contadorTablas en el momento que se
-	 * produce el movimiento.
-	 */
-	private int contadorTablas;
-
-	/**
-	 * Este atributo indica que enroques estan disponibles para que bandos en el
-	 * momento en que se produce el movimiento. Es un array 2x2, en donde: <BR>
-	 * enroque[0][0] -> Blancas, enroque corto <BR>
-	 * enroque[0][1] -> Blancas, enroque largo <BR>
-	 * enroque[1][0] -> Negras, enroque corto <BR>
-	 * enroque[1][1] -> Negras, enroque largo <BR>
-	 */
-	private boolean[][] enroque;
-
-	/**
-	 * Este atributo contiene 0 en todos los casos salvo si se ha movido un peon
-	 * dos casillas. En ese caso contendra la letra de la columna del peon. Es
-	 * necesario para la captura al paso.
-	 */
-	private char alPaso;
-
-	/**
 	 * Este atributo indica el tipo de la pieza que se come. Si no se ha
 	 * producido una captura contiene un 0.
 	 */
@@ -126,6 +86,13 @@ public final class Move {
 	 * algebraica.
 	 */
 	private String notacion;
+	
+	/**
+	 * Este atributo indica si el movimiento produce un jaque.
+	 */
+	private boolean jaque;
+	
+	private BoardStatus status = new BoardStatus();
 
 	public Square getCasillaDestino() {
 		return casillaDestino;
@@ -142,23 +109,7 @@ public final class Move {
 	public void setCasillaOrigen(Square casillaOrigen) {
 		this.casillaOrigen = casillaOrigen;
 	}
-
-	public Side getBando() {
-		return bando;
-	}
-
-	public void setBando(Side bando) {
-		this.bando = bando;
-	}
-
-	public int getNumeroMovimiento() {
-		return numeroMovimiento;
-	}
-
-	public void setNumeroMovimiento(int numeroMovimiento) {
-		this.numeroMovimiento = numeroMovimiento;
-	}
-
+	
 	public Type getTipoPieza() {
 		return tipoPieza;
 	}
@@ -175,28 +126,12 @@ public final class Move {
 		this.casillaComer = casillaComer;
 	}
 
-	public int getContadorTablas() {
-		return contadorTablas;
-	}
-
-	public void setContadorTablas(int contadorTablas) {
-		this.contadorTablas = contadorTablas;
-	}
-
 	public Type getCoronacion() {
 		return coronacion;
 	}
 
 	public void setCoronacion(Type coronacion) {
 		this.coronacion = coronacion;
-	}
-
-	public boolean[][] getEnroque() {
-		return enroque;
-	}
-
-	public void setEnroque(boolean[][] enroque) {
-		this.enroque = enroque;
 	}
 
 	public Result getFinPartida() {
@@ -214,15 +149,7 @@ public final class Move {
 	public void setJaque(boolean jaque) {
 		this.jaque = jaque;
 	}
-
-	public char getAlPaso() {
-		return alPaso;
-	}
-
-	public void setAlPaso(char alPaso) {
-		this.alPaso = alPaso;
-	}
-
+	
 	public String getNotacion() {
 		return notacion;
 	}
@@ -237,5 +164,9 @@ public final class Move {
 
 	public void setTipoPiezaComida(Type tipoPiezaComida) {
 		this.tipoPiezaComida = tipoPiezaComida;
+	}
+	
+	public BoardStatus getFinalBoardStatus() {
+		return status;
 	}
 }
