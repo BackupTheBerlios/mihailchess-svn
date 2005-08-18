@@ -516,11 +516,11 @@ public class Board {
 	 *            Es el numero de la casilla de destino
 	 * @return Devuelve un objeto Movimiento o null si no esta permitido.
 	 */
-	public Movement move(char origenLetra, char origenNum,
+	public Move move(char origenLetra, char origenNum,
 			char destinoLetra, char destinoNum) {
 		Piece piezaQueMueve;
 		int i;
-		Movement mov;
+		Move mov;
 		piezaQueMueve = posicion.getPieza(origenLetra, origenNum);
 
 		// Comprobamos que en la casilla de origen hay una pieza
@@ -549,7 +549,7 @@ public class Board {
 				// valido
 				if (destinoNum == piezaQueMueve.getCasillasValidas().get(i)
 						.getFile()) {
-					mov = new Movement();
+					mov = new Move();
 					mov.setCasillaOrigen(new Square(origenLetra, origenNum));
 					mov
 							.setCasillaDestino(new Square(destinoLetra,
@@ -659,8 +659,8 @@ public class Board {
 	 * 
 	 * @return El movimiento al que lleguemos en la lista de movimientos.
 	 */
-	public Movement goBack() {
-		Movement mov;
+	public Move goBack() {
+		Move mov;
 		Piece piezaQueMueve;
 		if (indice < movimientos.getHalfmoveNumber()) {
 			mov = movimientos.getMove(indice);
@@ -718,8 +718,8 @@ public class Board {
 	 * 
 	 * @return El movimiento al que lleguemos en la lista de movimientos.
 	 */
-	public Movement goForward() {
-		Movement mov;
+	public Move goForward() {
+		Move mov;
 		Piece piezaQueMueve;
 		if (indice > 0) {
 			indice--;
@@ -878,7 +878,7 @@ public class Board {
 	 *       con el rey, no hay que marcar la posible ambiguedad. Hay que
 	 *       tenerlo en cuenta.
 	 */
-	public Movement moveALG(String mov) {
+	public Move moveALG(String mov) {
 		char origenLetra = '\0', origenNum = '\0', destinoLetra = '\0', destinoNum = '\0';
 		char tipoPieza = 'P';
 		Type piezaCoronacion = null;

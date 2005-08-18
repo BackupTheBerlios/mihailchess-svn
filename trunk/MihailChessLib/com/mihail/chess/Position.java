@@ -763,7 +763,7 @@ public class Position {
 	 * @todo Resolver ambiguedades, coronaciones, jaques, mates...
 	 * @todo Esto no esta bien aqui, es mejor dejarlo en Logica....
 	 */
-	private String generarNotacionALG (Movement mov) {
+	private String generarNotacionALG (Move mov) {
 		StringBuffer temp = new StringBuffer ();
 
 		if (mov.getTipoPieza() == Type.KING) {

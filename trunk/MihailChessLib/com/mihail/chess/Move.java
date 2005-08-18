@@ -14,7 +14,7 @@ import com.mihail.chess.Piece.Type;
  * @author Iago Porto Diaz
  */
 
-public final class Movement {
+public final class Move {
 
 	/**
 	 * Este atributo indica la letra de la casilla origen.

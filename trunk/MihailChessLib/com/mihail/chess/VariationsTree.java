@@ -14,11 +14,11 @@ import com.mihail.chess.Board.Side;
  */
 public class VariationsTree {
 	private class NodoArbol {
-		public Movement movimiento;
+		public Move movimiento;
 
 		public ArrayList<VariationsTree> variantes;
 
-		public NodoArbol(Movement mov) {
+		public NodoArbol(Move mov) {
 			movimiento = mov;
 		}
 	}
@@ -50,7 +50,7 @@ public class VariationsTree {
 	 * @param mov
 	 *            Movimiento que se añade.
 	 */
-	public void appendMovimiento(Movement mov) {
+	public void appendMovimiento(Move mov) {
 		arbol.add(new NodoArbol(mov));
 	}
 
@@ -64,14 +64,14 @@ public class VariationsTree {
 	 *            Numero del movimiento
 	 * @return Devuelve el movimiento correspondiente a color y numero
 	 */
-	public Movement getMove(Side color, int numero) {
+	public Move getMove(Side color, int numero) {
 		NodoArbol n = getNodo(color, numero);
 		if (n != null)
 			return n.movimiento;
 		return null;
 	}
 	
-	public Movement getMove(int halfPly) {
+	public Move getMove(int halfPly) {
 		return arbol.get(halfPly).movimiento;
 	}
 
@@ -136,7 +136,7 @@ public class VariationsTree {
 	 * @param numero
 	 *            Numero del movimiento.
 	 */
-	public void addVariation(Movement mov, Side color, int numero) {
+	public void addVariation(Move mov, Side color, int numero) {
 		NodoArbol n = getNodo(color, numero);
 
 		if (n.variantes == null)
@@ -144,7 +144,7 @@ public class VariationsTree {
 
 		VariationsTree a = new VariationsTree(numero);
 		if (color == Side.BLACK) // Cada arbol de variantes debe empezar con un movimiento de blancas
-			a.appendMovimiento(new Movement());
+			a.appendMovimiento(new Move());
 		a.appendMovimiento(mov);
 
 		n.variantes.add(a);
@@ -192,7 +192,7 @@ public class VariationsTree {
 	 * @return
 	 */
 
-	public Movement getLastMove() {
+	public Move getLastMove() {
 		return arbol.get(arbol.size() - 1).movimiento;
 	}
 	
