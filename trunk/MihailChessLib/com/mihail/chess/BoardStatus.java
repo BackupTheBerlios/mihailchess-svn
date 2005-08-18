@@ -74,8 +74,10 @@ public class BoardStatus {
 		switch (c) {
 		case WHITE:
 			enroque[0][0] = b;
+			return;
 		case BLACK:
 			enroque[1][0] = b;
+			return;
 		}
 		throw new AssertionError("El Bando solo puede ser BLANCO o NEGRO: "
 				+ this);
@@ -104,8 +106,10 @@ public class BoardStatus {
 		switch (c) {
 		case WHITE:
 			enroque[0][1] = b;
+			return;
 		case BLACK:
 			enroque[1][1] = b;
+			return;
 		}
 		throw new AssertionError("El Bando solo puede ser BLANCO o NEGRO: "
 				+ this);
