@@ -2,7 +2,7 @@ package com.mihail.pgn;
 
 import java.util.ArrayList;
 
-import com.mihail.chess.Movement;
+import com.mihail.chess.Move;
 
 /**
  * Esta clase define un objeto partida y sus caracteristicas: evento, sitio,
@@ -56,13 +56,13 @@ public final class Game {
 	 * 
 	 * @return La lista de movimientos de la partida
 	 */
-	public Movement[] getListaMovimientos() {
+	public Move[] getListaMovimientos() {
 		return null;
 	}
 
 	/**
 	 * 
 	 */
-	public void setListaMovimientos(Movement[] listaMovs) {
+	public void setListaMovimientos(Move[] listaMovs) {
 	}
 }
