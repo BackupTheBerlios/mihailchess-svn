@@ -554,19 +554,7 @@ public class Board {
 					mov.setCasillaDestino(new Square(destinoLetra, destinoNum));
 					mov.setTipoPieza(piezaQueMueve.getType());
 
-					// Si se come ponemos el contador a 0
-					if (!posicion.isEmpty(destinoLetra, destinoNum)) {
-						posicion.setHalfmoveClock(0);
-						hash.clearDictionary();
-						mov
-								.setCasillaComer(new Square(destinoLetra,
-										destinoNum));
-						mov.setTipoPiezaComida(posicion.getPieza(destinoLetra,
-								destinoNum).getType());
-						posicion.removePiece(mov.getCasillaComer());
-					}
-
-					// Se hacen los calculos especiales si se trata de un peon
+//					 Se hacen los calculos especiales si se trata de un peon
 					if (piezaQueMueve.getType() == Type.PAWN) {
 						// Se borra la pieza correspondiente si se come al paso
 						if (Math.abs(destinoLetra - origenLetra) == 1
@@ -613,6 +601,18 @@ public class Board {
 								posicion.setPiece(torre, 'd', origenNum);
 							}
 						}
+					}
+					
+					// Si se come ponemos el contador a 0
+					if (!posicion.isEmpty(destinoLetra, destinoNum)) {
+						posicion.setHalfmoveClock(0);
+						hash.clearDictionary();
+						mov
+								.setCasillaComer(new Square(destinoLetra,
+										destinoNum));
+						mov.setTipoPiezaComida(posicion.getPieza(destinoLetra,
+								destinoNum).getType());
+						posicion.removePiece(mov.getCasillaComer());
 					}
 
 					mov.getFinalBoardStatus().setStatus(posicion.status);
