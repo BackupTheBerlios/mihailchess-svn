@@ -274,16 +274,17 @@ public class Board {
 					Piece p = posicion.getPieza(destino.getFile(), destino
 							.getRank());
 					while (p == null) {
-						p = posicion.getPieza(destino.getFile(), destino
-								.getRank());
 						if (esLegal(pieza.getFile(), pieza.getRank(), destino
 								.getFile(), destino.getRank())) {
-							if (p == null
-									|| (p != null && p.isOppositeSide(pieza))) {
 								pieza.addMove(destino);
-							}
+
 						}
 						destino = destino.add(v);
+						p = posicion.getPieza(destino.getFile(), destino
+								.getRank());
+					}
+					if (p != null && p.isOppositeSide(pieza)) {
+						pieza.addMove(destino);
 					}
 				} catch (ArrayIndexOutOfBoundsException e) {
 				}
@@ -651,7 +652,7 @@ public class Board {
 	 * 
 	 * @return El movimiento al que lleguemos en la lista de movimientos.
 	 */
-	public Move goBack() {
+	public Move goForward() {
 		Move mov;
 		Piece piezaQueMueve;
 		if (indice < movimientos.getHalfmoveNumber()) {
@@ -704,7 +705,7 @@ public class Board {
 	 * 
 	 * @return El movimiento al que lleguemos en la lista de movimientos.
 	 */
-	public Move goForward() {
+	public Move goBack() {
 		Move mov;
 		Piece piezaQueMueve;
 		if (indice > 0) {
@@ -720,22 +721,22 @@ public class Board {
 				Square origen = mov.getCasillaOrigen();
 				Square destino = mov.getCasillaDestino();
 				if ((destino.getFile() - origen.getFile()) == 2) {
-					Piece torre = posicion.getPieza('h', origen.getRank());
-					posicion.removePiece('h', origen.getRank());
-					posicion.setPiece(torre, 'f', origen.getRank());
+					Piece torre = posicion.getPieza('f', origen.getRank());
+					posicion.removePiece('f', origen.getRank());
+					posicion.setPiece(torre, 'h', origen.getRank());
 				} else {
 					if ((destino.getFile() - origen.getFile()) == -2) {
-						Piece torre = posicion.getPieza('a', origen.getRank());
-						posicion.removePiece('a', origen.getRank());
-						posicion.setPiece(torre, 'd', origen.getRank());
+						Piece torre = posicion.getPieza('d', origen.getRank());
+						posicion.removePiece('d', origen.getRank());
+						posicion.setPiece(torre, 'a', origen.getRank());
 					}
 				}
 			}
 			posicion.removePiece(mov.getCasillaDestino());
 			if (mov.getTipoPiezaComida() != null) {
 				posicion.setPiece(new Piece(
-						piezaQueMueve.getSide() == Side.WHITE ? Side.WHITE
-								: Side.BLACK, mov.getTipoPieza()), mov
+						piezaQueMueve.getSide() == Side.WHITE ? Side.BLACK
+								: Side.WHITE, mov.getTipoPiezaComida()), mov
 						.getCasillaComer());
 			}
 			posicion.setPiece(piezaQueMueve, mov.getCasillaOrigen());
@@ -860,7 +861,7 @@ public class Board {
 	 */
 	public Move moveALG(String mov) {
 		char origenLetra = '\0', origenNum = '\0', destinoLetra = '\0', destinoNum = '\0';
-		char tipoPieza = 'P';
+		Type tipoPieza = Type.PAWN;
 		Type piezaCoronacion = null;
 		int contadorOesEnroque = 0, i;
 		boolean finDestino = false;
@@ -900,31 +901,31 @@ public class Board {
 				if (i != 0) {
 					piezaCoronacion = Type.BISHOP;
 				} else {
-					tipoPieza = 'A';
+					tipoPieza = Type.BISHOP;
 				}
 				break;
 			case 'K':
-				tipoPieza = 'R';
+				tipoPieza = Type.KING;
 				break;
 			case 'N':
 				if (i != 0) {
 					piezaCoronacion = Type.KNIGHT;
 				} else {
-					tipoPieza = 'C';
+					tipoPieza = Type.KNIGHT;
 				}
 				break;
 			case 'Q':
 				if (i != 0) {
 					piezaCoronacion = Type.QUEEN;
 				} else {
-					tipoPieza = 'D';
+					tipoPieza = Type.QUEEN;
 				}
 				break;
 			case 'R':
 				if (i != 0) {
 					piezaCoronacion = Type.ROOK;
 				} else {
-					tipoPieza = 'T';
+					tipoPieza = Type.ROOK;
 				}
 				break;
 			case '0':
@@ -975,7 +976,7 @@ public class Board {
 				if (origenLetra == '\0' && origenNum != '\0') {
 					for (char ii = 'a'; ii <= 'h'; ii++) {
 						Piece p = posicion.getPieza(ii, origenNum);
-						if (p.canMove(c)) {
+						if (p!=null && p.getType() == tipoPieza  && !Piece.isOppositeSide(posicion.getTurn(), p) && p.canMove(c)) {
 							origenLetra = ii;
 							break;
 						}
@@ -983,17 +984,20 @@ public class Board {
 				} else if (origenLetra != '\0' && origenNum == '\0') {
 					for (char ii = '1'; ii <= '8'; ii++) {
 						Piece p = posicion.getPieza(origenLetra, ii);
-						if (p.canMove(c)) {
+						if (p!=null && p.getType() == tipoPieza  && !Piece.isOppositeSide(posicion.getTurn(), p) && p.canMove(c)) {
 							origenNum = ii;
 							break;
 						}
 					}
 				} else {
-					for (char ii = '1'; ii <= '8'; ii++) {
+					boolean finished = false;
+					for (char ii = '1'; ii <= '8' && !finished; ii++) {
 						for (char jj = 'a'; jj <= 'h'; jj++) {
 							Piece p = posicion.getPieza(jj, ii);
-							if (p.canMove(c)) {
+							if (p!=null && p.getType() == tipoPieza  && !Piece.isOppositeSide(posicion.getTurn(), p) && p.canMove(c)) {
 								origenNum = ii;
+								origenLetra  = jj;
+								finished = true;
 								break;
 							}
 						}
