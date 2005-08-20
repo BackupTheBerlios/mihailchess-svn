@@ -3,13 +3,15 @@ package com.mihail.chess;
 import java.awt.Image;
 import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.net.URISyntaxException;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.Enumeration;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
-import java.util.zip.ZipFile;
+import java.util.zip.ZipInputStream;
 
 import javax.swing.ImageIcon;
 
@@ -70,7 +72,11 @@ public class BoardTheme {
 	
 	public BoardTheme(String path) {
 		File file = new File(path);
-		loadZip(file);
+		try {
+			loadZip(new FileInputStream(file));
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	/**
@@ -86,9 +92,8 @@ public class BoardTheme {
 	
 	public BoardTheme(URL path) {
 		try {
-			File file = new File(path.toURI());
-			loadZip(file);
-		} catch (URISyntaxException e) {
+			loadZip(path.openStream());
+		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -132,49 +137,58 @@ public class BoardTheme {
 		return -1;
 	}
 	
-	private void loadZip(File file) {
+	private void readData(ZipInputStream zis, byte[] data, int size) {
 		try {
-			ZipFile zipFile = new ZipFile(file);
-			for(Enumeration<? extends ZipEntry> e = zipFile.entries(); e.hasMoreElements();) {
-				ZipEntry entry = e.nextElement();
-				
-				BufferedInputStream is = new BufferedInputStream(zipFile.getInputStream(entry));
+			int readed = 0;
+			while(readed<size) {
+				readed += zis.read(data, readed, size-readed);
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	private void loadZip(InputStream file) {
+		try {
+			ZipInputStream zipFile = new ZipInputStream(file);
+			ZipEntry entry;
+			while((entry=zipFile.getNextEntry())!=null) {
 				String entryName = entry.getName();
 				int size = new Long(entry.getSize()).intValue();
 				byte [] data = new byte[size];
 				System.out.println(entryName + " Size: " + size);
-				System.out.println("Readed data: " + is.read(data, 0, size));
+				readData(zipFile, data, size);
 				if(entryName.equals("reyB.png")) { // Cargar todas las imagenes en funcion de los nombres
 					pieceImages[0][5] = new ImageIcon(data).getImage();
-				} else if (entryName.equals("reyN.png")) {
+				} else if (entryName.startsWith("reyN")) {
 					pieceImages[1][5] = new ImageIcon(data).getImage();
-				} else if (entryName.equals("damaB.png")) {
+				} else if (entryName.startsWith("damaB")) {
 					pieceImages[0][4] = new ImageIcon(data).getImage();
-				} else if (entryName.equals("damaN.png")) {
+				} else if (entryName.startsWith("damaN")) {
 					pieceImages[1][4] = new ImageIcon(data).getImage();
-				} else if (entryName.equals("torreB.png")) {
+				} else if (entryName.startsWith("torreB")) {
 					pieceImages[0][3] = new ImageIcon(data).getImage();
-				} else if (entryName.equals("torreN.png")) {
+				} else if (entryName.startsWith("torreN")) {
 					pieceImages[1][3]= new ImageIcon(data).getImage();
-				} else if (entryName.equals("caballoB.png")) {
+				} else if (entryName.startsWith("caballoB")) {
 					pieceImages[0][1] = new ImageIcon(data).getImage();
-				} else if (entryName.equals("caballoN.png")) {
+				} else if (entryName.startsWith("caballoN")) {
 					pieceImages[1][1] = new ImageIcon(data).getImage();
-				} else if (entryName.equals("alfilB.png")) {
+				} else if (entryName.startsWith("alfilB")) {
 					pieceImages[0][2] = new ImageIcon(data).getImage();
-				} else if (entryName.equals("alfilN.png")) {
+				} else if (entryName.startsWith("alfilN")) {
 					pieceImages[1][2] = new ImageIcon(data).getImage();
-				} else if (entryName.equals("peonB.png")) {
+				} else if (entryName.startsWith("peonB")) {
 					pieceImages[0][0] = new ImageIcon(data).getImage();
-				} else if (entryName.equals("peonN.png")) {
+				} else if (entryName.startsWith("peonN")) {
 					pieceImages[1][0] = new ImageIcon(data).getImage();
-				} else if (entryName.equals("casillaB.png")) {
+				} else if (entryName.startsWith("casillaB")) {
 					casillasImages[0] = new ImageIcon(data).getImage();
-				} else if (entryName.equals("casillaN.png")) {
+				} else if (entryName.startsWith("casillaN")) {
 					casillasImages[1] = new ImageIcon(data).getImage();
-				} else if (entryName.equals("marco.png")) {
+				} else if (entryName.startsWith("marco")) {
 					marco = new ImageIcon(data).getImage();
-				} else if (entryName.equals("fondo.png")) {
+				} else if (entryName.startsWith("fondo")) {
 					background = new ImageIcon(data).getImage();
 				}
 			}
